@@ -1,0 +1,72 @@
+Vshift
+-8.20e-3
+-6.40e-3
+-4.60e-3
+-2.80e-3
+-1.00e-3
+-8.00e-4
+2.60e-3
+6.20e-3
+8.00e-2
+
+F parameter variation
+
+test inputs for "ch_plot_study_gm.py Vshift F A gmbar"
+
+===============================================================================
+Target to find the tau and shift and all forms of HH-equation.
+===============================================================================
+
+Changes in only Vshift at f=0, a=0 gmbar_na=120e-3 gmbar_k=36e-3 Tau=1
+
+code_fix:
+1) Get rid of get in the channel connections function.  done
+2) don't wrap dictonaries use dict of dict instead. done
+3) use namedtuple done
+
+4) pass chan_object and plot_channel.py
+
+/home/ram/anaconda3/envs/moose_test/lib/python3.6/site-packages
+
+./etc/conda/activate.d/env_vars.sh
+
+
+
+Verification:
+
+Control
+python ch_plot_study_gm.py
+
+Vshift changes
+python ch_plot_study_gm.py 1e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 5e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 10e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 20e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 40e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 60e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 65e-3 0 120e-3 36e-3 1
+python ch_plot_study_gm.py 67e-3 0 120e-3 36e-3 1
+
+longer AHP's with increase in vshift and after certain vshift value steady state
+will start showing up.
+Vshift alter A_A,A_D and B_D parameters in alpha, beta equation.
+
+F Changes
+python ch_plot_study_gm.py 0 1e-3 120e-3 36e-3 1
+python ch_plot_study_gm.py 0 5e-3 120e-3 36e-3 1
+python ch_plot_study_gm.py 0 10e-3 120e-3 36e-3 1
+
+Control
+python tau_ch_plot_study.py
+
+tau changes
+python tau_ch_plot_study.py 1e-3 0 120e-3 36e-3 0.1
+python tau_ch_plot_study.py 1e-3 0 120e-3 36e-3 2
+python tau_ch_plot_study.py 1e-3 0 120e-3 36e-3 6
+python tau_ch_plot_study.py 1e-3 0 120e-3 36e-3 10
+python tau_ch_plot_study.py 1e-3 0 120e-3 36e-3 12
+
+Tau is a multiplication factor for A_A, A_B B_A and B_B.As Tau is increased, number of spikes in the simulation increase.
+with steeper falling curves and constant AHP until certain Tau.
+Further increasing the Tau will reduce the spike height and AHP heights and quickly
+reaches steady state.
