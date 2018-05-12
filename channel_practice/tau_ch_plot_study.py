@@ -97,9 +97,9 @@ if __name__ == '__main__':
 
     #get all channel parameters
 
-    K_n_params = get_k_n_params(VSHIFT=VSHIFT, tau=tau, f=f)
-    Na_h_params = get_na_h_params(VSHIFT=VSHIFT, tau=tau, f=f)
-    Na_m_params = get_na_m_params(VSHIFT=VSHIFT, tau=tau, f=f)
+    K_n_params = get_k_n_params(VSHIFT=VSHIFT, tau=tau, f=f) + get_voltage_scales()
+    Na_h_params = get_na_h_params(VSHIFT=VSHIFT, tau=tau, f=f) + get_voltage_scales()
+    Na_m_params = get_na_m_params(VSHIFT=VSHIFT, tau=tau, f=f) + get_voltage_scales()
 
     config_chan = {'na':{'xpower':3, 'ypower':1,
     'm_params':Na_m_params, 'h_params':Na_h_params, 'gbar':gmbar_Na, 'ek':115e-3},
@@ -126,4 +126,4 @@ if __name__ == '__main__':
     plt.legend()
     plt.title('Vshift:{:.2E} tau_mul:{:.2E}'.format(VSHIFT, tau) , loc='left')
     plt.grid(True)
-    #plt.show()
+    plt.show()

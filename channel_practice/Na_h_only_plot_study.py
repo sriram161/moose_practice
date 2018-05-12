@@ -19,12 +19,14 @@ VMAX = 120e-3 + EREST_ACT
 #: Number of divisions in the interpolation table
 VDIVS = 3000
 
+# This done while load of morph file (.p)
 def compute_neuron_area_geomerty(diameter, length):
     global Area
     sarea = np.pi * diameter * length * 1e4
     xarea = np.pi * diameter * diameter / 4.0
     return (Area(sarea, xarea))
 
+# This done while load of morph file (.p)
 def set_compartment_electrical_parameters(comp, diameter, length):
     global EREST_ACT
     comp.Em = EREST_ACT + 10.613e-3

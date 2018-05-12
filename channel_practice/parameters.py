@@ -5,13 +5,12 @@ Voltage_scale = namedtuple("Voltage_scale", "VDIVS VMIN VMAX")
 
 EREST_ACT = -70e-3
 
-
 def get_voltage_scales():
     global EREST_ACT
     VMIN = -30e-3 + EREST_ACT
     VMAX = 120e-3 + EREST_ACT
     VDIVS = 3000
-    return (VMIN, VMAX, VDIVS)
+    return Voltage_scale(VDIVS, VMIN, VMAX)
 
 def get_na_m_params(VSHIFT=0, tau=1, f=0):
   global EREST_ACT
@@ -57,3 +56,5 @@ def get_k_n_params(VSHIFT=0, tau=1, f=0):
   B_C = 0.0,
   B_D = 0.0 - EREST_ACT - VSHIFT,
   B_F = 80e-3 + f)
+
+# cell_proto.py in moose_nerp
