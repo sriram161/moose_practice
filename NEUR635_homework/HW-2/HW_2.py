@@ -41,7 +41,7 @@ def main():
     soma.Em = -65E-3
     soma.initVm = -65E-3
     inj_duration = 100E-3
-    inj_amplitude = 0.1E-9
+    inj_amplitude = 0.188E-9
     pulse_1 = create_pulse_generator(soma, inj_duration, inj_amplitude)
     moose.reinit()
     moose.start(0.3)
