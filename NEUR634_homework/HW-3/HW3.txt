@@ -5,8 +5,7 @@ Homework:
 	B. run the 1 compartment simulation (use CM=0.01 F/m^2, adjust RM to obtain 10 ms time constant), but this time create an output graph.
 	  DONE!!!
 	C. clocks: adjust the simulation dt for your compartments (instructions in previous weeks lecture). Repeat simulations using 1 ms and 5 ms dt - do results differ from the default (5e-5) dt?
-	  Yes! When simdt is 1mS and 5mS the traces has slight difference 1mS trace is at negative voltage near 0V and 5mS trace is at 0V.
-HW_3_1.py
+	  No difference in graphs when sim dt is changed.Cause tau >> 1ms and 5ms.
 
 2. dendrites and effects of subdividing into multiple compartments:
 	A. add one dendrite to your model, with length = 100 microns and diameter = 2 microns

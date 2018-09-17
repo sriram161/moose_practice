@@ -42,10 +42,9 @@ def create_output_table(table_element='/output', table_name='somaVm'):
 def plot_vm_table(compartment, simtime):
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlim(0, simtime)
-    ax.plot(compartment.vector)
+    t = np.linspace(0, simtime, len(compartment.vector))
+    ax.plot(t, compartment.vector)
     plt.grid(True)
-    plt.show()
 
 def main():
     soma_l = 50E-6
@@ -77,5 +76,7 @@ def main():
     moose.start(simtime)
 
     plot_vm_table(vmtab, simtime)
+    plt.axvline(x=50E-3 + soma_RM * soma_CM, color='red')
+    plt.show()
 
 main()

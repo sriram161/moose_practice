@@ -39,13 +39,12 @@ def create_output_table(table_element='/output', table_name='somaVm'):
     membrane_voltage_table = moose.Table('/'.join((table_element, table_name)))
     return membrane_voltage_table
 
-def plot_vm_table(compartment, simtime):
+def plot_vm_table(compartment, simtime, plotdt):
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlim(0, simtime)
-    ax.plot(compartment.vector)
+    t = np.linspace(0,simtime, len(compartment.vector))
+    ax.plot(t,compartment.vector)
     plt.grid(True)
-    plt.show()
 
 def main():
     soma_l = 50E-6
@@ -53,8 +52,8 @@ def main():
     soma_RM = 1 #20000
     soma_CM = 10E-3 #1E-6
     soma_RA = 4.0
-    simtime = 0.3 # seconds
-    simdt = 5E-3 #50E-6 # seconds
+    simtime = 300E-3 # seconds
+    simdt = 1E-3 #50E-6 # seconds
 
     soma = create_compartment('soma', soma_l, soma_d, soma_RM, soma_CM, soma_RA)
     soma.Em = -65E-3
@@ -68,11 +67,13 @@ def main():
     moose.connect(vmtab, 'requestOut', soma, 'getVm')
     moose.showmsg(soma)
 
-    moose.setClock(4, simdt)
+    #moose.setClock(4, simdt)
 
     moose.reinit()
     moose.start(simtime)
 
-    plot_vm_table(vmtab, simtime)
+    plot_vm_table(vmtab, simtime, simdt)
+    plt.axvline(x=50E-3 + soma_RM * soma_CM, color='red')
+    plt.show()
 
 main()
