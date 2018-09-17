@@ -1,0 +1,19 @@
+Homework:
+1. Finishing up exercises from previous lecture
+	A. output: Create function to create output tables [I eliminated this slide from the lectures until you have tried this yourself]
+		DONE!!!
+	B. run the 1 compartment simulation (use CM=0.01 F/m^2, adjust RM to obtain 10 ms time constant), but this time create an output graph.
+	  DONE!!!
+	C. clocks: adjust the simulation dt for your compartments (instructions in previous weeks lecture). Repeat simulations using 1 ms and 5 ms dt - do results differ from the default (5e-5) dt?
+	  Yes! When simdt is 1mS and 5mS the traces has slight difference 1mS trace is at negative voltage near 0V and 5mS trace is at 0V.
+HW_3_1.py
+
+2. dendrites and effects of subdividing into multiple compartments:
+	A. add one dendrite to your model, with length = 100 microns and diameter = 2 microns
+	   Done!!!
+	B. create additional output: measure Vm in the "middle" of your dendrite
+	C. connect the dendrite to the soma, and run simulation
+	D. write function to subdivide the dendrite into X pieces
+	E. use a loop to connect the dendritic pieces with one another (see slide 33 if you are having trouble)
+	F. Use the function and the loop to create either 5 or 9 compartment models, measuring in the middle dendrite compartment.  Does Vm in the middle of the dendrite vary with the number of compartments?
+HW_3_2.py
