@@ -1,9 +1,10 @@
 import moose
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import OrderedDict
 
 # Place creation of compartment into function.
-def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, Ra=1.0):
+def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, RA=1.0):
     ''' Create a compartment
         Input: comp_name -> str
                comp_length -> float
@@ -11,11 +12,12 @@ def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, Ra=1.0):
     '''
     circum = np.pi * comp_diameter
     curved_sa = circum * comp_length
+    x_area = np.pi * comp_diameter ** 2 / 4.0
 
     comp = moose.Compartment('/'+ comp_name)
     comp.Rm = RM / curved_sa  # RM units are ohm-m^2
     comp.Cm = CM * curved_sa  # CM units are F/m^2
-    comp.Ra = Ra
+    comp.Ra = RA * comp_length / x_area
 
     return comp
 # Test:  soma = create_compartment('soma', 50E-6, 25E-6, 0.03, 2.8E3, 4.0)
@@ -46,18 +48,33 @@ def plot_vm_table(compartment, simtime):
     ax.plot(t, compartment.vector)
     plt.grid(True)
 
-def main():
+def create_n_dends(bunch_name, n, t_length, diameter, RM, CM, RA):
+    length_per_unit = t_length / n
+    bunch = OrderedDict()
+    for name in [bunch_name + str(i) for i in range(n)]:
+        bunch[name] = create_compartment(name, length_per_unit, diameter, RM, CM, RA)
+    return bunch
+
+def connect_n_serial(bunch):
+    iterator = iter(bunch.items())
+    c_name, c_item = next(iterator)
+    for n_name, n_item in iterator:
+        moose.connect(c_item, 'axialOut', n_item, 'handleAxial')
+        c_item = n_item
+    return bunch
+
+def soma_one_dend():
     soma_l = 50E-6
     soma_d = 25E-6
     soma_RM = 1 #20000
     soma_CM = 10E-3 #1E-6
     soma_RA = 4.0
     simtime = 0.3 # seconds
-    simdt = 5E-3 #50E-6 # seconds
+    simdt = 50E-6 #50E-6 # seconds
 
     soma = create_compartment('soma', soma_l, soma_d, soma_RM, soma_CM, soma_RA)
-    soma.Em = -65E-3
-    soma.initVm = -65E-3
+    soma_Em = -65E-3
+    soma_initVm = -65E-3
 
     inj_duration = 100E-3
     inj_amplitude = 1E-9 #0.188E-9
@@ -70,13 +87,61 @@ def main():
     moose.setClock(4, simdt)
 
     dend1 = create_compartment('dend1',100E-6, 2E-6, soma_RM, soma_CM, soma_RA)
+    dend1.Em = soma.Em
+    dend1.initVm = soma.initVm
+    moose.connect(soma, 'axialOut', dend1, 'handleAxial')
     dend1_vm_tab = create_output_table(table_name='dend1Vm')
+    moose.connect(dend1_vm_tab, 'requestOut', dend1, 'getVm')
+    moose.showmsg(dend1)
 
     moose.reinit()
     moose.start(simtime)
 
     plot_vm_table(vmtab, simtime)
+    plot_vm_table(dend1_vm_tab, simtime)
     plt.axvline(x=50E-3 + soma_RM * soma_CM, color='red')
     plt.show()
 
-main()
+#soma_one_dend()
+
+def soma_five_dend():
+    soma_l = 50E-6
+    soma_d = 25E-6
+    soma_RM = 1 #20000
+    soma_CM = 10E-3 #1E-6
+    soma_RA = 4.0
+    simtime = 0.3 # seconds
+    simdt = 50E-6 #50E-6 # seconds
+    dend_n = 5
+
+    soma = create_compartment('soma', soma_l, soma_d, soma_RM, soma_CM, soma_RA)
+    soma_Em = -65E-3
+    soma_initVm = -65E-3
+
+    inj_duration = 100E-3
+    inj_amplitude = 1E-9 #0.188E-9
+    pulse_1 = create_pulse_generator(soma, inj_duration, inj_amplitude)
+
+    vmtab = create_output_table()
+    moose.connect(vmtab, 'requestOut', soma, 'getVm')
+    moose.showmsg(soma)
+
+    moose.setClock(4, simdt)
+
+    bunch = create_n_dends('dend_', dend_n, 100E-6, 2E-6, soma_RM, soma_CM, soma_RA)
+    for item in bunch.values():
+        item.Em = soma.Em
+        item.initVm = soma.initVm
+    bunch = connect_n_serial(bunch)
+    moose.connect(soma, 'axialOut', list(bunch.values())[0], 'handleAxial')
+    dend_vm_tab = create_output_table(table_name='dend3Vm')
+    moose.connect(dend_vm_tab, 'requestOut', list(bunch.values())[int(np.median(range(len(bunch))))], 'getVm')
+
+    moose.reinit()
+    moose.start(simtime)
+
+    plot_vm_table(vmtab, simtime)
+    plot_vm_table(dend_vm_tab, simtime)
+    plt.show()
+
+soma_five_dend()

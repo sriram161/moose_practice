@@ -12,7 +12,11 @@ Homework:
 	   Done!!!
 	B. create additional output: measure Vm in the "middle" of your dendrite
 	C. connect the dendrite to the soma, and run simulation
+	   Done !!!
 	D. write function to subdivide the dendrite into X pieces
+	   Done !!!
 	E. use a loop to connect the dendritic pieces with one another (see slide 33 if you are having trouble)
+	   Done !!!
 	F. Use the function and the loop to create either 5 or 9 compartment models, measuring in the middle dendrite compartment.  Does Vm in the middle of the dendrite vary with the number of compartments?
 HW_3_2.py
+     No! voltage drop observed in the middle Compartment for 5 or 9 compartment model. 
