@@ -1,0 +1,704 @@
+bash-4.2$ ls
+Desktop    Downloads	hermes_web	Music	  Public     tests.log
+Documents  helios_html	moose_practice	Pictures  Templates  Videos
+bash-4.2$ cd moose_practice/
+bash-4.2$ cd ..
+bash-4.2$ atom moose_practice
+bash: atom: command not found
+bash-4.2$ ls
+Desktop    Downloads	hermes_web	Music	  Public     tests.log
+Documents  helios_html	moose_practice	Pictures  Templates  Videos
+bash-4.2$ cd Downloads
+bash-4.2$ ls
+atom.x86_64.rpm  Classwork_lecture_2.txt  usr
+bash-4.2$ cd usr
+bash-4.2$ ls
+bin  share
+bash-4.2$ cd bin/
+bash-4.2$ ls
+apm  atom  tests.log
+bash-4.2$ atom
+bash-4.2$ wget www.genesis-sim.org/GENESIS/Tutorials/cells/corticalcells/layer2.p
+--2018-09-18 13:43:24--  http://www.genesis-sim.org/GENESIS/Tutorials/cells/corticalcells/layer2.p
+Resolving www.genesis-sim.org... 208.113.212.219
+Connecting to www.genesis-sim.org|208.113.212.219|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 644 [text/x-pascal]
+Saving to: ‘layer2.p’
+
+layer2.p                           100%[================================================================>]     644  --.-KB/s    in 0s
+
+2018-09-18 13:43:24 (78.7 MB/s) - ‘layer2.p’ saved [644/644]
+
+bash-4.2$ ls
+apm  atom  layer2.p  tests.log
+bash-4.2$ ls
+apm  atom  tests.log
+bash-4.2$ cd ..
+bash-4.2$ cd ..
+bash-4.2$ ls
+atom.x86_64.rpm  Classwork_lecture_2.txt  usr
+bash-4.2$ cd ..
+bash-4.2$ ls
+Desktop    helios_html	   Music     Templates
+Documents  hermes_web	   Pictures  tests.log
+Downloads  moose_practice  Public    Videos
+bash-4.2$ cd moose_practice/
+bash-4.2$ ls
+channel_practice  NEUR634_homework	 test_morph.py
+gplotr_1.py	  README.md		 test_save_param.py
+LICENSE		  test_create_npz_param
+moose_ex_1.py	  test_load_npz.py
+bash-4.2$ cd NEUR634_homework/
+bash-4.2$ ls
+CW-3  CW-4  HW-1  HW-2	HW-3
+bash-4.2$ cd CW_4
+bash: cd: CW_4: No such file or directory
+bash-4.2$ cd CW-4
+bash-4.2$ ls
+CW_4.py  example.swc  layer2.p
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import moose
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: No module named moose
+>>> import numpy as np
+>>> pfile = 'layer2.p'
+>>> swcfile = 'example.swc'
+>>> cell1 = moose.loadModel(pfile, 'neuron')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'moose' is not defined
+>>> exit()
+bash-4.2$ module add moose
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import moose
+>>> import numpy as np
+>>> pfile = 'layer2.p'
+>>> swcfile = 'example.swc'
+>>> cell1 = moose.loadModel(pfile, 'neuron')
+Warning: ReadCell: No library for channels.
+ReadCell: 8 compartments, 0 channels, 0 others
+>>> cell1
+<moose.vec: class=Neuron, id=469, path=/neuron>
+>>> cell2 = moose.loadModel(swcfile, 'neuron2')
+ReadSwc: example.swc	: NumSegs = 217, bad = 0, Validated = 1, numBranches = 26
+ReadSwc::diagnostics: undef :	0
+ReadSwc::diagnostics: soma :	3
+ReadSwc::diagnostics: axon :	0
+ReadSwc::diagnostics: dend :	191
+ReadSwc::diagnostics: apical :	0
+ReadSwc::diagnostics: dend_f :	8
+ReadSwc::diagnostics: dend_e :	15
+ReadSwc::diagnostics: custom :	0
+ReadSwc::diagnostics: bad :	0
+ReadSwc::diagnostics: undef :	0
+ReadSwc::diagnostics: axon_f :	0
+ReadSwc::diagnostics: axon_e :	0
+ReadSwc::diagnostics: apical_f :	0
+ReadSwc::diagnostics: apical_e :	0
+>>> cell2
+<moose.vec: class=Neuron, id=479, path=/neuron2>
+>>> moose.le(cell2)
+Elements under /neuron2[0]
+/neuron2[0]/spine
+/neuron2[0]/soma
+/neuron2[0]/soma_1_0
+/neuron2[0]/soma_2_0
+/neuron2[0]/dend_3_0
+/neuron2[0]/dend_3_1
+/neuron2[0]/dend_3_2
+/neuron2[0]/dend_3_3
+/neuron2[0]/dend_3_4
+/neuron2[0]/dend_3_5
+/neuron2[0]/dend_3_6
+/neuron2[0]/dend_f_3_7
+/neuron2[0]/dend_4_0
+/neuron2[0]/dend_4_1
+/neuron2[0]/dend_4_2
+/neuron2[0]/dend_4_3
+/neuron2[0]/dend_4_4
+/neuron2[0]/dend_4_5
+/neuron2[0]/dend_4_6
+/neuron2[0]/dend_4_7
+/neuron2[0]/dend_4_8
+/neuron2[0]/dend_4_9
+/neuron2[0]/dend_4_10
+/neuron2[0]/dend_4_11
+/neuron2[0]/dend_4_12
+/neuron2[0]/dend_4_13
+/neuron2[0]/dend_4_14
+/neuron2[0]/dend_4_15
+/neuron2[0]/dend_4_16
+/neuron2[0]/dend_4_17
+/neuron2[0]/dend_4_18
+/neuron2[0]/dend_4_19
+/neuron2[0]/dend_4_20
+/neuron2[0]/dend_e_4_21
+/neuron2[0]/dend_5_0
+/neuron2[0]/dend_5_1
+/neuron2[0]/dend_5_2
+/neuron2[0]/dend_5_3
+/neuron2[0]/dend_5_4
+/neuron2[0]/dend_5_5
+/neuron2[0]/dend_5_6
+/neuron2[0]/dend_5_7
+/neuron2[0]/dend_5_8
+/neuron2[0]/dend_5_9
+/neuron2[0]/dend_5_10
+/neuron2[0]/dend_5_11
+/neuron2[0]/dend_5_12
+/neuron2[0]/dend_e_5_13
+/neuron2[0]/dend_6_0
+/neuron2[0]/dend_6_1
+/neuron2[0]/dend_f_6_2
+/neuron2[0]/dend_7_0
+/neuron2[0]/dend_7_1
+/neuron2[0]/dend_7_2
+/neuron2[0]/dend_7_3
+/neuron2[0]/dend_7_4
+/neuron2[0]/dend_7_5
+/neuron2[0]/dend_f_7_6
+/neuron2[0]/dend_8_0
+/neuron2[0]/dend_8_1
+/neuron2[0]/dend_8_2
+/neuron2[0]/dend_8_3
+/neuron2[0]/dend_8_4
+/neuron2[0]/dend_8_5
+/neuron2[0]/dend_8_6
+/neuron2[0]/dend_8_7
+/neuron2[0]/dend_8_8
+/neuron2[0]/dend_8_9
+/neuron2[0]/dend_8_10
+/neuron2[0]/dend_8_11
+/neuron2[0]/dend_8_12
+/neuron2[0]/dend_8_13
+/neuron2[0]/dend_8_14
+/neuron2[0]/dend_8_15
+/neuron2[0]/dend_8_16
+/neuron2[0]/dend_8_17
+/neuron2[0]/dend_e_8_18
+/neuron2[0]/dend_9_0
+/neuron2[0]/dend_9_1
+/neuron2[0]/dend_9_2
+/neuron2[0]/dend_9_3
+/neuron2[0]/dend_9_4
+/neuron2[0]/dend_9_5
+/neuron2[0]/dend_9_6
+/neuron2[0]/dend_9_7
+/neuron2[0]/dend_9_8
+/neuron2[0]/dend_9_9
+/neuron2[0]/dend_9_10
+/neuron2[0]/dend_9_11
+/neuron2[0]/dend_e_9_12
+/neuron2[0]/dend_10_0
+/neuron2[0]/dend_10_1
+/neuron2[0]/dend_10_2
+/neuron2[0]/dend_10_3
+/neuron2[0]/dend_e_10_4
+/neuron2[0]/dend_11_0
+/neuron2[0]/dend_11_1
+/neuron2[0]/dend_11_2
+/neuron2[0]/dend_11_3
+/neuron2[0]/dend_11_4
+/neuron2[0]/dend_11_5
+/neuron2[0]/dend_11_6
+/neuron2[0]/dend_11_7
+/neuron2[0]/dend_11_8
+/neuron2[0]/dend_11_9
+/neuron2[0]/dend_11_10
+/neuron2[0]/dend_11_11
+/neuron2[0]/dend_11_12
+/neuron2[0]/dend_11_13
+/neuron2[0]/dend_11_14
+/neuron2[0]/dend_e_11_15
+/neuron2[0]/dend_12_0
+/neuron2[0]/dend_12_1
+/neuron2[0]/dend_f_12_2
+/neuron2[0]/dend_13_0
+/neuron2[0]/dend_13_1
+/neuron2[0]/dend_13_2
+/neuron2[0]/dend_13_3
+/neuron2[0]/dend_13_4
+/neuron2[0]/dend_13_5
+/neuron2[0]/dend_13_6
+/neuron2[0]/dend_f_13_7
+/neuron2[0]/dend_14_0
+/neuron2[0]/dend_14_1
+/neuron2[0]/dend_14_2
+/neuron2[0]/dend_14_3
+/neuron2[0]/dend_14_4
+/neuron2[0]/dend_14_5
+/neuron2[0]/dend_14_6
+/neuron2[0]/dend_14_7
+/neuron2[0]/dend_14_8
+/neuron2[0]/dend_14_9
+/neuron2[0]/dend_e_14_10
+/neuron2[0]/dend_15_0
+/neuron2[0]/dend_15_1
+/neuron2[0]/dend_15_2
+/neuron2[0]/dend_15_3
+/neuron2[0]/dend_15_4
+/neuron2[0]/dend_15_5
+/neuron2[0]/dend_15_6
+/neuron2[0]/dend_15_7
+/neuron2[0]/dend_15_8
+/neuron2[0]/dend_15_9
+/neuron2[0]/dend_15_10
+/neuron2[0]/dend_15_11
+/neuron2[0]/dend_e_15_12
+/neuron2[0]/dend_16_0
+/neuron2[0]/dend_16_1
+/neuron2[0]/dend_16_2
+/neuron2[0]/dend_16_3
+/neuron2[0]/dend_16_4
+/neuron2[0]/dend_16_5
+/neuron2[0]/dend_16_6
+/neuron2[0]/dend_16_7
+/neuron2[0]/dend_16_8
+/neuron2[0]/dend_e_16_9
+/neuron2[0]/dend_17_0
+/neuron2[0]/dend_17_1
+/neuron2[0]/dend_17_2
+/neuron2[0]/dend_17_3
+/neuron2[0]/dend_17_4
+/neuron2[0]/dend_f_17_5
+/neuron2[0]/dend_18_0
+/neuron2[0]/dend_18_1
+/neuron2[0]/dend_18_2
+/neuron2[0]/dend_18_3
+/neuron2[0]/dend_18_4
+/neuron2[0]/dend_18_5
+/neuron2[0]/dend_18_6
+/neuron2[0]/dend_18_7
+/neuron2[0]/dend_f_18_8
+/neuron2[0]/dend_19_0
+/neuron2[0]/dend_19_1
+/neuron2[0]/dend_19_2
+/neuron2[0]/dend_e_19_3
+/neuron2[0]/dend_20_0
+/neuron2[0]/dend_20_1
+/neuron2[0]/dend_20_2
+/neuron2[0]/dend_20_3
+/neuron2[0]/dend_20_4
+/neuron2[0]/dend_e_20_5
+/neuron2[0]/dend_21_0
+/neuron2[0]/dend_21_1
+/neuron2[0]/dend_21_2
+/neuron2[0]/dend_21_3
+/neuron2[0]/dend_21_4
+/neuron2[0]/dend_21_5
+/neuron2[0]/dend_21_6
+/neuron2[0]/dend_e_21_7
+/neuron2[0]/dend_22_0
+/neuron2[0]/dend_22_1
+/neuron2[0]/dend_22_2
+/neuron2[0]/dend_22_3
+/neuron2[0]/dend_22_4
+/neuron2[0]/dend_22_5
+/neuron2[0]/dend_22_6
+/neuron2[0]/dend_22_7
+/neuron2[0]/dend_22_8
+/neuron2[0]/dend_22_9
+/neuron2[0]/dend_22_10
+/neuron2[0]/dend_22_11
+/neuron2[0]/dend_22_12
+/neuron2[0]/dend_22_13
+/neuron2[0]/dend_e_22_14
+/neuron2[0]/dend_23_0
+/neuron2[0]/dend_23_1
+/neuron2[0]/dend_23_2
+/neuron2[0]/dend_23_3
+/neuron2[0]/dend_23_4
+/neuron2[0]/dend_23_5
+/neuron2[0]/dend_f_23_6
+/neuron2[0]/dend_24_0
+/neuron2[0]/dend_24_1
+/neuron2[0]/dend_24_2
+/neuron2[0]/dend_e_24_3
+/neuron2[0]/dend_25_0
+/neuron2[0]/dend_25_1
+/neuron2[0]/dend_e_25_2
+['/neuron2[0]/spine', '/neuron2[0]/soma', '/neuron2[0]/soma_1_0', '/neuron2[0]/soma_2_0', '/neuron2[0]/dend_3_0', '/neuron2[0]/dend_3_1', '/neuron2[0]/dend_3_2', '/neuron2[0]/dend_3_3', '/neuron2[0]/dend_3_4', '/neuron2[0]/dend_3_5', '/neuron2[0]/dend_3_6', '/neuron2[0]/dend_f_3_7', '/neuron2[0]/dend_4_0', '/neuron2[0]/dend_4_1', '/neuron2[0]/dend_4_2', '/neuron2[0]/dend_4_3', '/neuron2[0]/dend_4_4', '/neuron2[0]/dend_4_5', '/neuron2[0]/dend_4_6', '/neuron2[0]/dend_4_7', '/neuron2[0]/dend_4_8', '/neuron2[0]/dend_4_9', '/neuron2[0]/dend_4_10', '/neuron2[0]/dend_4_11', '/neuron2[0]/dend_4_12', '/neuron2[0]/dend_4_13', '/neuron2[0]/dend_4_14', '/neuron2[0]/dend_4_15', '/neuron2[0]/dend_4_16', '/neuron2[0]/dend_4_17', '/neuron2[0]/dend_4_18', '/neuron2[0]/dend_4_19', '/neuron2[0]/dend_4_20', '/neuron2[0]/dend_e_4_21', '/neuron2[0]/dend_5_0', '/neuron2[0]/dend_5_1', '/neuron2[0]/dend_5_2', '/neuron2[0]/dend_5_3', '/neuron2[0]/dend_5_4', '/neuron2[0]/dend_5_5', '/neuron2[0]/dend_5_6', '/neuron2[0]/dend_5_7', '/neuron2[0]/dend_5_8', '/neuron2[0]/dend_5_9', '/neuron2[0]/dend_5_10', '/neuron2[0]/dend_5_11', '/neuron2[0]/dend_5_12', '/neuron2[0]/dend_e_5_13', '/neuron2[0]/dend_6_0', '/neuron2[0]/dend_6_1', '/neuron2[0]/dend_f_6_2', '/neuron2[0]/dend_7_0', '/neuron2[0]/dend_7_1', '/neuron2[0]/dend_7_2', '/neuron2[0]/dend_7_3', '/neuron2[0]/dend_7_4', '/neuron2[0]/dend_7_5', '/neuron2[0]/dend_f_7_6', '/neuron2[0]/dend_8_0', '/neuron2[0]/dend_8_1', '/neuron2[0]/dend_8_2', '/neuron2[0]/dend_8_3', '/neuron2[0]/dend_8_4', '/neuron2[0]/dend_8_5', '/neuron2[0]/dend_8_6', '/neuron2[0]/dend_8_7', '/neuron2[0]/dend_8_8', '/neuron2[0]/dend_8_9', '/neuron2[0]/dend_8_10', '/neuron2[0]/dend_8_11', '/neuron2[0]/dend_8_12', '/neuron2[0]/dend_8_13', '/neuron2[0]/dend_8_14', '/neuron2[0]/dend_8_15', '/neuron2[0]/dend_8_16', '/neuron2[0]/dend_8_17', '/neuron2[0]/dend_e_8_18', '/neuron2[0]/dend_9_0', '/neuron2[0]/dend_9_1', '/neuron2[0]/dend_9_2', '/neuron2[0]/dend_9_3', '/neuron2[0]/dend_9_4', '/neuron2[0]/dend_9_5', '/neuron2[0]/dend_9_6', '/neuron2[0]/dend_9_7', '/neuron2[0]/dend_9_8', '/neuron2[0]/dend_9_9', '/neuron2[0]/dend_9_10', '/neuron2[0]/dend_9_11', '/neuron2[0]/dend_e_9_12', '/neuron2[0]/dend_10_0', '/neuron2[0]/dend_10_1', '/neuron2[0]/dend_10_2', '/neuron2[0]/dend_10_3', '/neuron2[0]/dend_e_10_4', '/neuron2[0]/dend_11_0', '/neuron2[0]/dend_11_1', '/neuron2[0]/dend_11_2', '/neuron2[0]/dend_11_3', '/neuron2[0]/dend_11_4', '/neuron2[0]/dend_11_5', '/neuron2[0]/dend_11_6', '/neuron2[0]/dend_11_7', '/neuron2[0]/dend_11_8', '/neuron2[0]/dend_11_9', '/neuron2[0]/dend_11_10', '/neuron2[0]/dend_11_11', '/neuron2[0]/dend_11_12', '/neuron2[0]/dend_11_13', '/neuron2[0]/dend_11_14', '/neuron2[0]/dend_e_11_15', '/neuron2[0]/dend_12_0', '/neuron2[0]/dend_12_1', '/neuron2[0]/dend_f_12_2', '/neuron2[0]/dend_13_0', '/neuron2[0]/dend_13_1', '/neuron2[0]/dend_13_2', '/neuron2[0]/dend_13_3', '/neuron2[0]/dend_13_4', '/neuron2[0]/dend_13_5', '/neuron2[0]/dend_13_6', '/neuron2[0]/dend_f_13_7', '/neuron2[0]/dend_14_0', '/neuron2[0]/dend_14_1', '/neuron2[0]/dend_14_2', '/neuron2[0]/dend_14_3', '/neuron2[0]/dend_14_4', '/neuron2[0]/dend_14_5', '/neuron2[0]/dend_14_6', '/neuron2[0]/dend_14_7', '/neuron2[0]/dend_14_8', '/neuron2[0]/dend_14_9', '/neuron2[0]/dend_e_14_10', '/neuron2[0]/dend_15_0', '/neuron2[0]/dend_15_1', '/neuron2[0]/dend_15_2', '/neuron2[0]/dend_15_3', '/neuron2[0]/dend_15_4', '/neuron2[0]/dend_15_5', '/neuron2[0]/dend_15_6', '/neuron2[0]/dend_15_7', '/neuron2[0]/dend_15_8', '/neuron2[0]/dend_15_9', '/neuron2[0]/dend_15_10', '/neuron2[0]/dend_15_11', '/neuron2[0]/dend_e_15_12', '/neuron2[0]/dend_16_0', '/neuron2[0]/dend_16_1', '/neuron2[0]/dend_16_2', '/neuron2[0]/dend_16_3', '/neuron2[0]/dend_16_4', '/neuron2[0]/dend_16_5', '/neuron2[0]/dend_16_6', '/neuron2[0]/dend_16_7', '/neuron2[0]/dend_16_8', '/neuron2[0]/dend_e_16_9', '/neuron2[0]/dend_17_0', '/neuron2[0]/dend_17_1', '/neuron2[0]/dend_17_2', '/neuron2[0]/dend_17_3', '/neuron2[0]/dend_17_4', '/neuron2[0]/dend_f_17_5', '/neuron2[0]/dend_18_0', '/neuron2[0]/dend_18_1', '/neuron2[0]/dend_18_2', '/neuron2[0]/dend_18_3', '/neuron2[0]/dend_18_4', '/neuron2[0]/dend_18_5', '/neuron2[0]/dend_18_6', '/neuron2[0]/dend_18_7', '/neuron2[0]/dend_f_18_8', '/neuron2[0]/dend_19_0', '/neuron2[0]/dend_19_1', '/neuron2[0]/dend_19_2', '/neuron2[0]/dend_e_19_3', '/neuron2[0]/dend_20_0', '/neuron2[0]/dend_20_1', '/neuron2[0]/dend_20_2', '/neuron2[0]/dend_20_3', '/neuron2[0]/dend_20_4', '/neuron2[0]/dend_e_20_5', '/neuron2[0]/dend_21_0', '/neuron2[0]/dend_21_1', '/neuron2[0]/dend_21_2', '/neuron2[0]/dend_21_3', '/neuron2[0]/dend_21_4', '/neuron2[0]/dend_21_5', '/neuron2[0]/dend_21_6', '/neuron2[0]/dend_e_21_7', '/neuron2[0]/dend_22_0', '/neuron2[0]/dend_22_1', '/neuron2[0]/dend_22_2', '/neuron2[0]/dend_22_3', '/neuron2[0]/dend_22_4', '/neuron2[0]/dend_22_5', '/neuron2[0]/dend_22_6', '/neuron2[0]/dend_22_7', '/neuron2[0]/dend_22_8', '/neuron2[0]/dend_22_9', '/neuron2[0]/dend_22_10', '/neuron2[0]/dend_22_11', '/neuron2[0]/dend_22_12', '/neuron2[0]/dend_22_13', '/neuron2[0]/dend_e_22_14', '/neuron2[0]/dend_23_0', '/neuron2[0]/dend_23_1', '/neuron2[0]/dend_23_2', '/neuron2[0]/dend_23_3', '/neuron2[0]/dend_23_4', '/neuron2[0]/dend_23_5', '/neuron2[0]/dend_f_23_6', '/neuron2[0]/dend_24_0', '/neuron2[0]/dend_24_1', '/neuron2[0]/dend_24_2', '/neuron2[0]/dend_e_24_3', '/neuron2[0]/dend_25_0', '/neuron2[0]/dend_25_1', '/neuron2[0]/dend_e_25_2']
+>>>
+>>>
+>>> moose.showfield(/neuron2[0]/soma_1_0
+  File "<stdin>", line 1
+    moose.showfield(/neuron2[0]/soma_1_0
+                    ^
+SyntaxError: invalid syntax
+>>> moose.showfield(/neuron2[0]/soma_1_0)
+  File "<stdin>", line 1
+    moose.showfield(/neuron2[0]/soma_1_0)
+                    ^
+SyntaxError: invalid syntax
+>>> moose.showfield('/neuron2[0]/soma_1_0')
+
+[ /neuron2[0]/soma_1_0[0] ]
+Cm               = 2.54282706107e-12
+Em               = -0.06
+Im               = 0.0
+Ra               = 49896.9597032
+Rm               = 3932630792.36
+Vm               = -0.06
+className        = Compartment
+diameter         = 1.273506e-05
+dt               = 5e-05
+fieldIndex       = 0
+idValue          = 482
+index            = 0
+initVm           = -0.06
+inject           = 0.0
+length           = 6.35573756538e-06
+name             = soma_1_0
+numData          = 1
+numField         = 1
+path             = /neuron2[0]/soma_1_0[0]
+tick             = 4
+x                = -2.75e-06
+x0               = 0.0
+y                = -5.73e-06
+y0               = 0.0
+z                = 0.0
+z0               = 0.0
+>>> moose.showfield('/neuron2[0]/soma_2_0')
+
+[ /neuron2[0]/soma_2_0[0] ]
+Cm               = 2.54282706107e-12
+Em               = -0.06
+Im               = 0.0
+Ra               = 49896.9597032
+Rm               = 3932630792.36
+Vm               = -0.06
+className        = Compartment
+diameter         = 1.273506e-05
+dt               = 5e-05
+fieldIndex       = 0
+idValue          = 483
+index            = 0
+initVm           = -0.06
+inject           = 0.0
+length           = 6.35573756538e-06
+name             = soma_2_0
+numData          = 1
+numField         = 1
+path             = /neuron2[0]/soma_2_0[0]
+tick             = 4
+x                = 2.75e-06
+x0               = 0.0
+y                = 5.73e-06
+y0               = 0.0
+z                = 0.0
+z0               = 0.0
+>>> moose.showfield('/neuron2[0]/soma_3_0')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/moose/3.1.3/lib/python2.7/site-packages/moose/moose.py", line 308, in showfield
+    raise ValueError('no such element')
+ValueError: no such element
+>>> moose.showfield('/neuron2[0]/soma_1_0')
+
+[ /neuron2[0]/soma_1_0[0] ]
+Cm               = 2.54282706107e-12
+Em               = -0.06
+Im               = 0.0
+Ra               = 49896.9597032
+Rm               = 3932630792.36
+Vm               = -0.06
+className        = Compartment
+diameter         = 1.273506e-05
+dt               = 5e-05
+fieldIndex       = 0
+idValue          = 482
+index            = 0
+initVm           = -0.06
+inject           = 0.0
+length           = 6.35573756538e-06
+name             = soma_1_0
+numData          = 1
+numField         = 1
+path             = /neuron2[0]/soma_1_0[0]
+tick             = 4
+x                = -2.75e-06
+x0               = 0.0
+y                = -5.73e-06
+y0               = 0.0
+z                = 0.0
+z0               = 0.0
+>>> moose.showfield('/neuron2[0]/soma')
+
+[ /neuron2[0]/soma[0] ]
+Cm               = 5.09509004411e-12
+Em               = -0.06
+Im               = 0.0
+Ra               = 99979.0770311
+Rm               = 1962673851.38
+Vm               = -0.06
+className        = Compartment
+diameter         = 1.273506e-05
+dt               = 5e-05
+fieldIndex       = 0
+idValue          = 481
+index            = 0
+initVm           = -0.06
+inject           = 0.0
+length           = 1.273506e-05
+name             = soma
+numData          = 1
+numField         = 1
+path             = /neuron2[0]/soma[0]
+tick             = 4
+x                = 0.0
+x0               = -1.273506e-05
+y                = 0.0
+y0               = 0.0
+z                = 0.0
+z0               = 0.0
+>>> moose.showmsg('/neuron2[0]/soma')
+INCOMING:
+/neuron2[0]/soma ('parentMsg',) <--- /neuron2 ('childOut',)
+/neuron2[0]/soma ('initProc', 'initReinit') <--- /clock ('process3', 'reinit3')
+/neuron2[0]/soma ('process', 'reinit') <--- /clock ('process4', 'reinit4')
+OUTGOING:
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/soma_1_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/soma_2_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_3_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_6_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_11_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_12_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_17_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_22_0 ('handleAxial',)
+/neuron2[0]/soma ('axialOut',) ---> /neuron2[0]/dend_23_0 ('handleAxial',)
+>>> moose.showmsg('/neuron1[0]/soma')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/moose/3.1.3/lib/python2.7/site-packages/moose/moose.py", line 389, in showmsg
+    obj = element(el)
+ValueError: moose_element: '/neuron1[0]/soma' does not exist!
+>>> moose.showmsg(cell1.path)
+INCOMING:
+/neuron ('parentMsg',) <--- / ('childOut',)
+OUTGOING:
+/neuron ('childOut',) ---> /neuron[0]/spine ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/soma ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/apical0 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/apical2 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/apical3 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/apical1 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/basal0 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/basal1 ('parentMsg',)
+/neuron ('childOut',) ---> /neuron[0]/basal2 ('parentMsg',)
+>>> form neuron import h
+  File "<stdin>", line 1
+    form neuron import h
+              ^
+SyntaxError: invalid syntax
+>>> from neuron import h
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ImportError: No module named neuron
+>>> exit()
+bash-4.2$ pip install neuron
+^Z
+[1]+  Stopped                 pip install neuron
+bash-4.2$ module add neuron
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from neuron import h
+NEURON -- VERSION 7.5 master (6b4c19f) 2017-09-25
+Duke, Yale, and the BlueBrain Project -- Copyright 1984-2016
+See http://neuron.yale.edu/neuron/credits
+
+>>> from neuron import gui
+NEURON: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed"
+>>> soma = h.Section(name = 'soma')
+>>> h.psection()
+soma { nseg=1  L=100  Ra=35.4
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=500}
+	insert capacitance { cm=1}
+}
+1.0
+>>> soma.insert('pas')
+soma
+>>> h.psection()
+soma { nseg=1  L=100  Ra=35.4
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=500}
+	insert capacitance { cm=1}
+	insert pas { g_pas=0.001 e_pas=-70}
+}
+1.0
+>>> dir(soma)
+['L', 'Ra', '__call__', '__class__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'allseg', 'arc3d', 'cell', 'children', 'connect', 'diam3d', 'has_membrane', 'hname', 'hoc_internal_name', 'insert', 'n3d', 'name', 'nseg', 'orientation', 'parentseg', 'push', 'rallbranch', 'same', 'trueparentseg', 'uninsert', 'x3d', 'y3d', 'z3d']
+>>> soma.has_membrane()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: function takes exactly 1 argument (0 given)
+>>> help(soma)
+
+>>> soma.nseg=3
+>>> soma(0.5)
+soma(0.5)
+>>> dend = h.Section(name = 'dend')
+>>> dend.connect(soma(1))
+dend
+>>> h.psection()
+soma { nseg=3  L=100  Ra=35.4
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert pas { g_pas=0.001 e_pas=-70}
+	insert capacitance { cm=1}
+	insert morphology { diam=500}
+}
+1.0
+>>> h.topology()
+
+|---|       soma(0-1)
+     `|       dend(0-1)
+
+1.0
+>>> dend.nseg=10
+>>> h.topology()
+
+|---|       soma(0-1)
+     `---------|       dend(0-1)
+
+1.0
+>>> soma.L = soma.diam= 12.6157
+>>> dend.L = 200
+>>> dend.diam = 1
+>>> print "SA soma", h.area(0.1, sec = dend)
+SA soma 62.8318530718
+>>> h.psection()
+soma { nseg=3  L=12.6157  Ra=35.4
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert pas { g_pas=0.001 e_pas=-70}
+	insert capacitance { cm=1}
+	insert morphology { diam=12.6157}
+}
+1.0
+>>> pas = soma(0.5).pas
+>>> pas.g = 0.002
+>>> soma(0.5).g_pas
+0.002
+>>> for sec in h.allsec():
+...      for seg in sec:
+...          for mech in seg:
+...              print sec.name(), seg.x, mech.name()
+...
+soma 0.166666666667 pas
+soma 0.5 pas
+soma 0.833333333333 pas
+>>> dend(0.5).pas.g
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: pas, the mechanism does not exist at dend(0.5)
+>>> soma(0.5).pas.g
+0.002
+>>> soma(0.5).g.pas
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Segment' object has no attribute 'g'
+>>> stim = h.IClamp(soma(0.5))
+>>> stim.delay=5 # ms
+>>> stim.dur = 1  # ms
+>>> stim.amp = 0.1
+>>> soma.psection()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'psection'
+>>> soma
+soma
+>>> type(soma)
+<type 'nrn.Section'>
+>>> soma.psection
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'psection'
+>>> stim
+IClamp[0]
+>>> v_vec = h.vector()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'hoc.HocObject' object has no attribute 'vector'
+>>> v_vec = h.Vector()
+>>> t_vec = h.Vector()
+>>> v_vec.record(soma(0.5)._ref_v)
+1.0
+>>> t_vec.record(h._ref_t)
+1.0
+>>> h.tstop = 40.0
+>>> h.run()
+0.0
+>>> import matplotlib.pyplot as plt
+>>> pyplot.figure()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'pyplot' is not defined
+>>> plt.figure()
+<Figure size 640x480 with 0 Axes>
+>>> plt.plot(t_vec, v_vec)
+[<matplotlib.lines.Line2D object at 0x7ff9d06962d0>]
+>>> plt.show()
+
+>>>
+>>> help(h)
+>>> help(neuron)
+
+>>> help(h)
+>>> type(h)
+<type 'hoc.HocObject'>
+>>> plt.show()
+>>>
+>>> error ./example.swc line 5: could not parse:
+error ./example.swc line 7: could not parse:
+error ./example.swc line 9: could not parse:
+error ./example.swc line 11: could not parse:
+error ./example.swc line 12: could not parse:
+error ./example.swc line 14: could not parse:
+error ./example.swc line 15: could not parse:
+error ./example.swc line 17: could not parse:
+error ./example.swc line 18: could not parse:
+error ./example.swc line 20: could not parse:
+error ./example.swc line 21: could not parse:
+error ./example.swc line 23: could not parse:
+error ./example.swc line 24: could not parse:
+error ./example.swc line 26: could not parse:
+
+Line 28:  1 1 0 0 0 6.36753 -1
+Line 28:  1 1 0 0 0 6.36753 -1
+Line 29:  2 1 -2.75 -5.73 0 6.36753 1
+Line 30:  3 1 2.75 5.73 0 6.36753 1
+Line 31:  4 3 0.69 5.24 -0.1 0.675 1
+Line 32:  5 3 0.78 6.38 -0.1 0.675 4
+Line 33:  6 3 -0.7 9.8 -0.15 0.675 5
+Line 34:  7 3 0.58 14.38 -0.63 0.675 6
+Line 35:  8 3 0.97 17.02 -0.63 0.675 7
+Line 36:  9 3 1.14 23.91 -3.5 0.675 8
+Line 37:  10 3 1.44 37.91 -5.44 0.675 9
+Line 38:  11 3 1.64 40.49 -5.44 0.675 10
+Line 39:  12 3 2.47 41.59 -2.68 0.675 11
+Line 40:  13 3 4.26 45.05 -3.81 0.675 12
+Line 41:  14 3 6.09 47.59 -7.65 0.675 13
+Line 42:  15 3 8.02 50.37 -12.68 0.675 14
+Line 43:  16 3 12.62 55.3 -13.88 0.675 15
+Line 28:  1 1 0 0 0 6.36753 -1
+One point section Import3d_Section[2] ending at line 30 has been removed
+One point section Import3d_Section[1] ending at line 29 has been removed
+NEURON: Can't uninsert mechanism extracellular
+ near line 1
+ {dend[22] uninsert extracellular}
+                                  ^
+>>> 	-65
