@@ -2,6 +2,7 @@ import moose
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import OrderedDict
+from itertools import chain
 
 # Place creation of compartment into function.
 def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, RA=1.0):
@@ -29,6 +30,7 @@ def create_pulse_generator(comp_to_connect, duration, amplitude):
     pulse.delay[0] = 50E-3  # First delay.
     pulse.width[0] = duration  # Pulse width.
     pulse.level[0] = amplitude  # Pulse amplitude.
+    pulse.delay[1] = 1e9 #Don't start next pulse train.
     moose.connect(pulse, 'output', comp_to_connect, 'injectMsg')
     return pulse
 
@@ -41,12 +43,17 @@ def create_output_table(table_element='/output', table_name='somaVm'):
     membrane_voltage_table = moose.Table('/'.join((table_element, table_name)))
     return membrane_voltage_table
 
-def plot_vm_table(compartment, simtime):
+def plot_vm_table(simtime, *comps, title="No title!!!"):
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    t = np.linspace(0, simtime, len(compartment.vector))
-    ax.plot(t, compartment.vector)
-    plt.grid(True)
+    t = np.linspace(0, simtime, len(comps[0].vector))
+    arrays = [comp.vector for comp in comps]
+    t_scales = [t]*len(arrays)
+    plot_args = list(chain(*zip(t_scales,arrays)))
+    ax.plot(*plot_args)
+    ax.set_title(title)
+    return ax
+
 
 def create_n_dends(bunch_name, n, t_length, diameter, RM, CM, RA):
     length_per_unit = t_length / n
@@ -140,8 +147,9 @@ def soma_five_dend():
     moose.reinit()
     moose.start(simtime)
 
-    plot_vm_table(vmtab, simtime)
-    plot_vm_table(dend_vm_tab, simtime)
+    plot = plot_vm_table(simtime, vmtab, dend_vm_tab, title="Soma Vs Dend voltage compare.")
+    plot.legend(['soma', 'dend'])
+    plt.grid(True)
     plt.show()
 
 soma_five_dend()
