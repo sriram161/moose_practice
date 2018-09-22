@@ -71,91 +71,7 @@ def connect_n_serial(bunch):
         c_item = n_item
     return bunch
 
-def soma_one_dend():
-    soma_l = 50E-6
-    soma_d = 25E-6
-    soma_RM = 1 #20000
-    soma_CM = 10E-3 #1E-6
-    soma_RA = 4.0
-    simtime = 0.3 # seconds
-    simdt = 50E-6 #50E-6 # seconds
-
-    soma = create_compartment('soma', soma_l, soma_d, soma_RM, soma_CM, soma_RA)
-    soma_Em = -65E-3
-    soma_initVm = -65E-3
-
-    inj_duration = 100E-3
-    inj_amplitude = 1E-9 #0.188E-9
-    pulse_1 = create_pulse_generator(soma, inj_duration, inj_amplitude)
-
-    vmtab = create_output_table()
-    moose.connect(vmtab, 'requestOut', soma, 'getVm')
-    moose.showmsg(soma)
-
-    moose.setClock(4, simdt)
-
-    dend1 = create_compartment('dend1',100E-6, 2E-6, soma_RM, soma_CM, soma_RA)
-    dend1.Em = soma.Em
-    dend1.initVm = soma.initVm
-    moose.connect(soma, 'axialOut', dend1, 'handleAxial')
-    dend1_vm_tab = create_output_table(table_name='dend1Vm')
-    moose.connect(dend1_vm_tab, 'requestOut', dend1, 'getVm')
-    moose.showmsg(dend1)
-
-    moose.reinit()
-    moose.start(simtime)
-
-    plot_vm_table(vmtab, simtime)
-    plot_vm_table(dend1_vm_tab, simtime)
-    plt.axvline(x=50E-3 + soma_RM * soma_CM, color='red')
-    plt.show()
-
-#soma_one_dend()
-
-def soma_five_dend():
-    soma_l = 50E-6
-    soma_d = 25E-6
-    soma_RM = 1 #20000
-    soma_CM = 10E-3 #1E-6
-    soma_RA = 4.0
-    simtime = 0.3 # seconds
-    simdt = 50E-6 #50E-6 # seconds
-    dend_n = 5
-
-    soma = create_compartment('soma', soma_l, soma_d, soma_RM, soma_CM, soma_RA)
-    soma_Em = -65E-3
-    soma_initVm = -65E-3
-
-    inj_duration = 100E-3
-    inj_amplitude = 1E-9 #0.188E-9
-    pulse_1 = create_pulse_generator(soma, inj_duration, inj_amplitude)
-
-    vmtab = create_output_table()
-    moose.connect(vmtab, 'requestOut', soma, 'getVm')
-    moose.showmsg(soma)
-
-    moose.setClock(4, simdt)
-
-    bunch = create_n_dends('dend_', dend_n, 100E-6, 2E-6, soma_RM, soma_CM, soma_RA)
-    for item in bunch.values():
-        item.Em = soma.Em
-        item.initVm = soma.initVm
-    bunch = connect_n_serial(bunch)
-    moose.connect(soma, 'axialOut', list(bunch.values())[0], 'handleAxial')
-    dend_vm_tab = create_output_table(table_name='dend3Vm')
-    moose.connect(dend_vm_tab, 'requestOut', list(bunch.values())[int(np.median(range(len(bunch))))], 'getVm')
-
-    moose.reinit()
-    moose.start(simtime)
-
-    plot = plot_vm_table(simtime, vmtab, dend_vm_tab, title="Soma Vs Dend voltage compare.")
-    plot.legend(['soma', 'dend'])
-    plt.grid(True)
-    plt.show()
-
-#soma_five_dend()
-
- def compute_comp_area(comp_diameter, comp_length):
+def compute_comp_area(comp_diameter, comp_length):
      curved_surface_area = np.pi * comp_diameter * comp_length
      cross_section_area = np.pi * comp_diameter ** 2 / 4.0
      return (curved_surface_area, cross_section_area)
@@ -189,3 +105,7 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
      set_comp_values(comp, comp_RM, comp_CM, comp_RA, comp_initVm, comp_ELEAK)
 
 part_a()
+
+def part_b()
+
+part_b()
