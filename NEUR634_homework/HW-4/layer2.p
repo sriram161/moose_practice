@@ -6,11 +6,11 @@
 *symmetric
 
 // membrane constants (SI units)
-*set_global        RM      0.678     // ohm*m^2
-*set_global        RA      2.0     // ohm*m
-*set_global        CM      0.0295    // farad/m^2
-*set_global        ELEAK   -0.065
+*set_global        RM      1.0    // ohm*m^2
+*set_global        RA      4.0     // ohm*m
+*set_global        CM      0.01    // farad/m^2
 *set_global     EREST_ACT  -0.065
+*set_global     ELEAK      -0.065
 
 soma    none    0  15.3 0 21
 apical0 soma    0   35  0   2.5

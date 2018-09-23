@@ -1,6 +1,5 @@
 import moose
 import numpy as np
-import wget
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 from itertools import chain
@@ -55,7 +54,6 @@ def plot_vm_table(simtime, *comps, title="No title!!!"):
     ax.set_title(title)
     return ax
 
-
 def create_n_dends(bunch_name, n, t_length, diameter, RM, CM, RA):
     length_per_unit = t_length / n
     bunch = OrderedDict()
@@ -85,17 +83,12 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     comp.Em = ELEAK
     return comp
 
- def part_a():
+def create_swc_comp():
  comp_RM = 1
  comp_CM = 10E-3
  comp_RA = 4
  comp_ELEAK = -65E-3
  comp_initVm = -65E-3
-
-
- simtime = 300E-3
- simdt = 50E-3
-
  cell_container = 'chkE19'
  file_name = 'E19-cell_filling-caudal.CNG.swc'
 
@@ -103,9 +96,51 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
 
  for comp in moose.wildcardFind(root_comp.path+'/#[TYPE=Compartment]'):
      set_comp_values(comp, comp_RM, comp_CM, comp_RA, comp_initVm, comp_ELEAK)
+ return root_comp
 
-part_a()
+def create_p_comp():
+    cell_container_p = 'corcell'
+    file_name = 'layer2.p'
+    root_comp = moose.loadModel(file_name, cell_container_p)
+    return root_comp
 
-def part_b()
+def sim_run():
+    simtime = 1000E-3
+    simdt = 10E-3
+    inj_duration = 50E-3
+    inj_amplitude = 0.1E-12
 
-part_b()
+    # Create cell
+    chicken_cell = create_swc_comp()
+    cortical_cell = create_p_comp()
+    chicken_cell_soma = moose.element('/chkE19[0]/soma')
+    cortical_cell_soma = moose.element('/corcell[0]/soma')
+
+    #Create injection source
+    chicken_inject = create_pulse_generator(chicken_cell_soma, inj_duration, inj_amplitude)
+    cortical_inject = create_pulse_generator(cortical_cell_soma, inj_duration, inj_amplitude)
+
+    # Create output tables
+    chicken_dend_table = create_output_table(table_element='/output', table_name='chkdend')
+    cortical_dend_table = create_output_table(table_element='/output', table_name='cordend')
+
+    # Connect output tables to target compartments.
+    moose.connect(chicken_dend_table, 'requestOut', moose.element('/chkE19[0]/dend_36_0'), 'getVm')
+    moose.connect(cortical_dend_table, 'requestOut', moose.element('/corcell[0]/apical3'), 'getVm')
+
+    # Set moose simulation clocks
+    for lable in range(7):
+        moose.setClock(lable, simdt)
+
+    # Run simulation
+    moose.reinit()
+    moose.start(simtime)
+
+    plot = plot_vm_table(simtime, chicken_dend_table, cortical_dend_table, title="Chicken Vs Cortial Dend traces.")
+    plot.legend(['Chicken', 'Cortical'])
+    #plot = plot_vm_table(simtime, chicken_dend_table, title="Chicken Vs Cortial Dend traces.")
+    #plot = plot_vm_table(simtime, cortical_dend_table, title="Chicken Vs Cortial Dend traces.")
+    plt.grid(True)
+    plt.show()
+
+sim_run()

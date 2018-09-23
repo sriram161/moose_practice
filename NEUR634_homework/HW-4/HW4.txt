@@ -9,13 +9,16 @@ B. create .p file
 	Use corticalcell.p, or find several line .p file, or create a soma and a few dendritic comportments yourself
 	Donâ€™t forget to add in RM, CM, RA, Eleak and EREST_ACT
 	Read into MOOSE using loadcell command
+	Done!!!
 
 C. Run simulations (A) and (B) using
 	same current injection (you choose amplitude and duration), RM, CM, RA, e.g. RM=4 ohm-m2, RA=1 ohm-m2
 	Comment on whether morphology changes the response to current injection
+	Morphology changes the response
 
 D. NEURON simulations
 	Create a soma attached to dendrite
+	Done!!!
 	Connect to current injection (create function for current injection)
 	Create function for recording and record from soma and middle of dendrite
 	Similar to the previous MOOSE homework, evaluate the effect of spatial discretization by running the simulation with either 1 or 101 dendritic segments (see slide 17)
