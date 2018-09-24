@@ -106,7 +106,7 @@ def create_p_comp():
 
 def sim_run():
     simtime = 1000E-3
-    simdt = 10E-3
+    simdt = 0.5E-3
     inj_duration = 50E-3
     inj_amplitude = 0.1E-12
 
