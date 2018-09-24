@@ -27,4 +27,4 @@ D. NEURON simulations
 Note:: 
 cd 
 cd "Desktop\NEURON 7.6 x86_64"
-nrniv_python C:\Users\ksrir\Development\moose_practice\NEUR634_homework\HW-4\neuron_hw.py
+cd 'E:\NEURON\nrn\mingw\usr\bin'

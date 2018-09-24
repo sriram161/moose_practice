@@ -33,7 +33,7 @@ soma_vec = h.Vector()
 time_vec = h.Vector()
 dend_vec = h.Vector()
 
-soma_vec.record(soma(0.5)._ref_V)
+soma_vec.record(soma(0.5)._ref_v)
 time_vec.record(h._ref_t)
 dend_vec.record(dend(0.5)._ref_v) #??
 h.tstop = 40
