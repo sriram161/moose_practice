@@ -15,7 +15,7 @@ dend = h.Section(name = 'dend')
 dend.diam = soma.diam
 dend.L = soma.L
 dend.insert('pas')
-dend.g_pas = 0.002
+dend.g_pas = 0.02
 
 # connect soma with dend.
 dend.connect(soma(1))
@@ -41,8 +41,11 @@ h.run()
 time_vec = array(time_vec)
 soma_vec = array(soma_vec)
 dend_vec = array(dend_vec)
+time_vec = time_vec[10:]
+soma_vec = soma_vec[10:]
+dend_vec = dend_vec[10:]
 
-plt.plot(time_vec, soma_vec, time_vec, dend_vec, title="Neuron soma and dend")
+plt.plot(time_vec, soma_vec, time_vec, dend_vec)
 plt.legend(['soma', 'dend'])
 plt.grid(True)
 plt.show()
