@@ -41,9 +41,9 @@ h.run()
 time_vec = np.array(time_vec)
 soma_vec = np.array(soma_vec)
 dend_vec = np.array(dend_vec)
-time_vec = time_vec[10:]
-soma_vec = soma_vec[10:]
-dend_vec = dend_vec[10:]
+time_vec = time_vec[200:] 
+soma_vec = soma_vec[200:]
+dend_vec = dend_vec[200:]
 
 plt.plot(time_vec, soma_vec, time_vec, dend_vec)
 plt.legend(['soma', 'dend'])
