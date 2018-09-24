@@ -121,10 +121,14 @@ def sim_run():
     cortical_inject = create_pulse_generator(cortical_cell_soma, inj_duration, inj_amplitude)
 
     # Create output tables
+    chicken_soma_table = create_output_table(table_element='/output', table_name='chksoma')
     chicken_dend_table = create_output_table(table_element='/output', table_name='chkdend')
+    cortical_soma_table = create_output_table(table_element='/output', table_name='corsoma')
     cortical_dend_table = create_output_table(table_element='/output', table_name='cordend')
 
     # Connect output tables to target compartments.
+    moose.connect(chicken_soma_table, 'requestOut', chicken_cell_soma, 'getVm')
+    moose.connect(cortical_soma_table, 'requestOut', cortical_cell_soma, 'getVm')
     moose.connect(chicken_dend_table, 'requestOut', moose.element('/chkE19[0]/dend_36_0'), 'getVm')
     moose.connect(cortical_dend_table, 'requestOut', moose.element('/corcell[0]/apical3'), 'getVm')
 
@@ -136,10 +140,10 @@ def sim_run():
     moose.reinit()
     moose.start(simtime)
 
-    plot = plot_vm_table(simtime, chicken_dend_table, cortical_dend_table, title="Chicken Vs Cortial Dend traces.")
-    plot.legend(['Chicken', 'Cortical'])
-    #plot = plot_vm_table(simtime, chicken_dend_table, title="Chicken Vs Cortial Dend traces.")
-    #plot = plot_vm_table(simtime, cortical_dend_table, title="Chicken Vs Cortial Dend traces.")
+    plot_chk = plot_vm_table(simtime, chicken_soma_table, chicken_dend_table, title="Chicken Cell")
+    plot_chk.legend(['soma', 'dend'])
+    plot_cor = plot_vm_table(simtime, cortical_soma_table, cortical_dend_table, title="cortical Cell")
+    plot_cor.legend(['soma', 'dend'])
     plt.grid(True)
     plt.show()
 
