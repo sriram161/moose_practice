@@ -23,3 +23,8 @@ D. NEURON simulations
 	Create function for recording and record from soma and middle of dendrite
 	Similar to the previous MOOSE homework, evaluate the effect of spatial discretization by running the simulation with either 1 or 101 dendritic segments (see slide 17)
 	Make g_pas smaller and Ra smaller if you do not see a difference between 1 and 101 segments.
+
+Note:: 
+cd 
+cd "Desktop\NEURON 7.6 x86_64"
+nrniv_python C:\Users\ksrir\Development\moose_practice\NEUR634_homework\HW-4\neuron_hw.py
