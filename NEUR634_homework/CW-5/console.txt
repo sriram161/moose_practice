@@ -1,0 +1,52 @@
+
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import moose
+>>> dir(moose.HHchannel)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'module' object has no attribute 'HHchannel'
+>>> dir(moose.HHChannel)
+['Vm', '__class__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'concen', 'connect', 'createGate', 'gateX', 'gateY', 'gateZ', 'getChildren', 'getClassName', 'getDataIndex', 'getDestFields', 'getDt', 'getEk', 'getField', 'getFieldIndex', 'getFieldNames', 'getFieldType', 'getGbar', 'getGk', 'getId', 'getIdValue', 'getIk', 'getIndex', 'getInstant', 'getIsA', 'getLookupField', 'getMe', 'getModulation', 'getMsgDestFunctions', 'getMsgDests', 'getMsgIn', 'getMsgOut', 'getName', 'getNeighbors', 'getNumData', 'getNumField', 'getNumGateX', 'getNumGateY', 'getNumGateZ', 'getParent', 'getPath', 'getSourceFields', 'getThis', 'getTick', 'getUseConcentration', 'getValueFields', 'getX', 'getXpower', 'getY', 'getYpower', 'getZ', 'getZpower', 'isA', 'msgDestFunctions', 'msgDests', 'neighbors', 'parentMsg', 'process', 'reinit', 'setDestField', 'setEk', 'setField', 'setGbar', 'setGk', 'setInstant', 'setLookupField', 'setModulation', 'setName', 'setNumData', 'setNumField', 'setNumGateX', 'setNumGateY', 'setNumGateZ', 'setThis', 'setTick', 'setUseConcentration', 'setX', 'setXpower', 'setY', 'setYpower', 'setZ', 'setZpower', 'vec']
+>>> a = moose.HHChannel()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Could not parse arguments.  Call __init__(path, n, g, dtype) or __init__(id, dataIndex, fieldIndex)
+>>> a = moose.HHChannel('na')
+>>> a
+<moose.HHChannel: id=469, dataIndex=0, path=/na[0]>
+>>> a.Xpower = 3
+>>> a.Ypower = 1
+>>> a.Ek = 0.05
+>>> a.Gbar = 1
+>>> a
+<moose.HHChannel: id=469, dataIndex=0, path=/na[0]>
+>>> moose.showfield(a)
+
+[ /na[0] ]
+Ek                   = 0.05
+Gbar                 = 1.0
+Gk                   = 0.0
+Ik                   = 0.0
+X                    = 0.0
+Xpower               = 3.0
+Y                    = 0.0
+Ypower               = 1.0
+Z                    = 0.0
+Zpower               = 0.0
+className            = HHChannel
+dt                   = 5e-05
+fieldIndex           = 0
+idValue              = 469
+index                = 0
+instant              = 0
+modulation           = 1.0
+name                 = na
+numData              = 1
+numField             = 1
+path                 = /na[0]
+tick                 = 2
+useConcentration     = 0
+>>>
