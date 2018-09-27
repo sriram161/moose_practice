@@ -17,17 +17,16 @@ def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, RA=1.0, in
     return set_comp_values(comp, RM, CM, RA, initVM, ELEAK)
 # Test:  soma = create_compartment('soma', 50E-6, 25E-6, 0.03, 2.8E3, 4.0)
 
-def create_pulse_generator(comp_to_connect, duration, amplitude):
+def create_pulse_generator(comp_to_connect, duration, amplitude, delay=50E-3, delay_1=1E9):
     ''' Create a pulse generator and connect to a moose compartment.
     '''
     pulse = moose.PulseGen('pulse')
-    pulse.delay[0] = 50E-3  # First delay.
+    pulse.delay[0] = delay  # First delay.
     pulse.width[0] = duration  # Pulse width.
     pulse.level[0] = amplitude  # Pulse amplitude.
-    pulse.delay[1] = 1e9 #Don't start next pulse train.
+    pulse.delay[1] = delay_1 #Don't start next pulse train.
     moose.connect(pulse, 'output', comp_to_connect, 'injectMsg')
     return pulse
-
 # Test: pulse_1 = create_pulse_generator( soma, 100E-3, 1E-9)
 
 def create_output_table(table_element='/output', table_name='somaVm'):
@@ -77,68 +76,37 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     comp.Em = ELEAK
     return comp
 
-def create_swc_comp():
- comp_RM = 1
- comp_CM = 10E-3
- comp_RA = 4
- comp_ELEAK = -65E-3
- comp_initVm = -65E-3
- cell_container = 'chkE19'
- file_name = 'E19-cell_filling-caudal.CNG.swc'
-
- root_comp = moose.loadModel(file_name, cell_container)
-
- for comp in moose.wildcardFind(root_comp.path+'/#[TYPE=Compartment]'):
-     set_comp_values(comp, comp_RM, comp_CM, comp_RA, comp_initVm, comp_ELEAK)
- return root_comp
-
-def create_p_comp():
-    cell_container_p = 'corcell'
-    file_name = 'layer2.p'
-    root_comp = moose.loadModel(file_name, cell_container_p)
+def create_comp_model(container_name, file_name, comp_RM=None, comp_CM=None, comp_RA=None, comp_ELEAK=None, comp_initVm=None):
+    if file_name.endswith('.p'):
+        root_comp = moose.loadModel(file_name, cell_container_p)
+    elif file_name.endswith('swc'):
+        assert comp_RM is not None, "comp_RM needs valid value."
+        assert comp_CM is not None, "comp_CM needs valid value."
+        assert comp_RA is not None, "comp_RA needs valid value."
+        assert comp_ELEAK is not None, "comp_ELEAK needs valid value."
+        assert comp_initVm is not None, "comp_initVm needs valid value."
+        root_comp = moose.loadModel(file_name, cell_container_p)
+        for comp in moose.wildcardFind(root_comp.path+'/#[TYPE=Compartment]'):
+            set_comp_values(comp, comp_RM, comp_CM, comp_RA, comp_initVm, comp_ELEAK)
+    else:
+        raise "Invalid cell model file type."
     return root_comp
 
-def sim_run():
-    simtime = 1000E-3
-    simdt = 0.5E-3
-    inj_duration = 50E-3
-    inj_amplitude = 0.1E-12
+def create_channel(chan_name:str, vdivs, vmin, vmax, x_params:list, xpow:int,tick=-1, y_params=None, ypow=None) -> moose.HHChannel:
+    lib = moose.Neutral('/library')
+    comp = moose.HHChannel('/library/' + chan_name)
+    comp.tick = tick
+    comp.Xpower = xpow
+    xGate = moose.element(comp.path + '/gateX')
+    xGate.setupAlpha(x_params + [vdivs, vmin, vmax])
 
-    # Create cell
-    chicken_cell = create_swc_comp()
-    cortical_cell = create_p_comp()
-    chicken_cell_soma = moose.element('/chkE19[0]/soma')
-    cortical_cell_soma = moose.element('/corcell[0]/soma')
+    if y_params:
+        comp.Ypower = ypow
+        yGate = moose.element(comp.path + '/gateY')
+        yGate.setupAlpha(y_params + [vdivs, vmin, vmax])
+    return comp
 
-    #Create injection source
-    chicken_inject = create_pulse_generator(chicken_cell_soma, inj_duration, inj_amplitude)
-    cortical_inject = create_pulse_generator(cortical_cell_soma, inj_duration, inj_amplitude)
-
-    # Create output tables
-    chicken_soma_table = create_output_table(table_element='/output', table_name='chksoma')
-    chicken_dend_table = create_output_table(table_element='/output', table_name='chkdend')
-    cortical_soma_table = create_output_table(table_element='/output', table_name='corsoma')
-    cortical_dend_table = create_output_table(table_element='/output', table_name='cordend')
-
-    # Connect output tables to target compartments.
-    moose.connect(chicken_soma_table, 'requestOut', chicken_cell_soma, 'getVm')
-    moose.connect(cortical_soma_table, 'requestOut', cortical_cell_soma, 'getVm')
-    moose.connect(chicken_dend_table, 'requestOut', moose.element('/chkE19[0]/dend_36_0'), 'getVm')
-    moose.connect(cortical_dend_table, 'requestOut', moose.element('/corcell[0]/apical3'), 'getVm')
-
-    # Set moose simulation clocks
-    for lable in range(7):
-        moose.setClock(lable, simdt)
-
-    # Run simulation
-    moose.reinit()
-    moose.start(simtime)
-
-    plot_chk = plot_vm_table(simtime, chicken_soma_table, chicken_dend_table, title="Chicken Cell")
-    plot_chk.legend(['soma', 'dend'])
-    plot_cor = plot_vm_table(simtime, cortical_soma_table, cortical_dend_table, title="cortical Cell")
-    plot_cor.legend(['soma', 'dend'])
-    plt.grid(True)
-    plt.show()
-
-sim_run()
+def set_channel_conductance(chan, gbar, E_nerst):
+    chan.Gbar = gbar
+    chan.Ek = E_nerst
+    return chan
