@@ -1,0 +1,17 @@
+# STEP-1 injection current 0.3nA output-> plot screen
+  # RUN simtime 2ms output-> plot screen
+  python3 HW_5_03nA.py 0.002
+  # RUN simtime 5ms output-> plot screen
+  python3 HW_5_03nA.py 0.005
+  # RUN simtime 10ms output-> plot screen
+  python3 HW_5_03nA.py 0.010
+
+# STEP-2 simtime 100ms
+  # RUN injection current 0.5nA output -> sim_05nA.npy file
+  python3 HW_5_inj.py 0.5E-3 sim_05nA
+  # RUN injection current 1nA output -> sim_1nA.npy file
+  python3 HW_5_inj.py 1E-3 sim_1nA
+  # RUN injection current 2nA output -> sim_2nA.npy file
+  python3 HW_5_inj.py 2E-3 sim_2nA
+  # RUN compare plot.
+  python3 plot_script_05nA_1nA_2nA.py

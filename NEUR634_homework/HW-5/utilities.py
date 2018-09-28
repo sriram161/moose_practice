@@ -106,7 +106,6 @@ def create_channel(chan_name:str, vdivs, vmin, vmax, x_params, xpow,
     chan_comp = moose.HHChannel('/library/' + chan_name)
     chan_comp.tick = tick
     if ypow:
-        print(chan_comp.name)
         chan_comp.Ypower = ypow
         params = y_params + [vdivs, vmin, vmax]
         create_gate(chan_comp, params, gate='y')
