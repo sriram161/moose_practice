@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+
 import moose
 import numpy as np
 import matplotlib.pyplot as plt
@@ -37,6 +40,8 @@ def create_output_table(table_element='/output', table_name='somaVm'):
     return membrane_voltage_table
 
 def plot_vm_table(simtime, *comps, title="No title!!!"):
+    ''' Plot traces on a common plot.
+    '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
     t = np.linspace(0, simtime, len(comps[0].vector))
@@ -63,9 +68,11 @@ def connect_n_serial(bunch):
     return bunch
 
 def compute_comp_area(comp_diameter, comp_length):
-     curved_surface_area = np.pi * comp_diameter * comp_length
-     cross_section_area = np.pi * comp_diameter ** 2 / 4.0
-     return (curved_surface_area, cross_section_area)
+    ''' Computes curved surface area and cross sectional area
+    '''
+    curved_surface_area = np.pi * comp_diameter * comp_length
+    cross_section_area = np.pi * comp_diameter ** 2 / 4.0
+    return (curved_surface_area, cross_section_area)
 
 def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     curved_sa, x_area = compute_comp_area(comp.diameter, comp.length)
@@ -77,6 +84,7 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     return comp
 
 def create_comp_model(container_name, file_name, comp_RM=None, comp_CM=None, comp_RA=None, comp_ELEAK=None, comp_initVm=None):
+    'Create compartmental model from *.p file or a *.swc file.'
     if file_name.endswith('.p'):
         root_comp = moose.loadModel(file_name, cell_container_p)
     elif file_name.endswith('swc'):
@@ -92,19 +100,27 @@ def create_comp_model(container_name, file_name, comp_RM=None, comp_CM=None, com
         raise "Invalid cell model file type."
     return root_comp
 
-def create_channel(chan_name:str, vdivs, vmin, vmax, x_params:list, xpow:int,tick=-1, y_params=None, ypow=None) -> moose.HHChannel:
+def create_channel(chan_name:str, vdivs, vmin, vmax, x_params, xpow,
+                   tick=-1, y_params=None, ypow=0):
     lib = moose.Neutral('/library')
-    comp = moose.HHChannel('/library/' + chan_name)
-    comp.tick = tick
-    comp.Xpower = xpow
-    xGate = moose.element(comp.path + '/gateX')
-    xGate.setupAlpha(x_params + [vdivs, vmin, vmax])
+    chan_comp = moose.HHChannel('/library/' + chan_name)
+    chan_comp.tick = tick
+    if ypow:
+        print(chan_comp.name)
+        chan_comp.Ypower = ypow
+        params = y_params + [vdivs, vmin, vmax]
+        create_gate(chan_comp, params, gate='y')
+    if xpow:
+        chan_comp.Xpower = xpow
+        params = x_params + [vdivs, vmin, vmax]
+        create_gate(chan_comp, params, gate='x')
+    return chan_comp
 
-    if y_params:
-        comp.Ypower = ypow
-        yGate = moose.element(comp.path + '/gateY')
-        yGate.setupAlpha(y_params + [vdivs, vmin, vmax])
-    return comp
+def create_gate(chan, gate_params, gate):
+    if gate.upper() == 'X':
+        moose.element(chan.path + '/gateX').setupAlpha(gate_params)
+    elif gate.upper() == 'Y':
+        moose.element(chan.path+ '/gateY').setupAlpha(gate_params)
 
 def set_channel_conductance(chan, gbar, E_nerst):
     chan.Gbar = gbar

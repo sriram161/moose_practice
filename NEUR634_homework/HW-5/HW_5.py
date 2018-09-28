@@ -1,5 +1,14 @@
-from utilities import *
-
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+import moose
+import matplotlib.pyplot as plt
+from utilities import create_compartment
+from utilities import create_channel
+from utilities import create_pulse_generator
+from utilities import compute_comp_area
+from utilities import set_channel_conductance
+from utilities import create_output_table
+from utilities import plot_vm_table
 EREST_ACT = -70e-3 #: Resting membrane potential
 
 Na_m_params = [1e5 * (25e-3 + EREST_ACT),   # 'A_A':
@@ -71,17 +80,19 @@ def main():
     soma = create_compartment('soma', length, diameter, RM, CM, initVM=EREST_ACT, ELEAK=Em)
 
     # Create channels
-    Na_chan = create_channel(chan_name='Na',vdivs=VDIVS, vmin=VMIN, vmax=VMAX,
-                        x_params=Na_m_params, xpow=3, y_params=Na_h_params, ypow=1)
-    K_chan = create_channel(chan_name='Na',vdivs=VDIVS, vmin=VMIN, vmax=VMAX,
+    K_chan = create_channel(chan_name='K',vdivs=VDIVS, vmin=VMIN, vmax=VMAX,
                         x_params=K_n_params, xpow=4)
 
-    # Set conductances
-    Na_chan = set_channel_conductance(Na_chan, na_g, na_ek)
-    K_chan = set_channel_conductance(K_chan, k_g, k_ek)
+    Na_chan = create_channel(chan_name='Na',vdivs=VDIVS, vmin=VMIN, vmax=VMAX,
+                        x_params=Na_m_params, xpow=3, y_params=Na_h_params, ypow=1)
 
+    # Set conductances
     nachan = moose.copy(Na_chan, soma.path, 'Na', 1)
     kchan = moose.copy(K_chan, soma.path, 'K', 1)
+    nachan = set_channel_conductance(nachan, na_g, na_ek)
+    moose.showfield(nachan.path)
+    kchan = set_channel_conductance(kchan, k_g, k_ek)
+    moose.showfield(kchan.path)
 
     # Add channels to soma
     moose.connect(nachan, 'channel', soma, 'channel', 'OneToOne')

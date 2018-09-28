@@ -136,11 +136,14 @@ def create_1comp_neuron(path, number=1):
     #: Gbar_Na = 120 mS/cm^2
     nachan.Gbar = 120e-3 * sarea * 1e4
     nachan.Ek = 115e-3 + EREST_ACT
+    moose.showfield(nachan.path)
     moose.connect(nachan, 'channel', comps, 'channel', 'OneToOne')
     kchan = moose.copy(create_k_proto(), container, 'k', number)
+
     #: Gbar_K = 36 mS/cm^2
     kchan.Gbar = 36e-3 * sarea * 1e4
     kchan.Ek = -12e-3 + EREST_ACT
+    moose.showfield(kchan.path)
     moose.connect(kchan, 'channel', comps, 'channel', 'OneToOne')
     return comps
 
