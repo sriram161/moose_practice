@@ -14,7 +14,7 @@ from utilities import plot_vm_table
 from utilities import create_set_of_channels
 from utilities import copy_connect_channel_moose_paths
 from collections import namedtuple
-from channels import channel_settings
+from channels_2 import channel_settings
 
 EREST_ACT = -70e-3 #: Resting membrane potential
 VMIN = -30e-3 + EREST_ACT

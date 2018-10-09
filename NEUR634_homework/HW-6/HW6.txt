@@ -13,6 +13,7 @@ Homework
 
 3. Then, add in one additional channel – one from the publication you will use for your project, or from moose_nerp (https://github.com/neurord/moose_nerp/blob/master/moose_nerp/d1d2/param_chan.py or https://github.com/neurord/moose_nerp/blob/master/moose_nerp/gp/param_chan.py, best to use channels defined with AlphaBetaChannelParams, not TauInfMinfChannelParams)
 	a. create the channel parameters (namedtuple) and channelsettings for the new channel, and include in the dictionary defining Gbar.
+	   Done!!!
 	b. Verify your code works by setting Gbar=0 for the new channel and demonstrate the spiking looks the same.
 	   1. Verify your code works using moose.le() to show the channel has been copied into the compartment.
 	c. increase the Gbar of your new channel to a value which changes spiking behavior.
