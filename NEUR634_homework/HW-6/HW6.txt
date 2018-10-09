@@ -1,14 +1,19 @@
 Homework
 1. Finish transforming the squid model (ionchannel.py) to use your chan_proto function and create_cell function (e.g. slide 45).
+		Done!!!
 2. Create a multi-compartmental neuron model with action potentials by combining
 	1. your chan_proto and create_cell functions
+	  Done!!!
 	2. your utilities for adding current injection, creating tables and creating graphs
+	  Done!!!
 	3. the code your wrote to create a multi-compartmental neuron model (from HW3 or HW4)
+    Done!!!
 	5. run simulations and see if your model generates action potentials.  If not, either there is a bug (inspect your model using moose.showmsg and moose.showfield, or you need to adjust the conductances (Gbar_Na and Gbar_K).
+	  Done!!!
 
 3. Then, add in one additional channel – one from the publication you will use for your project, or from moose_nerp (https://github.com/neurord/moose_nerp/blob/master/moose_nerp/d1d2/param_chan.py or https://github.com/neurord/moose_nerp/blob/master/moose_nerp/gp/param_chan.py, best to use channels defined with AlphaBetaChannelParams, not TauInfMinfChannelParams)
 	a. create the channel parameters (namedtuple) and channelsettings for the new channel, and include in the dictionary defining Gbar.
 	b. Verify your code works by setting Gbar=0 for the new channel and demonstrate the spiking looks the same.
 	   1. Verify your code works using moose.le() to show the channel has been copied into the compartment.
-	c. increase the Gbar of your new channel to a value which changes spiking behavior. 
+	c. increase the Gbar of your new channel to a value which changes spiking behavior.
 	   1. Comment on exactly how it changes spiking activity, e.g. increase or decrease in number of spikes, increase or decrease in spike height or width, etc.
