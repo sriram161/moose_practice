@@ -48,9 +48,12 @@ def main():
     # Create channels
     channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX)
 
+    # Fetch all compartment paths.
     moose_paths = []
     for comp in moose.wildcardFind(chicken_model.path+'/#[TYPE=Compartment]'):
         moose_paths.append(comp.path)
+
+    # Copy all channels to compartments.
     for channel_name, channel_obj in channels_set.items():
         copy_connect_channel_moose_paths(channel_obj, channel_name, moose_paths)
 
