@@ -14,6 +14,8 @@ from utilities import create_output_table
 from utilities import plot_vm_table
 from collections import namedtuple
 from channels_2 import channel_settings
+from utilities import channel_models
+from utilities import channel_model_controls
 from copy import copy
 EREST_ACT = -70e-3 #: Resting membrane potential
 

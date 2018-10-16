@@ -146,7 +146,9 @@ AlphaBetaparams = namedtuple('AlphaBetaparams', 'A_A A_B A_C A_D A_F B_A B_B B_C
 CaDepparams = namedtuple('caDepparams', 'kd power tau')
 channel_param_template = {'chan_name':None, 'x_params': None, 'y_params': None, 'z_params': None,
                           'x_pow': None, 'y_pow': None, 'z_pow': None,
-                          'g_max': None, 'ek': None}
+                          'g_max': None, 'ek': None, 'chan_model': None, 'chan_model_control': None}
+channel_models = ('HHChannel')
+channel_model_controls = ('membrane_voltage', 'internal_ion_concentration')
 
 def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
     for moose_path in moose_paths:
