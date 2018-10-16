@@ -25,15 +25,15 @@ Na_chan['x_params']= Na_m_params
 Na_chan['y_params']= Na_h_params
 Na_chan['x_pow']= 3
 Na_chan['y_pow']= 1
-#Na_chan['g_max']= 120E-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
-Na_chan['g_max']= 0
+Na_chan['g_max']= 120E-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+#Na_chan['g_max']= 0
 Na_chan['e_k']= 115E-3 + EREST_ACT
 
 k_chan['chan_name']= 'K'
 k_chan['x_params']= K_n_params
 k_chan['x_pow']= 4
-#k_chan['g_max']= 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
-k_chan['g_max']= 0
+k_chan['g_max']= 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+#k_chan['g_max']= 0
 k_chan['e_k']= -12E-3 + EREST_ACT
 
 channel_settings = [Na_chan, k_chan]

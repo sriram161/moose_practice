@@ -24,16 +24,14 @@ VDIVS = 3000
 
 def main():
     # Simulation information.
-    simtime = 0.1
+    simtime = 1
     simdt = 0.25e-5
     plotdt = 0.25e-3
 
     # Cell Compartment infromation
-    diameter = 30e-6
-    length = 50e-6
-    Em = EREST_ACT + 10.613e-3
-    CM = 1e-6 * 1e4
-    RM = 1 /(0.3E-3 * 1e4)
+    Em = EREST_ACT
+    CM = 1e-6 * 1E-4
+    RM = 20  # tau = 200ms
     RA = 4
 
     # Stimulus information
@@ -41,16 +39,15 @@ def main():
     inj_amp = 1E-9
     inj_width = 40E-3
 
-    # Create cell
-    chicken_model = create_swc_model(root_name='E19', file_name='E19-cell_filling-caudal.CNG.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
-    soma = moose.element('/E19[0]/soma')
+    spn_model = create_swc_model(root_name='acc1', file_name='E19-cell_filling-caudal.CNG.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
+    soma = moose.element('/acc1[0]/soma')
 
     # Create channels
     channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX)
 
     # Fetch all compartment paths.
     moose_paths = []
-    for comp in moose.wildcardFind(chicken_model.path+'/#[TYPE=Compartment]'):
+    for comp in moose.wildcardFind(spn_model.path+'/#[TYPE=Compartment]'):
         moose_paths.append(comp.path)
 
     # Copy all channels to compartments.
@@ -68,7 +65,7 @@ def main():
     # Connect output tables
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(soma_i_table, 'requestOut', pulse_inject, 'getOutputValue')
-    moose.connect(chicken_dend_table, 'requestOut', moose.element('/E19[0]/dend_36_0'), 'getVm')
+    moose.connect(chicken_dend_table, 'requestOut', moose.element('/acc1[0]/dend_e_158_1'), 'getVm')
 
     # Set moose simulation clocks
     for lable in range(7):
@@ -80,7 +77,7 @@ def main():
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend new k1 chan g_bar = 0.005")
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend")
     v_plot.legend(['soma', 'dend'])
     plt.grid(True)
     plt.legend(['v', 'i'])

@@ -71,7 +71,7 @@ def main():
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime,"soma voltage", soma_v_table, soma_i_table)
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title="soma voltage")
     plt.grid(True)
     plt.legend(['v', 'i'])
     plt.show()

@@ -40,7 +40,7 @@ def create_output_table(table_element='/output', table_name='somaVm'):
     membrane_voltage_table = moose.Table('/'.join((table_element, table_name)))
     return membrane_voltage_table
 
-def plot_vm_table(simtime, title, *comps):
+def plot_vm_table(simtime, *comps, title="No title!!!"):
     '''' Plot traces on a common plot.
     '''
     fig = plt.figure()

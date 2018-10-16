@@ -63,10 +63,12 @@ def main():
     # Output table
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
     soma_i_table = create_output_table(table_element='/output', table_name='somaIm')
+    chicken_dend_table = create_output_table(table_element='/output', table_name='chkdend')
 
     # Connect output tables
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(soma_i_table, 'requestOut', pulse_inject, 'getOutputValue')
+    moose.connect(chicken_dend_table, 'requestOut', moose.element('/E19[0]/dend_36_0'), 'getVm')
 
     # Set moose simulation clocks
     for lable in range(7):
@@ -78,7 +80,8 @@ def main():
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime,"soma voltage", soma_v_table, soma_i_table)
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend with K and Na gbars")
+    v_plot.legend(['soma', 'dend'])
     plt.grid(True)
     plt.legend(['v', 'i'])
     plt.show()
