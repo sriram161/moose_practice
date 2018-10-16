@@ -81,9 +81,8 @@ def main():
 
     # Plot output tables.
     v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend with K and Na gbars")
-    v_plot.legend(['soma', 'dend'])
+    v_plot.legend(['soma_V', 'i', 'dend_V'])
     plt.grid(True)
-    plt.legend(['v', 'i'])
     plt.show()
 
 main()

@@ -18,7 +18,7 @@ K_n_params = AlphaBetaparams(
               B_A=0.125e3, B_B=0.0, B_C=0.0, B_D=0.0 - EREST_ACT, B_F=80e-3)
 
 K1_n_params = AlphaBetaparams(
-              A_A=1, A_B=0, A_C=1.0, A_D=-20E-3, A_F=4e-3,
+              A_A=1, A_B=0, A_C=1.0, A_D=-20E-3, A_F=-4e-3,
               B_A=1, B_B=0.0, B_C=1.0, B_D= -20E-3, B_F=4e-3)
 
 Na_chan = copy(channel_param_template)
@@ -44,7 +44,8 @@ k_chan['e_k']= -12E-3 + EREST_ACT
 k1_chan['chan_name']= 'K1'
 k1_chan['x_params']= K_n_params
 k1_chan['x_pow']= 4
-k1_chan['g_max']= 0.005 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+k1_chan['g_max']= 0.05 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+#k1_chan['g_max']= 0
 k1_chan['e_k']= -12E-3 + EREST_ACT
 
 channel_settings = [Na_chan, k_chan, k1_chan]

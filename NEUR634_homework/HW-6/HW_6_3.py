@@ -80,10 +80,9 @@ def main():
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend new k1 chan g_bar = 0.005")
-    v_plot.legend(['soma', 'dend'])
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, chicken_dend_table, title="soma vs dend new k1 chan g_bar = 0.05")
+    v_plot.legend(['soma_v', 'i', 'dend_v'])
     plt.grid(True)
-    plt.legend(['v', 'i'])
     plt.show()
 
 main()
