@@ -43,8 +43,6 @@ Na_chan['y_pow']= 1
 Na_chan['g_max']= 120E-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 #Na_chan['g_max']= 0
 Na_chan['e_k']= 115E-3 + EREST_ACT
-Na_chan['chan_model'] = 'HHChannel'
-Na_chan['chan_model_control'] = 'membrane_voltage'
 
 k_chan['chan_name']= 'K'
 k_chan['x_params']= K_n_params
@@ -52,14 +50,10 @@ k_chan['x_pow']= 4
 k_chan['g_max']= 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 #k_chan['g_max']= 0
 k_chan['e_k']= -12E-3 + EREST_ACT
-Na_chan['chan_model'] = 'HHChannel'
-Na_chan['chan_model_control'] = 'membrane_voltage'
 
 sk_chan['chan_name']= 'sk'
 sk_chan['z_params']= ska_params
 sk_chan['z_pow']= 1
 sk_chan['g_max']= 36e-3
-Na_chan['chan_model'] = 'HHChannel'
-Na_chan['chan_model_control'] = 'internal_ion_concentration'
 
 channel_settings = [Na_chan, k_chan, sk_chan]

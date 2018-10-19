@@ -139,16 +139,13 @@ def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, c
                               x_params=settings.get('x_params'), xpow=settings.get('x_pow'),
                               y_params=settings.get('y_params'), ypow=settings.get('y_pow'))
         set_channel_conductance(chan, gbar=settings.get('g_max'), E_nerst=settings.get('e_k'))
-        chan_set[settings.get('chan_name')] = chan
     return chan_set
 
 AlphaBetaparams = namedtuple('AlphaBetaparams', 'A_A A_B A_C A_D A_F B_A B_B B_C B_D B_F')
 CaDepparams = namedtuple('caDepparams', 'kd power tau')
 channel_param_template = {'chan_name':None, 'x_params': None, 'y_params': None, 'z_params': None,
                           'x_pow': None, 'y_pow': None, 'z_pow': None,
-                          'g_max': None, 'ek': None, 'chan_model': None, 'chan_model_control': None}
-channel_models = ('HHChannel')
-channel_model_controls = ('membrane_voltage', 'internal_ion_concentration')
+                          'g_max': None, 'ek': None}
 
 def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
     for moose_path in moose_paths:
