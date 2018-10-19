@@ -141,12 +141,6 @@ def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, c
         set_channel_conductance(chan, gbar=settings.get('g_max'), E_nerst=settings.get('e_k'))
     return chan_set
 
-AlphaBetaparams = namedtuple('AlphaBetaparams', 'A_A A_B A_C A_D A_F B_A B_B B_C B_D B_F')
-CaDepparams = namedtuple('caDepparams', 'kd power tau')
-channel_param_template = {'chan_name':None, 'x_params': None, 'y_params': None, 'z_params': None,
-                          'x_pow': None, 'y_pow': None, 'z_pow': None,
-                          'g_max': None, 'ek': None}
-
 def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
     for moose_path in moose_paths:
         _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
