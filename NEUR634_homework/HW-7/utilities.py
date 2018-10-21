@@ -106,7 +106,7 @@ def create_comp_model(container_name, file_name, comp_RM=None, comp_CM=None, com
     return root_comp
 
 def create_channel(chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
-                   x_params, xpow, tick=-1, y_params=None, ypow=0, zpow=0, z_params):
+                   x_params, xpow, tick=-1, y_params=None, ypow=0, zpow=0, z_params=None):
     if not moose.exists('/library'):
         moose.Neutral('/library')
     chan_comp = moose.HHChannel('/library/' + chan_name)
@@ -135,6 +135,7 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     zgate.tableA = z_inf / z_tau
     zgate.tableB = 1 / z_tau
     chan.useConcentration = True
+    return chan
 
 def create_ca_conc_pool(params):
     if not moose.exists('/library'):
@@ -145,6 +146,7 @@ def create_ca_conc_pool(params):
     ca_pool.floor = 0
     ca_pool.thick = params.caThick
     ca_pool.tau = params.caTau
+    return ca_pool
 
 def set_channel_conductance(chan, gbar, E_nerst):
     chan.Gbar = gbar
@@ -168,9 +170,23 @@ def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
         _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
         moose.connect(_chan, 'channel', moose.element(moose_path), 'channel', 'OneToOne')
 
-def copy_connect_ca_pools_moose_paths(ca_pool, pool_name, moose_paths):
-    for moose_paths in moose_paths:
-        _pool = moose.copy(ca_pool, moose_path, pool_name, 1)
+def copy_connect_ca_pools_moose_paths(ca_pool, pool_name, buf_capacity, moose_paths):
+    global FARADAY_CONST
+    for moose_path in moose_paths:
+        comp = moose.element(moose_path)
+        _pool = moose.copy(ca_pool, comp, pool_name, 1)
+        _pool.length = comp.length
+        _pool.diameter = comp.diameter
+        curved_sa = compute_comp_area(comp.diameter, comp.length)[0]
+        volume = curved_sa * _pool.thick
+        _pool.B = 1/(FARADAY_CONST * volume * 2) / buf_capacity
+
+def connect_ca_pool_to_chan(settings, moose_paths):
+    for moose_path in moose_paths:
+        comp = moose.element(moose_path)
+        _pool = moose.element(comp.path + '/' + )
+    # TODO connect calcium pool to channels.
+
 
 def create_swc_model(root_name, file_name, RM, CM, RA, ELEAK, initVM):
  if file_name.endswith('.swc'):

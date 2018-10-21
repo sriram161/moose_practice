@@ -6,6 +6,6 @@ CaDepparams = namedtuple('caDepparams', 'kd power tau')
 
 channel_param_template = {'chan_name':None, 'x_params': None, 'y_params': None, 'z_params': None,
                           'x_pow': None, 'y_pow': None, 'z_pow': None,
-                          'g_max': None, 'ek': None}
+                          'g_max': None, 'ek': None, 'chan_type': None}
 
 capools = namedtuple('caparams', 'caBasal caThick caTau bufCapacity caName')
