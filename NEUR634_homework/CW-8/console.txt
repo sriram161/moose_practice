@@ -1,0 +1,297 @@
+bash-4.2$ ls
+Desktop    Downloads	hermes_web	Music	  Public     tests.log
+Documents  helios_html	moose_practice	Pictures  Templates  Videos
+bash-4.2$ module add python/2.7.15
+bash-4.2$ module add neuron
+bash-4.2$ module add moose
+bash-4.2$ cd mooose_practice
+bash: cd: mooose_practice: No such file or directory
+bash-4.2$ cd moose_practice
+bash-4.2$ cd CW-8
+bash: cd: CW-8: No such file or directory
+bash-4.2$ ls
+channel_practice  moose_ex_1.py     test_create_npz_param  test_save_param.py
+gplotr_1.py	  NEUR634_homework  test_load_npz.py
+LICENSE		  README.md	    test_morph.py
+bash-4.2$ cd NEUR634_homework/
+bash-4.2$ cd CW-8
+bash-4.2$ ls
+channels_1.py  CW_8.py	templates.py  utilities.py
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from neuron import h.gui
+  File "<stdin>", line 1
+    from neuron import h.gui
+                        ^
+SyntaxError: invalid syntax
+>>> from neuron import h,gui
+NEURON -- VERSION 7.5 master (6b4c19f) 2017-09-25
+Duke, Yale, and the BlueBrain Project -- Copyright 1984-2016
+See http://neuron.yale.edu/neuron/credits
+
+NEURON: unable to open font "*helvetica-medium-r-normal*--14*", using "fixed"
+>>> from matplotlib import pyplot
+>>> soma=h.Section(name='soma')
+>>> dend=h.Section(name='dend')
+>>> dend
+dend
+>>> soma.L=soma.diam=12.6157
+>>> dend.L=200
+>>> dend.diam=1
+>>> for sec in h.allsec():
+...    sec.Ra = 100
+...    sec.cm = 1
+...
+>>> soma.insert('hh')
+soma
+>>> soma.gnabar_hh = 0.12
+>>> soma.gkbar_hh = 0.036
+>>> soma.gl_hh = 0.0003
+>>> soma.el_hh = -54.3
+>>> h.psection()
+soma { nseg=1  L=12.6157  Ra=100
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=12.6157}
+	insert capacitance { cm=1}
+	insert hh { gnabar_hh=0.12 gkbar_hh=0.036 gl_hh=0.0003 el_hh=-54.3}
+	insert na_ion { ena=50}
+	insert k_ion { ek=-77}
+}
+1.0
+>>> dend.insert('pas')
+dend
+>>> dend.g_pas = 0.001
+>>> dend.e_pas = -65
+>>> dend.nseg = 10
+>>> stim = h.IClamp(dend(1.0))
+>>> stim.amp = 0.3
+>>> stim.delay=40
+>>> stim.dur = 1
+>>> t_vec = h.Vector()
+>>> v_vec = h.Vector()
+>>> v_vec_dend = h.Vector()
+>>> v_vec_soma = v_vec
+>>> v_vec_soma.record(soma(1.0)._ref_v)
+1.0
+>>> v_vec_dend.record(dend(1.0)._ref_v)
+1.0
+>>> t_vec.record(h._ref_t)
+1.0
+>>> h.tstop= 60
+>>> h.run()
+0.0
+>>> pyplot.figure(figsize=(8, 4))
+<Figure size 800x400 with 0 Axes>
+>>> pyplot as plt
+  File "<stdin>", line 1
+    pyplot as plt
+            ^
+SyntaxError: invalid syntax
+>>> plt = pyplot
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v-vec_dend, 'r')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'v' is not defined
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
+[<matplotlib.lines.Line2D object at 0x7f74033a9090>, <matplotlib.lines.Line2D object at 0x7f74033a9190>]
+>>> plt.xlabel('time ms')
+Text(0.5,0,'time ms')
+>>> plt.ylabel('voltage mV')
+Text(0,0.5,'voltage mV')
+>>> plt.show()
+>>> v_vec_soma
+Vector[4]
+>>> dir(v_vec_soma)
+['Section', '__array_interface__', '__call__', '__class__', '__delattr__', '__delitem__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getitem__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__len__', '__lt__', '__ne__', '__new__', '__nonzero__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setitem__', '__setstate__', '__sizeof__', '__str__', '__subclasshook__', 'abs', 'add', 'addrand', 'allsec', 'append', 'apply', 'as_numpy', 'at', 'baseattr', 'buffer_size', 'c', 'cas', 'cl', 'clear', 'contains', 'convlv', 'copy', 'correl', 'deriv', 'div', 'dot', 'eq', 'fft', 'fill', 'filter', 'fit', 'floor', 'fread', 'from_double', 'from_python', 'fwrite', 'get', 'hist', 'histogram', 'hname', 'hocobjptr', 'ind', 'index', 'indgen', 'indvwhere', 'indwhere', 'inf', 'insrt', 'integral', 'interpolate', 'label', 'line', 'log', 'log10', 'mag', 'mark', 'max', 'max_ind', 'mean', 'meansqerr', 'medfltr', 'median', 'min', 'min_ind', 'mul', 'next', 'play', 'play_remove', 'plot', 'ploterr', 'pow', 'printf', 'psth', 'rebin', 'record', 'reduce', 'ref', 'remove', 'resample', 'resize', 'reverse', 'rotate', 'same', 'scale', 'scanf', 'scantil', 'set', 'setpointer', 'setrand', 'sin', 'size', 'smhist', 'sort', 'sortindex', 'spctrm', 'spikebin', 'sqrt', 'stderr', 'stdev', 'sub', 'sum', 'sumgauss', 'sumsq', 'tanh', 'to_python', 'trigavg', 'var', 'vread', 'vwrite', 'where', 'x']
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
+[<matplotlib.lines.Line2D object at 0x7f7403640c50>, <matplotlib.lines.Line2D object at 0x7f7403640d10>]
+>>> plt.show()
+>>>
+>>> stim.amp = 0.3
+>>> h.run()
+0.0
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
+[<matplotlib.lines.Line2D object at 0x7f74035c0990>, <matplotlib.lines.Line2D object at 0x7f74035c0a50>]
+>>> plt.show()
+>>> dend.connect(soma(1.0))
+dend
+>>> stim.amp = 0.3
+>>> h.run()
+0.0
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
+[<matplotlib.lines.Line2D object at 0x7f7403539410>, <matplotlib.lines.Line2D object at 0x7f74035394d0>]
+>>> plt.show()
+>>>
+Ca Density Mechanism
+  ca ohmic ion current
+      ica (mA/cm2) = g_Ca * (v - eca)
+  g = gmax
+    Default gmax = 0 (S/cm2)
+NEURON: Arg out of range in user function
+ near line 1
+ {properties_tool(3, -4.5738, 4.17163, 0)}
+                                          ^
+        Graph[0].view_info(-1, 13, -4.5738)
+      ChannelBuildGateGUI[0].near(0, -4.5738, 4.17163, 140, 120)
+    ChannelBuildGateGUI[0].select_state(-4.5738, 4.17163)
+  ChannelBuildGateGUI[0].properties_tool(3, -4.5738, 4.17163, 0)
+and others
+Exception in gui thread
+
+>>> soma.insert('Ca')
+soma
+>>> h.run()
+0.0
+>>> plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
+[<matplotlib.lines.Line2D object at 0x7f740352c950>, <matplotlib.lines.Line2D object at 0x7f740352ca10>]
+>>> plt.show()
+>>> soma.gmax_ca
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'gmax_ca'
+>>> soma.gmax_Ca
+0.0
+>>> soma.psection()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'psection'
+>>> soma.psection()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'psection'
+>>> soma
+soma
+>>> type(soma)
+<type 'nrn.Section'>
+>>> h.psection(soma)
+soma { nseg=1  L=12.6157  Ra=100
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=12.6157}
+	insert capacitance { cm=1}
+	insert hh { gnabar_hh=0.12 gkbar_hh=0.036 gl_hh=0.0003 el_hh=-54.3}
+	insert na_ion { ena=50}
+	insert k_ion { ek=-77}
+	insert Ca { gmax_Ca=0}
+	insert ca_ion { eca=132.458}
+}
+1.0
+>>> soma.gmax_Ca = 0.003
+>>> soma.gmax_Ca = 0.03
+>>> soma.gmax_Ca = 0.3
+>>> soma.gmax_Ca = 1
+>>> soma.gmax_Ca = 10
+>>> soma.gmax_Ca = 0
+>>> soma.gmax_Ca = 0.00001
+>>> soma.gmax_Ca = 0.001
+>>> soma.gmax_Ca = 0.1
+>>> soma.gmax_Ca = 0
+>>> soma.gmax_Ca = 1
+>>> h.run()
+0.0
+>>> h.tstop()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'float' object is not callable
+>>> h.tstop
+60.0
+>>> soma.insert('Ca')
+soma
+>>> h.psection(soma)
+soma { nseg=1  L=12.6157  Ra=100
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=12.6157}
+	insert capacitance { cm=1}
+	insert hh { gnabar_hh=0.12 gkbar_hh=0.036 gl_hh=0.0003 el_hh=-54.3}
+	insert na_ion { ena=50}
+	insert k_ion { ek=-77}
+	insert Ca { gmax_Ca=1}
+	insert ca_ion { eca=132.458}
+}
+1.0
+>>> soma.insert('Ca')
+soma
+>>> h.psection(soma)
+soma { nseg=1  L=12.6157  Ra=100
+	/*location 0 attached to cell 0*/
+	/* First segment only */
+	insert morphology { diam=12.6157}
+	insert capacitance { cm=1}
+	insert hh { gnabar_hh=0.12 gkbar_hh=0.036 gl_hh=0.0003 el_hh=-54.3}
+	insert na_ion { ena=50}
+	insert k_ion { ek=-77}
+	insert Ca { gmax_Ca=1}
+	insert ca_ion { eca=132.458}
+}
+1.0
+>>> h.psection(soma.Ca)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'Ca'
+>>> soma.Ca
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'Ca'
+>>> dir(soma)
+['L', 'Ra', '__call__', '__class__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__iter__', '__le__', '__lt__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'allseg', 'arc3d', 'cell', 'children', 'connect', 'diam3d', 'has_membrane', 'hname', 'hoc_internal_name', 'insert', 'n3d', 'name', 'nseg', 'orientation', 'parentseg', 'push', 'rallbranch', 'same', 'trueparentseg', 'uninsert', 'x3d', 'y3d', 'z3d']
+>>> for sec in soma.allseg:
+...    print sec
+...
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'builtin_function_or_method' object is not iterable
+>>> soma.allsec
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'nrn.Section' object has no attribute 'allsec'
+>>> soma.allseg
+<built-in method allseg of nrn.Section object at 0x7f74081d7eb8>
+>>> soma.allseg()
+<nrn.AllsegIter object at 0x7f7408186430>
+>>> for seg in soma.allseg():
+...    print seg
+...
+soma(0)
+soma(0.5)
+soma(1)
+>>> for seg in soma.allseg():
+...     for meg in seg:
+...         print meg
+...
+ca_ion
+Ca
+k_ion
+na_ion
+hh
+>>> for seg in soma.allseg():
+...     for meg in seg:
+...         dir(meg)
+...
+['__class__', '__delattr__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'cai', 'cao', 'dica_dv_', 'eca', 'ica', 'name', 'next']
+['__class__', '__delattr__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'g_Ca', 'gmax_Ca', 'h_Ca', 'i_Ca', 'm_Ca', 'name', 'next']
+['__class__', '__delattr__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'dik_dv_', 'ek', 'ik', 'ki', 'ko', 'name', 'next']
+['__class__', '__delattr__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'dina_dv_', 'ena', 'ina', 'nai', 'name', 'nao', 'next']
+['__class__', '__delattr__', '__doc__', '__format__', '__getattribute__', '__hash__', '__init__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', 'el_hh', 'gk_hh', 'gkbar_hh', 'gl_hh', 'gna_hh', 'gnabar_hh', 'h_hh', 'il_hh', 'm_hh', 'n_hh', 'name', 'next']
+>>> for seg in soma.allseg():
+...     for meg in seg:
+...         print meg.__str__
+...
+<method-wrapper '__str__' of nrn.Mechanism object at 0x7f740632bd50>
+<method-wrapper '__str__' of nrn.Mechanism object at 0x7f742684a5f8>
+<method-wrapper '__str__' of nrn.Mechanism object at 0x7f74081d7fd0>
+<method-wrapper '__str__' of nrn.Mechanism object at 0x7f742684a5f8>
+<method-wrapper '__str__' of nrn.Mechanism object at 0x7f74081d7fd0>
+>>> for seg in soma.allseg():
+...     for meg in seg:
+...         print meg.__str__()
+...
+ca_ion
+Ca
+k_ion
+na_ion
+hh
+>>>
