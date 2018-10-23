@@ -13,14 +13,19 @@ from utilities import create_output_table
 from utilities import plot_vm_table
 from utilities import create_set_of_channels
 from utilities import copy_connect_channel_moose_paths
-from collections import namedtuple
+from utilities import create_ca_conc_pool
+from utilities import copy_ca_pools_moose_paths
+from utilities import connect_ca_pool_to_chan
 from channels_1 import channel_settings
+from channels_1 import ca_params
 
 EREST_ACT = -70e-3 #: Resting membrane potential
 VMIN = -30e-3 + EREST_ACT
 VMAX = 120e-3 + EREST_ACT
 VDIVS = 3000
-
+CAMIN = 0
+CAMAX = 1
+CADIVS = 10E3
 
 def main():
     # Simulation information.
@@ -44,24 +49,34 @@ def main():
     soma = create_compartment('soma', length, diameter, RM, CM, initVM=EREST_ACT, ELEAK=Em)
 
     # Create channels
-    channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX)
+    channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
 
     moose_paths = [soma.path]
     for channel_name, channel_obj in channels_set.items():
         copy_connect_channel_moose_paths(channel_obj, channel_name, moose_paths)
 
-    # connect pulse gen
+    # Create calcium pools in library.
+    ca_pool = create_ca_conc_pool(ca_params)
+
+    # copy calcium pools to all compartments.
+    copy_ca_pools_moose_paths(ca_pool, 'CaPool', moose_paths)
+
+    # Connect calciums pools to channels in compartments.
+    connect_ca_pool_to_chan(chan_name='SKca', chan_type='ca_dependent', calname='CaPool', moose_paths=moose_paths)
+    connect_ca_pool_to_chan(chan_name='CaL', chan_type='ca_permeable', calname='CaPool', moose_paths=moose_paths)
+
+    # connect pulse gen.
     pulse_inject = create_pulse_generator(soma, inj_width, inj_amp, delay=inj_delay)
 
-    # Output table
+    # Output table.
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
     soma_i_table = create_output_table(table_element='/output', table_name='somaIm')
 
-    # Connect output tables
+    # Connect output tables.
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(soma_i_table, 'requestOut', pulse_inject, 'getOutputValue')
 
-    # Set moose simulation clocks
+    # Set moose simulation clocks.
     for lable in range(7):
         moose.setClock(lable, simdt)
     moose.setClock(8, plotdt)

@@ -7,10 +7,8 @@ import matplotlib.pyplot as plt
 from collections import OrderedDict
 from itertools import chain
 from collections import namedtuple
-import scipy.constants.physical_constants as constants
-FARADAY_CONST = constants.get("Faraday constant")[0]
-# TODO copy calcium pool to compartment.
-# TODO connect calcium pool to calcium dependent channel.
+from scipy.constants import physical_constants
+FARADAY_CONST = physical_constants.get("Faraday constant")[0]
 
 # Place creation of compartment into function.
 def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, RA=1.0, initVM=-65E-3, ELEAK=-65E-3):
@@ -131,21 +129,21 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     caterm = (ca_conc_points/params.kd)
     caterm = caterm* params.power
     z_inf = caterm/(1+caterm)
-    z_tau = params.tau*np.ones(len(ca_array))
+    z_tau = params.tau*np.ones(len(ca_conc_points))
     zgate.tableA = z_inf / z_tau
     zgate.tableB = 1 / z_tau
     chan.useConcentration = True
     return chan
 
 def create_ca_conc_pool(params):
-    if not moose.exists('/library'):
-        lib = moose.Neutral('/library')
+    lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
     ca_pool = moose.CaConc(lib.path+'/'+params.caName)
     ca_pool.CaBasal = params.caBasal
     ca_pool.ceiling = 1
     ca_pool.floor = 0
     ca_pool.thick = params.caThick
     ca_pool.tau = params.caTau
+    ca_pool.B = params.bufCapacity
     return ca_pool
 
 def set_channel_conductance(chan, gbar, E_nerst):
@@ -163,6 +161,7 @@ def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, c
                               y_params=settings.get('y_params'), ypow=settings.get('y_pow'),
                               z_params=settings.get('z_params'), zpow=settings.get('z_pow'))
         set_channel_conductance(chan, gbar=settings.get('g_max'), E_nerst=settings.get('e_k'))
+        chan_set[settings.get('chan_name')] = chan
     return chan_set
 
 def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
@@ -170,7 +169,7 @@ def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
         _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
         moose.connect(_chan, 'channel', moose.element(moose_path), 'channel', 'OneToOne')
 
-def copy_connect_ca_pools_moose_paths(ca_pool, pool_name, buf_capacity, moose_paths):
+def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths):
     global FARADAY_CONST
     for moose_path in moose_paths:
         comp = moose.element(moose_path)
@@ -179,14 +178,19 @@ def copy_connect_ca_pools_moose_paths(ca_pool, pool_name, buf_capacity, moose_pa
         _pool.diameter = comp.diameter
         curved_sa = compute_comp_area(comp.diameter, comp.length)[0]
         volume = curved_sa * _pool.thick
-        _pool.B = 1/(FARADAY_CONST * volume * 2) / buf_capacity
+        _pool.B = 1/(FARADAY_CONST * volume * 2) / _pool.B
+    return moose_paths
 
-def connect_ca_pool_to_chan(settings, moose_paths):
+def connect_ca_pool_to_chan(chan_name, chan_type, calname, moose_paths):
     for moose_path in moose_paths:
         comp = moose.element(moose_path)
-        _pool = moose.element(comp.path + '/' + )
-    # TODO connect calcium pool to channels.
-
+        _pool = moose.element(comp.path + '/' + calname)
+        chan = moose.element(comp.path + '/' + chan_name)
+        if chan_type == 'ca_permeable':
+            moose.connect(chan, 'IkOut', _pool, 'current')
+        elif chan_type == 'ca_dependent':
+            moose.connect(_pool, 'concOut', chan, 'concen')
+    return
 
 def create_swc_model(root_name, file_name, RM, CM, RA, ELEAK, initVM):
  if file_name.endswith('.swc'):
