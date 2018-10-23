@@ -129,7 +129,7 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     zgate.min, zgate.max = camin, camax
     ca_conc_points = np.linspace(camin, camax, cadivs)
     caterm = (ca_conc_points/params.kd)
-    caterm = caterm** params.power
+    caterm = caterm ** params.power
     z_inf = caterm/(1+caterm)
     z_tau = params.tau*np.ones(len(ca_conc_points))
     zgate.tableA = z_inf / z_tau
@@ -155,7 +155,7 @@ def set_channel_conductance(chan, gbar, E_nerst):
 
 def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, camax):
     chan_set = {}
-    for settings in channel_settings:
+    for settings in channel_settings.values():
         chan = create_channel(chan_name=settings.get('chan_name'),
                               vdivs=vdivs, vmin=vmin, vmax=vmax,
                               cadivs=cadivs, camin=camin, camax=camax,

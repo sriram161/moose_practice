@@ -3,7 +3,9 @@
 #bash-4.2$ module add python/2.7.15
 #bash-4.2$ module add moose
 
+import sys
 import moose
+import numpy as np
 import matplotlib.pyplot as plt
 from utilities import create_compartment
 from utilities import create_channel
@@ -27,7 +29,7 @@ CAMIN = 0
 CAMAX = 1
 CADIVS = 10E3
 
-def main(experiment_title):
+def main(experiment_title, ca_g_max, skca_g_max):
     # Simulation information.
     simtime = 0.1
     simdt = 0.25e-6
@@ -44,6 +46,9 @@ def main(experiment_title):
     inj_delay = 20E-3
     inj_amp = 1E-9
     inj_width = 40E-3
+
+    channel_settings['CaL']['g_max'] = ca_g_max * compute_comp_area(diameter, length)[0] *1E4
+    channel_settings['SKca']['g_max'] = skca_g_max * compute_comp_area(diameter, length)[0] *1E4
 
     # Create cell
     soma = create_compartment('soma', length, diameter, RM, CM, initVM=EREST_ACT, ELEAK=Em)
@@ -64,6 +69,7 @@ def main(experiment_title):
     # Connect calciums pools to channels in compartments.
     connect_ca_pool_to_chan(chan_name='SKca', chan_type='ca_dependent', calname='CaPool', moose_paths=moose_paths)
     connect_ca_pool_to_chan(chan_name='CaL', chan_type='ca_permeable', calname='CaPool', moose_paths=moose_paths)
+    import pdb; pdb.set_trace()
 
     # connect pulse gen.
     pulse_inject = create_pulse_generator(soma, inj_width, inj_amp, delay=inj_delay)
@@ -86,9 +92,10 @@ def main(experiment_title):
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title=experiment_title)
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title=experiment_title.format(ca_g_max, skca_g_max), xlab='Time', ylab='voltage')
     plt.grid(True)
     plt.legend(['v', 'i'])
     plt.show()
 
-main(experiment_title="Soma voltage when calcium g_max=1E-2 SKca g_max = 0")
+
+main(experiment_title="Soma voltage when calcium g_max= {} SKca g_max = {}", ca_g_max=np.float(sys.argv[1]), skca_g_max=np.float(sys.argv[2]))

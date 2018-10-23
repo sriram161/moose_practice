@@ -28,7 +28,7 @@ CAMIN = 0
 CAMAX = 1
 CADIVS = 10E3
 
-def main(experiment_title):
+def main(experiment_title, ca_g_max, skca_g_max):
     # Simulation information.
     simtime = 0.1
     simdt = 0.25e-6
@@ -46,6 +46,9 @@ def main(experiment_title):
     inj_delay = 20E-3
     inj_amp = 1E-9
     inj_width = 40E-3
+
+    channel_settings['CaL']['g_max'] = ca_g_max
+    channel_settings['SKca']['g_max'] = skca_g_max
 
     # Create cell
     chicken_model = create_swc_model(root_name='E19', file_name='E19-cell_filling-caudal.CNG.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
@@ -89,9 +92,9 @@ def main(experiment_title):
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title=experiment_title)
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title=experiment_title.format(ca_g_max, skca_g_max), xlab='Time', ylab='voltage')
     plt.grid(True)
     plt.legend(['v', 'i'])
     plt.show()
 
-main(experiment_title="Soma voltage when calcium g_max=1E-2 SKca g_max = 0")
+main(experiment_title="Soma voltage when calcium g_max= {} SKca g_max = {}", ca_g_max=0, skca_g_max=0)

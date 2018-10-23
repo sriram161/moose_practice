@@ -24,8 +24,8 @@ sk_z_params = CaDepparams(kd=0.75E-3, power=5.2, tau=4.9E-3)
 ca_params = capools(caBasal=50E-6, caThick=1E-6, caTau=20E-3, bufCapacity=20, caName='CaPool')
 
 caL_X_params = AlphaBetaparams(
-              A_A=-880, A_B=-220E-3, A_C=-1.0, A_D=4.0003E-3, A_F=-7.5E-3,
-              B_A=-284, B_B=71E3, B_C=-1.0, B_D=-4.0003E-3, B_F=5e-3)
+              A_A=-880, A_B=-220E-3, A_C=-1.0, A_D=4E-3, A_F=-7.5E-3,
+              B_A=-284, B_B=71E3, B_C=-1.0, B_D=-4E-3, B_F=5e-3)
 
 Na_chan = copy(channel_param_template)
 k_chan = copy(channel_param_template)
@@ -49,16 +49,16 @@ k_chan['e_k'] = -12E-3 + EREST_ACT
 SKca_chan['chan_name'] = 'SKca'
 SKca_chan['z_params'] = sk_z_params
 SKca_chan['z_pow'] = 1
-SKca_chan['g_max'] = 0
 SKca_chan['g_max'] = 2E-6 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+SKca_chan['g_max'] = 0
 SKca_chan['e_k'] = -87E-3
 SKca_chan['chan_type'] = 'ca_dependent'
 
 CaL_chan['chan_name'] = 'CaL'
 CaL_chan['x_params'] =  caL_X_params
 CaL_chan['x_pow'] = 1
-CaL_chan['g_max'] = 0
 CaL_chan['g_max'] = 1E-2 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+CaL_chan['g_max'] = 0
 CaL_chan['e_k'] = 130e-3
 CaL_chan['chan_type'] = 'ca_permeable'
 
@@ -67,3 +67,5 @@ CaL_chan['chan_type'] = 'ca_permeable'
 # channel_settings = [Na_chan, k_chan, CaL_chan]
 #channel_settings = [Na_chan, k_chan, SKca_chan]
 channel_settings = [Na_chan, k_chan, SKca_chan, CaL_chan]
+
+channel_settings = {chan.get('chan_name'): chan for chan in channel_settings}
