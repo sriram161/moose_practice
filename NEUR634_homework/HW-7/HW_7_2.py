@@ -16,6 +16,7 @@ from utilities import copy_connect_channel_moose_paths
 from utilities import create_ca_conc_pool
 from utilities import copy_ca_pools_moose_paths
 from utilities import connect_ca_pool_to_chan
+from utilities import create_swc_model
 from channels_1 import channel_settings
 from channels_1 import ca_params
 
@@ -39,6 +40,7 @@ def main(experiment_title):
     Em = EREST_ACT + 10.613e-3
     CM = 1e-6 * 1e4
     RM = 1 /(0.3E-3 * 1e4)
+    RA = 4
 
     # Stimulus information
     inj_delay = 20E-3
@@ -46,7 +48,8 @@ def main(experiment_title):
     inj_width = 40E-3
 
     # Create cell
-    soma = create_compartment('soma', length, diameter, RM, CM, initVM=EREST_ACT, ELEAK=Em)
+    chicken_model = create_swc_model(root_name='E19', file_name='E19-cell_filling-caudal.CNG.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
+    soma = moose.element('/E19[0]/soma')
 
     # Create channels
     channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
