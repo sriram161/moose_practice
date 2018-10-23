@@ -27,7 +27,7 @@ CAMIN = 0
 CAMAX = 1
 CADIVS = 10E3
 
-def main():
+def main(experiment_title):
     # Simulation information.
     simtime = 0.1
     simdt = 0.25e-5
@@ -86,9 +86,9 @@ def main():
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title="soma voltage")
+    v_plot = plot_vm_table(simtime, soma_v_table, soma_i_table, title=experiment_title)
     plt.grid(True)
     plt.legend(['v', 'i'])
     plt.show()
 
-main()
+main(experiment_title="Soma voltage when calcium g_max=1E-2 SKca g_max = 0")

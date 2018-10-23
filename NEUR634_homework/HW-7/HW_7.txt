@@ -3,14 +3,14 @@ Homework
     create calcium concentration. (ca_pool) Done!!!
     create calcium dependent potassium channel. (calcium dependent potassium channel) Done!!!
 
-    connect calcium concentration with calcium dependent potassium channel.
-    create calcium channel. (ca alphabeta channel)
+    connect calcium concentration with calcium dependent potassium channel. Done!!!
+    create calcium channel. (ca alphabeta channel) Done!!!
 
-	Include the calcium channel and SK channel in your dictionary of channel parameters
+	Include the calcium channel and SK channel in your dictionary of channel parameters Done!!!
 
-    extend your chan_proto to create channels with Z gates
-	
-    Create separate function for calcium concentration
+    extend your chan_proto to create channels with Z gates Done!!!
+
+    Create separate function for calcium concentration Done!!!
 
 2. Add these to a single compartment model. Starting from a conductance of zero, increase the conductance of the calcium and SK channels until you see an effect. Describe how these channels affect spiking.
 3. Add these to a multi-compartment model, either to multiple compartments or just the soma.

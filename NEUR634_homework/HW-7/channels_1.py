@@ -49,16 +49,21 @@ k_chan['e_k'] = -12E-3 + EREST_ACT
 SKca_chan['chan_name'] = 'SKca'
 SKca_chan['z_params'] = sk_z_params
 SKca_chan['z_pow'] = 1
-SKca_chan['g_max'] = 2 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+SKca_chan['g_max'] = 0
+SKca_chan['g_max'] = 2E-6 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 SKca_chan['e_k'] = -87E-3
 SKca_chan['chan_type'] = 'ca_dependent'
 
 CaL_chan['chan_name'] = 'CaL'
 CaL_chan['x_params'] =  caL_X_params
 CaL_chan['x_pow'] = 1
-CaL_chan['g_max'] = 15 *compute_comp_area(30e-6, 50e-6)[0] *1E4
+CaL_chan['g_max'] = 0
+CaL_chan['g_max'] = 1E-2 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 CaL_chan['e_k'] = 130e-3
 CaL_chan['chan_type'] = 'ca_permeable'
 
 # define calcium channel
+# channel_settings = [Na_chan, k_chan] # working good!!!
+# channel_settings = [Na_chan, k_chan, CaL_chan]
+#channel_settings = [Na_chan, k_chan, SKca_chan]
 channel_settings = [Na_chan, k_chan, SKca_chan, CaL_chan]
