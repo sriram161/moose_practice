@@ -69,7 +69,6 @@ def main(experiment_title, ca_g_max, skca_g_max):
     # Connect calciums pools to channels in compartments.
     connect_ca_pool_to_chan(chan_name='SKca', chan_type='ca_dependent', calname='CaPool', moose_paths=moose_paths)
     connect_ca_pool_to_chan(chan_name='CaL', chan_type='ca_permeable', calname='CaPool', moose_paths=moose_paths)
-    import pdb; pdb.set_trace()
 
     # connect pulse gen.
     pulse_inject = create_pulse_generator(soma, inj_width, inj_amp, delay=inj_delay)
