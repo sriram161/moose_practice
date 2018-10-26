@@ -1,0 +1,11 @@
+Homework
+1. Implement your channel from homework 6 in Neuron
+	Either use channelbuilder to create your channel, or
+	Download or edit a mod file, then re-compile neuron, as explained in class
+2. Create a Model: soma + dendrite, with HH channels in the soma
+3. Test the effect of your channel on spiking:
+	a. insert your new channel into the model, either soma or dendrite, but not both)
+	b. assign a conductance = 0 (e.g. soma.gmax_yourchannel=0)
+	run simulation with current injection (you choose amplitude and duration of current, but produce spikes) - should like the same as when you did not have the channel inserted
+	c. Assign a non-zero gbar value, run simulation (repeat for several gbar values. one small enough to produce almost no change, one large enough to produce significant change)
+	d. Explain how the channel modifies spiking
