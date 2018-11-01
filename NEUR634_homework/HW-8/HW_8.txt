@@ -10,6 +10,7 @@ Homework
 	# Insert K channel into dend.
 	b. assign a conductance = 0 (e.g. soma.gmax_yourchannel=0)
 	run simulation with current injection (you choose amplitude and duration of current, but produce spikes) - should like the same as when you did not have the channel inserted
-	c. Assign a non-zero gbar value, run simulation (repeat for several gbar values. one small enough to produce almost no change, one large enough to produce significant change)
+	c. Assign a non-zero gbar value, run simulation (repeat for several gbar values. 
+	one small enough to produce almost no change, one large enough to produce significant change)
 	d. Explain how the channel modifies spiking
 

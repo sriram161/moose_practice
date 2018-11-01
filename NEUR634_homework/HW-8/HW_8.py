@@ -1,4 +1,5 @@
 from neuron import gui, h
+import matplotlib.pyplot as plt
 
 soma = h.Section(name='soma')
 dend = h.Section(name='dend')
@@ -33,7 +34,7 @@ dend.el_hh = -54.3
 
 # stimulation at dend
 stim = h.IClamp(dend(1.0))
-stim.amp = 3 # Try variations 0, 0.003, 0.03, 0.3 and 3.
+stim.amp = 0.003 # Try variations 0, 0.003, 0.03, 0.3 and 3.
 stim.delay = 40
 stim.dur = 1
 
@@ -46,12 +47,16 @@ v_vec_dend.record(dend(1.0)._ref_v)
 t_vec.record(h._ref_t)
 
 h.tstop = 60
-h.run()
 
-import matplotlib.pyplot as plt
-plt.plot(t_vec, v_vec_soma, t_vec, v_vec_dend, 'r')
-plt.xlabel('time ms')
-plt.ylabel('voltage mV')
-plt.legend(['soma', 'dend'])
-plt.title('inj_current = {} HH in soma and No HH in dend'.format(stim.amp))
+for g in [0, 0.05, 0.5, 5, 50]:
+    stim.amp = 3
+    dend.gmax_k1 = g
+    h.run()
+    plt.plot(t_vec, v_vec_soma,label="soma_g_max = {}".format(g))
+    plt.plot(t_vec, v_vec_dend,label="dend_g_max = {}".format(g))
+    plt.xlabel('time ms')
+    plt.ylabel('voltage mV')
+
+plt.legend()
+plt.title('inj_current = {} HH in soma and K1 channel in dend'.format(stim.amp))
 plt.show()
