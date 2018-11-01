@@ -1,0 +1,20 @@
+Homework 9
+1. Using your previous code, create a two (or more) compartment model with the squid sodium and potassium channels (additional channels and calcium concentration are optional).
+2. Add excitatory synaptic input to your model as follows:
+	a. Write function to add excitatory (or inhibitory) synchans (plus the SimpleSynHandler) to a specified set of compartments 
+	b. implement the function to add excitatory synchans to a dendrite (use reversal potential of 0 mV, tau1=1ms and tau2=5 ms
+	c. Write function to create a set of randSpike objects (one per synchan, input parameter = rate)
+	d. Connect randSpikes to the excitatory synchans
+3. Perform simulations to determine what frequency of synaptic input is required to produce spiking
+	a. Do not implement the pulsegen, OR, set current level = 0
+	b. use Gbar for your excitatory synaptic channel that produces between 1 and 5 mV PSP in the soma
+	c. increase frequency until you see at least 1 spike - tell me what frequency and Gbar you used.
+4. Add inhibitory synaptic input to your model
+	a. Use the function written in 2a to add inhibitory synchans to the dendrite (use reversal potential of -80 mV, same Gbar as excitatory synchan, and either the same or slightly different tau1 and tau2
+	c. connect a different randspike to the inhibitory synchan
+5. Run simulations to determine whether the inhibitory input can shut off spiking
+	a. Increase excitatory randspike frequency to produce 10 hz firing
+	b. increase frequency of inhibitory randspike until you see a change in spiking - what frequency is that?
+	c. increase frequency 10x higher - did that shut off spiking?
+	d. If answer to 5c is no, then increase Gbar of the inhibitory synchan to shut off spiking.
+6. Remember to bring your previous code / homework assignments / functions and parameters that are in separate files to class next week.  Also, bring the journal article that you are using for your project.  You will have time to work on your project in class, ideally just changing the morphology file and channel parameters to create the model for your project.
