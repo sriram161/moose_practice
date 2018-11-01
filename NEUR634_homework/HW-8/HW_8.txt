@@ -12,3 +12,4 @@ Homework
 	run simulation with current injection (you choose amplitude and duration of current, but produce spikes) - should like the same as when you did not have the channel inserted
 	c. Assign a non-zero gbar value, run simulation (repeat for several gbar values. one small enough to produce almost no change, one large enough to produce significant change)
 	d. Explain how the channel modifies spiking
+
