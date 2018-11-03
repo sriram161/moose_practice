@@ -9,3 +9,5 @@ channel_param_template = {'chan_name':None, 'x_params': None, 'y_params': None, 
                           'g_max': None, 'ek': None, 'chan_type': None}
 
 capools = namedtuple('caparams', 'caBasal caThick caTau bufCapacity caName')
+
+SynapseChannel = namedtuple('SynapseChannel', 'syn_name g_max tau1 tau2 ek synapse_count delay')

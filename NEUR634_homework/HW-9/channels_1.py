@@ -1,5 +1,6 @@
 from copy import copy
 from templates import AlphaBetaparams
+from templates import SynapseChannel
 from templates import channel_param_template
 from utilities import compute_comp_area
 
@@ -16,6 +17,8 @@ Na_h_params = AlphaBetaparams(
 K_n_params = AlphaBetaparams(
               A_A=1e4 * (10e-3 + EREST_ACT), A_B=-1e4, A_C=-1.0, A_D=-10e-3 - EREST_ACT, A_F=-10e-3,
               B_A=0.125e3, B_B=0.0, B_C=0.0, B_D=0.0 - EREST_ACT, B_F=80e-3)
+
+syn_chan1 = SynapseChannel(syn_name='syn', g_max=1E-8, tau1=1E-3, tau2=5E-3, ek=0, synapse_count=1, delay=1E-3) # Excitatory synapses
 
 Na_chan = copy(channel_param_template)
 k_chan = copy(channel_param_template)
@@ -35,5 +38,6 @@ k_chan['g_max'] = 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 k_chan['e_k'] = -12E-3 + EREST_ACT
 
 channel_settings = [Na_chan, k_chan]
+synapse_settings = [syn_chan1]
 
 channel_settings = {chan.get('chan_name'): chan for chan in channel_settings}

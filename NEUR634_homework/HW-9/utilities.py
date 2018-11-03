@@ -47,8 +47,8 @@ def plot_vm_table(simtime, *comps, title="No title!!!", xlab="No x label!!!", yl
     '''
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    t = np.linspace(0, simtime, len(comps[0].vector))
-    arrays = [comp.vector for comp in comps]
+    t = np.linspace(0, simtime, len(comps[0].vector[:]))
+    arrays = [comp.vector[:] for comp in comps]
     t_scales = [t]*len(arrays)
     plot_args = list(chain(*zip(t_scales,arrays)))
     ax.plot(*plot_args)
@@ -68,7 +68,7 @@ def connect_n_serial(bunch):
     iterator = iter(bunch.items())
     c_name, c_item = next(iterator)
     for n_name, n_item in iterator:
-        moose.connect(c_item, 'axialOut', n_item, 'handleAxial')
+        moose.connect(c_item, 'axial', n_item, 'raxial')
         c_item = n_item
     return bunch
 
@@ -205,7 +205,7 @@ def create_spikegen(name, type, refractory_period, rate=None, threshold=None):
     elif type.lower() in "linear" and threshold is not None:
         spikegen = moose.SpikeGen('/spikegens/' + name)
         spikegen.threshold = np.float(threshold)
-    spikegen.refactT = np.float(refactory_period)
+    spikegen.refractT = np.float(refractory_period)
     return spikegen
 
 def create_synaptic_channel(name, Gbar, tau1, tau2, ek, synapse_count, delay):
@@ -214,12 +214,19 @@ def create_synaptic_channel(name, Gbar, tau1, tau2, ek, synapse_count, delay):
     synchan.tau1 = tau1
     synchan.tau2 = tau2
     synchan.Ek = ek
-    sh = create_synaptic_handle(synchan, synapse_num, delay)
+    sh = create_synaptic_handle(synchan, synapse_count, delay)
     moose.connect(sh, 'activationOut', synchan, 'activation')
-    return synchan
+    return (synchan, sh)
 
 def create_synaptic_handle(synchan, synapse_num, delay):
     sh = moose.SimpleSynHandler(synchan.path + '/synhandler')
     sh.synapse.num = synapse_num
-    sh.synapse[0].delay = delay
+    for section in range(synapse_num):
+        sh.synapse[section].delay = delay
     return sh
+
+def copy_syn_channel_moose_paths(moose_chan, chan_name, moose_paths):
+    for moose_path in moose_paths:
+        _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
+        moose.connect(moose.element(moose_path), 'channel', _chan, 'channel')
+    return moose_paths
