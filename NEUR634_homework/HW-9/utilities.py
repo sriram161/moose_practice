@@ -193,3 +193,33 @@ def connect_ca_pool_to_chan(chan_name, chan_type, calname, moose_paths):
         elif chan_type == 'ca_dependent':
             moose.connect(_pool, 'concOut', chan, 'concen')
     return
+
+def create_spikegen(name, type, refractory_period, rate=None, threshold=None):
+    ''' Create spikegen which is used as pre synaptic trigger.
+    '''
+    if not moose.exists('/spikegens'):
+        spikelib = moose.Neutral('/spikegens')
+    if type.lower() in "random" and rate is not None:
+        spikegen = moose.RandSpike('/spikegens/' + name)
+        spikegen.rate = np.float(rate)
+    elif type.lower() in "linear" and threshold is not None:
+        spikegen = moose.SpikeGen('/spikegens/' + name)
+        spikegen.threshold = np.float(threshold)
+    spikegen.refactT = np.float(refactory_period)
+    return spikegen
+
+def create_synaptic_channel(name, Gbar, tau1, tau2, ek, synapse_count, delay):
+    synchan = moose.SynChan(name)
+    synchan.Gbar = Gbar
+    synchan.tau1 = tau1
+    synchan.tau2 = tau2
+    synchan.Ek = ek
+    sh = create_synaptic_handle(synchan, synapse_num, delay)
+    moose.connect(sh, 'activationOut', synchan, 'activation')
+    return synchan
+
+def create_synaptic_handle(synchan, synapse_num, delay):
+    sh = moose.SimpleSynHandler(synchan.path + '/synhandler')
+    sh.synapse.num = synapse_num
+    sh.synapse[0].delay = delay
+    return sh

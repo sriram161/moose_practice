@@ -1,10 +1,17 @@
 Homework 9
 1. Using your previous code, create a two (or more) compartment model with the squid sodium and potassium channels (additional channels and calcium concentration are optional).
+Done!!!
+
 2. Add excitatory synaptic input to your model as follows:
-	a. Write function to add excitatory (or inhibitory) synchans (plus the SimpleSynHandler) to a specified set of compartments 
+	a. Write function to add excitatory (or inhibitory) synchans (plus the SimpleSynHandler) to a specified set of compartments
+
 	b. implement the function to add excitatory synchans to a dendrite (use reversal potential of 0 mV, tau1=1ms and tau2=5 ms
+
 	c. Write function to create a set of randSpike objects (one per synchan, input parameter = rate)
+	   Done!!!
+
 	d. Connect randSpikes to the excitatory synchans
+
 3. Perform simulations to determine what frequency of synaptic input is required to produce spiking
 	a. Do not implement the pulsegen, OR, set current level = 0
 	b. use Gbar for your excitatory synaptic channel that produces between 1 and 5 mV PSP in the soma
