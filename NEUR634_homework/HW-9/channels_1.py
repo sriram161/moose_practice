@@ -19,6 +19,7 @@ K_n_params = AlphaBetaparams(
               B_A=0.125e3, B_B=0.0, B_C=0.0, B_D=0.0 - EREST_ACT, B_F=80e-3)
 
 syn_chan1 = SynapseChannel(syn_name='syn', g_max=1E-8, tau1=1E-3, tau2=5E-3, ek=0, synapse_count=1, delay=1E-3) # Excitatory synapses
+syn_chan2 = SynapseChannel(syn_name='syn2', g_max=1E-8, tau1=0.5E-3, tau2=5.5E-3, ek=-80E-3, synapse_count=1, delay=1E-3) # Excitatory synapses
 
 Na_chan = copy(channel_param_template)
 k_chan = copy(channel_param_template)
@@ -38,6 +39,7 @@ k_chan['g_max'] = 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 k_chan['e_k'] = -12E-3 + EREST_ACT
 
 channel_settings = [Na_chan, k_chan]
-synapse_settings = [syn_chan1]
+synapse_settings1 = [syn_chan1]
+synapse_settings2 = [syn_chan1, syn_chan2]
 
 channel_settings = {chan.get('chan_name'): chan for chan in channel_settings}
