@@ -35,7 +35,7 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     simtime = 1
     simdt = 0.25e-6
     plotdt = 0.25E-3
-    syn_g_max = (4E-9 if g_max == 'na' else g_max for g_max in [e_g_max, i_g_max])
+    syn_g_max = [4E-9 if g_max == 'na' else np.float(g_max) for g_max in [e_g_max, i_g_max]]
 
     # Cell Compartment infromation
     diameter = 30e-6
@@ -98,10 +98,10 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, dend1_v_table, title=experiment_title.format(_rate, _rate2), xlab='Time', ylab='voltage')
+    v_plot = plot_vm_table(simtime, soma_v_table, dend1_v_table, title=experiment_title.format(_rate, _rate2, syn_g_max[0], syn_g_max[1]), xlab='Time', ylab='voltage')
     plt.grid(True)
     plt.legend(['soma', 'dend'])
     plt.show()
 
 
-main(experiment_title="Soma voltage e_spike_rate: {} I_spike_rate: {}", _rate=sys.argv[1], _rate2 = sys.argv[2])
+main(experiment_title="Membrane potential exitation(rate, g_max): ({0}Hz, {2}S) Inhabition(rate, g_max): ({1}Hz, {3}S)", _rate=sys.argv[1], _rate2 = sys.argv[2], e_g_max=sys.argv[3], i_g_max=sys.argv[4])
