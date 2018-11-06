@@ -1,0 +1,207 @@
+bash-4.2$ cd /tmp
+bash-4.2$ ls
+anaconda.log
+data
+env-after
+env-before
+firefox_vsadmin
+hsperfdata_root
+hsperfdata_vsadmin
+ifcfg.log
+jna-736273074
+krb5cc_495590_AN6jWD
+krb5cc_72599_0XhmsG
+ks-script-YVQoB7
+lua_6amkaX
+lua_CGAgV6
+packaging.log
+program.log
+sensitive-info.log
+ssh-JjywTLbl6kVl
+storage.log
+systemd-private-70b7bed10ab24990a2cee71e71d1448c-chronyd.service-LDHZ1T
+systemd-private-70b7bed10ab24990a2cee71e71d1448c-colord.service-cLDADB
+systemd-private-70b7bed10ab24990a2cee71e71d1448c-cups.service-K28g5q
+systemd-private-70b7bed10ab24990a2cee71e71d1448c-rtkit-daemon.service-ZNUssx
+systemd-private-70b7bed10ab24990a2cee71e71d1448c-systemd-localed.service-270jMD
+Temp-74f8c7b5-e431-4647-a362-bbcfb73fce08
+Temp-cef2d029-d9c6-4627-b41f-24b14ca929fa
+tracker-extract-files.0
+tracker-extract-files.1000
+tracker-extract-files.1011
+tracker-extract-files.495590
+tracker-extract-files.72599
+vmware-config-4386.0
+vmware-root
+yum.log
+yum_save_tx.2018-07-31.14-34.18Hrze.yumtx
+yum_save_tx.2018-07-31.16-39.mONgA9.yumtx
+yum_save_tx.2018-07-31.16-40.vv4XYc.yumtx
+yum_save_tx.2018-07-31.16-48.doqCfH.yumtx
+yum_save_tx.2018-07-31.16-57.Q19I0g.yumtx
+yum_save_tx.2018-07-31.16-58.6RYQUR.yumtx
+yum_save_tx.2018-07-31.16-58.Ap_x_7.yumtx
+yum_save_tx.2018-08-01.14-34.M8ydXF.yumtx
+yum_save_tx.2018-08-01.14-39.faVkrM.yumtx
+yum_save_tx.2018-08-01.15-08.pHc9tW.yumtx
+yum_save_tx.2018-08-02.12-36.c90nPm.yumtx
+yum_save_tx.2018-08-02.12-57.IYNFTP.yumtx
+yum_save_tx.2018-08-15.18-31.qeqkkr.yumtx
+bash-4.2$ cd
+bash-4.2$ cd Downloads/
+bash-4.2$ ls
+atom.x86_64.rpm  Classwork_lecture_2.txt  usr
+bash-4.2$ cd usr
+bash-4.2$ ls
+bin  share  tests.log
+bash-4.2$ cd bin
+bash-4.2$ atom
+bash-4.2$
+bash-4.2$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bash-4.2$ module add python/2.7.15
+bash-4.2$ module add moose
+bash-4.2$ python
+Python 2.7.15 (default, Aug 13 2018, 18:21:39)
+[GCC 6.3.1 20170216 (Red Hat 6.3.1-3)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import moose
+>>> import moose
+>>>
+>>> synchan = moose.NMDAChan('/cell2/dend/nmda')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Parent element does not exist: /cell2/dend
+>>> synchna.KMg_A = 0.17
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'synchna' is not defined
+>>> synchan.KMg_b = 0.012
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'synchan' is not defined
+>>> synchan.CMg = 1.4
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'synchan' is not defined
+>>>
+>>> def magnesium_term(A, B, C):
+...     eta = 1.0/A
+...     gamma = 1.0/B
+...     V = np.linspace(-100E-3, )
+...     mg_term = 1/ ( 1 + eta*C *)
+  File "<stdin>", line 5
+    mg_term = 1/ ( 1 + eta*C *)
+                              ^
+SyntaxError: invalid syntax
+>>>
+>>> synparams = {}
+>>> mgparams = {'A': (1/6.0), 'B':(1/80.0), 'conc': 1.4}
+>>> synparams['ampa'] = {'Erev': 5E-3, 'tau1': 1.0E-3, 'tau2': 5E-3, 'Gbar': 1E-9}
+>>> synparams['nmda'] = {'Erev': 5E-3, 'tau1': 1.1E-3, 'tau2': 37.5E-3, 'Gbar': 2E-9, 'mgparams': mgparams}
+>>>
+>>> from pprint import pprint
+>>> pprint(synparams, width=40)
+{'ampa': {'Erev': 0.005,
+          'Gbar': 1e-09,
+          'tau1': 0.001,
+          'tau2': 0.005},
+ 'nmda': {'Erev': 0.005,
+          'Gbar': 2e-09,
+          'mgparams': {'A': 0.16666666666666666,
+                       'B': 0.0125,
+                       'conc': 1.4},
+          'tau1': 0.0011,
+          'tau2': 0.0375}}
+>>>
+>>> for key, params in synparams.items():
+...     if key == 'nmda':
+...         chan = moose.NMDAChan('/cell2/dend/' + key)
+...         chan.KMg_A = params['mgparams']['A']
+...         chan.KMg_B = params['mgparams']['B']
+...         chan.CMg = params['mgparams']['conc']
+...     else:
+...         chan = moose.SynChan('/cell2/dend/' + key)
+...         chan.Gbar = params['Gbar']
+...         chan.tau1 = params['tau1']
+...         chan.tau2 = params['tau2']
+...         chan.Ek = params['Erev']
+...
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+ValueError: Parent element does not exist: /cell2/dend
+>>> # Test to check NMDA creation.
+... moose.le('/cell2/dend')
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/usr/local/moose/3.1.3/lib/python2.7/site-packages/moose/moose.py", line 246, in le
+    raise ValueError('no such element')
+ValueError: no such element
+>>>
+>>> for key, params in synparams.items():
+...     if key == 'nmda':
+...         chan = moose.NMDAChan('/cell2/dend/' + key)
+...         chan.KMg_A = params['mgparams']['A']
+...         chan.KMg_B = params['mgparams']['B']
+...         chan.CMg = params['mgparams']['conc']
+...         chan.temperature = params['temperature']
+...         chan.extCa = params['extCa']
+...         chan.condFraction = params['condFraction']
+...     else:
+...         chan = moose.SynChan('/cell2/dend/' + key)
+...         chan.Gbar = params['Gbar']
+...         chan.tau1 = params['tau1']
+...         chan.tau2 = params['tau2']
+...         chan.Ek = params['Erev']
+...
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+ValueError: Parent element does not exist: /cell2/dend
+>>> m = moose.connect(nmdachan, 'ICaOut', capool, 'current')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'nmdachan' is not defined
+>>>
+>>> capool = moose.CaConc('/cell2/dend/capool')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: Parent element does not exist: /cell2/dend
+>>> moose.showfield(capool)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'capool' is not defined
+>>>
+>>> m = moose.connect(capool, 'concOut', nmdachan, 'setIntCa')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'capool' is not defined
+>>>
+>>> moose.showmsg('/cell2')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/moose/3.1.3/lib/python2.7/site-packages/moose/moose.py", line 389, in showmsg
+    obj = element(el)
+ValueError: moose_element: '/cell2' does not exist!
+>>>
