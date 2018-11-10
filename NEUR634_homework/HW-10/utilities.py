@@ -213,6 +213,7 @@ def create_synaptic_channel(name, Gbar, tau1, tau2, ek, synapse_count, delay, pa
         synchan = moose.NMDAChan(name)
         try:
             synchan = set_nmda_magnesium_parameters(synchan, params)
+            synchan = set_ghk_equation_factors(synchan, params)
         except:
             raise ValueError("No NMDA params provided")
     else:
@@ -239,7 +240,17 @@ def copy_syn_channel_moose_paths(moose_chan, chan_name, moose_paths):
     return moose_paths
 
 def set_nmda_magnesium_parameters(nmdachan, params):
-    nmdachan.KMg_A = params['A']
-    nmdachan.KMg_B = params['B']
-    nmdachan.CMg = params['conc']
+    nmdachan.KMg_A = params.A
+    nmdachan.KMg_B = params.B
+    nmdachan.CMg = params.conc
     return nmdachan
+
+def set_ghk_equation_factors(nmdachan, params):
+    nmdachan.temperature = params.temperature
+    nmdachan.extCa = params.extca
+    nmdachan.condFraction = params.condfraction
+    return nmdachan
+
+def connect_ca_pool_to_nmda_synapse(nmdachan, capool):
+    moose.connect(nmdachan, 'ICaOut', capool, 'current')
+    moose.connect(capool, 'CaConc', nmdachan, 'setIntCa')
