@@ -97,7 +97,7 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     # Output table.
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
     dend1_v_table = create_output_table(table_element='/output', table_name='dend1Vm')
-
+    import pdb; pdb.set_trace()
     # Connect output tables.
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(dend1_v_table, 'requestOut', moose.element('/dend_2'), 'getVm')
