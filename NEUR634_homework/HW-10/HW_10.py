@@ -19,7 +19,11 @@ from utilities import create_spikegen
 from utilities import create_n_dends
 from utilities import connect_n_serial
 from utilities import copy_syn_channel_moose_paths
+from utilities import connect_ca_pool_to_nmda_synapse
+from utilities import create_ca_conc_pool
+from utilities import copy_ca_pools_moose_paths
 from channels_1 import channel_settings
+from channels_1 import ca_params
 from channels_1 import synapse_settings2 as synapse_settings
 
 EREST_ACT = -70e-3 #: Resting membrane potential
@@ -36,6 +40,7 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     simdt = 0.25e-6
     plotdt = 0.25E-3
     syn_g_max = [4E-9 if g_max == 'na' else np.float(g_max) for g_max in [e_g_max, i_g_max]]
+    syn_g_max.append(2E-9)
 
     # Cell Compartment infromation
     diameter = 30e-6
@@ -59,21 +64,31 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     # Create channels
     channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
 
+    # Create calcium pools in library.
+    ca_pool = create_ca_conc_pool(ca_params)
+
     # Create synaptic channel
     synapses_and_handles = [create_synaptic_channel(setting.syn_name, g_max, setting.tau1,
-                        setting.tau2, setting.ek, setting.synapse_count, setting.delay) for setting,g_max in zip(synapse_settings, syn_g_max)]
+                        setting.tau2, setting.ek, setting.synapse_count, setting.delay, setting.params) for setting, g_max in zip(synapse_settings, syn_g_max)]
 
     # Copy the synaptic channels to moose compartments.
     moose_paths = [moose.element('/dend_2').path]
     for syn, syn_handle in synapses_and_handles:
         copy_syn_channel_moose_paths(syn, syn.name, moose_paths)
 
+    # copy calcium pools to all compartments.
+    copy_ca_pools_moose_paths(ca_pool, 'CaPool', moose_paths)
+
     # create pre-synaptic input
     spikegen_1 = create_spikegen(name='spikegen_1', type='random', refractory_period=1E-3, rate=_rate)
     spikegen_2 = create_spikegen(name='spikegen_2', type='random', refractory_period=1E-3, rate=_rate2)
 
+    # Connect spike generator to synapses.
     moose.connect(spikegen_1, 'spikeOut', moose.element('/dend_2[0]/syn[0]/synhandler').synapse[0], 'addSpike')
     moose.connect(spikegen_2, 'spikeOut', moose.element('/dend_2[0]/syn2[0]/synhandler').synapse[0], 'addSpike')
+
+    # Connect NMDA receptor channels to calcium pools.
+    connect_ca_pool_to_nmda_synapse(moose_paths, 'CaPool')
 
     # connect channels to compartments.
     for channel_name, channel_obj in channels_set.items(): # Copy channels to soma.
@@ -92,7 +107,6 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
         moose.setClock(lable, simdt)
     moose.setClock(8, plotdt)
 
-
     # Run simulation
     moose.reinit()
     moose.start(simtime)
@@ -103,5 +117,6 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     plt.legend(['soma', 'dend'])
     plt.show()
 
-
 main(experiment_title="Membrane potential exitation(rate, g_max): ({0}Hz, {2}S) Inhabition(rate, g_max): ({1}Hz, {3}S)", _rate=sys.argv[1], _rate2 = sys.argv[2], e_g_max=sys.argv[3], i_g_max=sys.argv[4])
+
+# python3 HW_10.py 10 10 na na

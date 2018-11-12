@@ -209,15 +209,16 @@ def create_spikegen(name, type, refractory_period, rate=None, threshold=None):
     return spikegen
 
 def create_synaptic_channel(name, Gbar, tau1, tau2, ek, synapse_count, delay, params=None):
+    lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
     if name == 'nmda':
-        synchan = moose.NMDAChan(name)
+        synchan = moose.NMDAChan(lib.path+ '/' + name)
         try:
             synchan = set_nmda_magnesium_parameters(synchan, params)
             synchan = set_ghk_equation_factors(synchan, params)
         except:
             raise ValueError("No NMDA params provided")
     else:
-        synchan = moose.SynChan(name)
+        synchan = moose.SynChan(lib.path+ '/' + name)
     synchan.Gbar = Gbar
     synchan.tau1 = tau1
     synchan.tau2 = tau2
@@ -251,6 +252,12 @@ def set_ghk_equation_factors(nmdachan, params):
     nmdachan.condFraction = params.condfraction
     return nmdachan
 
-def connect_ca_pool_to_nmda_synapse(nmdachan, capool):
-    moose.connect(nmdachan, 'ICaOut', capool, 'current')
-    moose.connect(capool, 'CaConc', nmdachan, 'setIntCa')
+def connect_ca_pool_to_nmda_synapse(moose_paths, capool_name):
+    for moose_path in moose_paths:
+        try:
+            nmdachan = moose.element(moose.element(moose_path).path + '/nmda')
+            capool = moose.element(moose.element(moose_path).path + '/' + capool_name)
+            moose.connect(nmdachan, 'ICaOut', capool, 'current')
+            moose.connect(capool, 'CaConc', nmdachan, 'setIntCa')
+        except:
+            continue
