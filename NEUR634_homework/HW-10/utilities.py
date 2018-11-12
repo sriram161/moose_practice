@@ -258,6 +258,6 @@ def connect_ca_pool_to_nmda_synapse(moose_paths, capool_name):
             nmdachan = moose.element(moose.element(moose_path).path + '/nmda')
             capool = moose.element(moose.element(moose_path).path + '/' + capool_name)
             moose.connect(nmdachan, 'ICaOut', capool, 'current')
-            moose.connect(capool, 'CaConc', nmdachan, 'setIntCa')
+            moose.connect(capool, 'concOut', nmdachan, 'setIntCa')
         except:
             continue
