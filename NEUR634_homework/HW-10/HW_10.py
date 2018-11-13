@@ -97,7 +97,6 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     # Output table.
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
     dend1_v_table = create_output_table(table_element='/output', table_name='dend1Vm')
-    import pdb; pdb.set_trace()
     # Connect output tables.
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(dend1_v_table, 'requestOut', moose.element('/dend_2'), 'getVm')
@@ -115,7 +114,6 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     v_plot = plot_vm_table(simtime, soma_v_table, dend1_v_table, title=experiment_title.format(_rate, _rate2, syn_g_max[0], syn_g_max[1]), xlab='Time', ylab='voltage')
     plt.grid(True)
     plt.legend(['soma', 'dend'])
-    #plt.show()
     plt.savefig('graph.png')
 
 main(experiment_title="Membrane potential exitation(rate, g_max): ({0}Hz, {2}S) Inhabition(rate, g_max): ({1}Hz, {3}S)", _rate=sys.argv[1], _rate2 = sys.argv[2], e_g_max=sys.argv[3], i_g_max=sys.argv[4])
