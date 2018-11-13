@@ -6,6 +6,8 @@
 import sys
 import moose
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from utilities import create_compartment
 from utilities import create_channel
