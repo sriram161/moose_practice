@@ -1,0 +1,5 @@
+
+python3 HW_10.py 10 10 na na 0 -> Control
+python3 HW_10.py 10 10 na na 4E-9 -> Minute increase in nmda g_max didn't increase in excitability.
+python3 HW_10.py 10 10 na na 3E-7 -> Moderate increase in nmda g_max increased excitability.
+python3 HW_10.py 10 10 na na 8E-7 -> Spiking.

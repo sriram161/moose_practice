@@ -23,12 +23,12 @@ K_n_params = AlphaBetaparams(
 ca_params = capools(caBasal=50E-6, caThick=1E-6, caTau=20E-3, bufCapacity=20, caName='CaPool')
 
 
-syn_chan1 = SynapseChannel(syn_name='syn', g_max=1E-8, tau1=1E-3, tau2=5E-3, ek=0, synapse_count=1, delay=1E-3, params=None) # Excitatory synapses
-syn_chan2 = SynapseChannel(syn_name='syn2', g_max=1E-8, tau1=0.5E-3, tau2=5.5E-3, ek=-80E-3, synapse_count=1, delay=1E-3, params=None) # Inhabitory sunapses
+AMPA = SynapseChannel(syn_name='ampa', g_max=1E-8, tau1=1E-3, tau2=5E-3, ek=0, synapse_count=1, delay=1E-3, params=None) # Excitatory synapses
+GABA = SynapseChannel(syn_name='gaba', g_max=1E-8, tau1=0.5E-3, tau2=5.5E-3, ek=-80E-3, synapse_count=1, delay=1E-3, params=None) # Inhabitory sunapses
 
 mgblockparams = nmdamgblock(A=(1/6.0) ,B=(1/80.0) ,conc=1.4 ,temperature=303 ,extca=2 ,condfraction=0.1)
 
-nmda = SynapseChannel(syn_name='nmda', g_max=2E-9, tau1=1.1E-3, tau2=37.5E-3, ek=5E-3, synapse_count=1, delay=1E-3, params=mgblockparams)
+NMDA = SynapseChannel(syn_name='nmda', g_max=2E-9, tau1=1.1E-3, tau2=37.5E-3, ek=5E-3, synapse_count=1, delay=1E-3, params=mgblockparams)
 
 Na_chan = copy(channel_param_template)
 k_chan = copy(channel_param_template)
@@ -48,6 +48,6 @@ k_chan['g_max'] = 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
 k_chan['e_k'] = -12E-3 + EREST_ACT
 
 channel_settings = [Na_chan, k_chan]
-synapse_settings2 = [syn_chan1, syn_chan2, nmda]
+synapse_settings2 = [AMPA, GABA, NMDA]
 
 channel_settings = {chan.get('chan_name'): chan for chan in channel_settings}

@@ -7,7 +7,7 @@ import sys
 import moose
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from utilities import create_compartment
 from utilities import create_channel
@@ -36,13 +36,12 @@ CAMIN = 0
 CAMAX = 1
 CADIVS = 10E3
 
-def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
+def main(experiment_title, _rate, _rate2, ampa_g_max=4E-9, gaba_g_max=4E-9, nmda_g_max=4E-9):
     # Simulation information.
     simtime = 1
     simdt = 0.25e-6
     plotdt = 0.25E-3
-    syn_g_max = [4E-9 if g_max == 'na' else np.float(g_max) for g_max in [e_g_max, i_g_max]]
-    syn_g_max.append(2E-9)
+    syn_g_max = [4E-9 if g_max == 'na' else np.float(g_max) for g_max in [ampa_g_max, gaba_g_max, nmda_g_max]]
 
     # Cell Compartment infromation
     diameter = 30e-6
@@ -86,8 +85,9 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     spikegen_2 = create_spikegen(name='spikegen_2', type='random', refractory_period=1E-3, rate=_rate2)
 
     # Connect spike generator to synapses.
-    moose.connect(spikegen_1, 'spikeOut', moose.element('/dend_2[0]/syn[0]/synhandler').synapse[0], 'addSpike')
-    moose.connect(spikegen_2, 'spikeOut', moose.element('/dend_2[0]/syn2[0]/synhandler').synapse[0], 'addSpike')
+    moose.connect(spikegen_1, 'spikeOut', moose.element('/dend_2[0]/ampa[0]/synhandler').synapse[0], 'addSpike')
+    moose.connect(spikegen_2, 'spikeOut', moose.element('/dend_2[0]/gaba[0]/synhandler').synapse[0], 'addSpike')
+    moose.connect(spikegen_1, 'spikeOut', moose.element('/dend_2[0]/nmda[0]/synhandler').synapse[0], 'addSpike')
 
     # Connect NMDA receptor channels to calcium pools.
     connect_ca_pool_to_nmda_synapse(moose_paths, 'CaPool')
@@ -113,11 +113,12 @@ def main(experiment_title, _rate, _rate2, e_g_max=4E-9, i_g_max=4E-9):
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime, soma_v_table, dend1_v_table, title=experiment_title.format(_rate, _rate2, syn_g_max[0], syn_g_max[1]), xlab='Time', ylab='voltage')
+    v_plot = plot_vm_table(simtime, soma_v_table, dend1_v_table, title=experiment_title.format(_rate, _rate2, *syn_g_max), xlab='Time', ylab='voltage')
     plt.grid(True)
     plt.legend(['soma', 'dend'])
-    plt.savefig('graph.png')
+    #plt.savefig('graph.png')
+    plt.show()
 
-main(experiment_title="Membrane potential exitation(rate, g_max): ({0}Hz, {2}S) Inhabition(rate, g_max): ({1}Hz, {3}S)", _rate=sys.argv[1], _rate2 = sys.argv[2], e_g_max=sys.argv[3], i_g_max=sys.argv[4])
+main(experiment_title="exitation(rate, AMPA_g_max): ({0}Hz, {2}S) Inhabition(rate, GABA_g_max): ({1}Hz, {3}S) NMDA_g_max; {4}S", _rate=sys.argv[1], _rate2 = sys.argv[2], ampa_g_max=sys.argv[3], gaba_g_max=sys.argv[4], nmda_g_max=sys.argv[5])
 
-# python3 HW_10.py 10 10 na na
+# python3 HW_10.py 10 10 na na na
