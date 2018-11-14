@@ -1,0 +1,16 @@
+Homework 10 [NEURON]
+1. Create a ball and stick neuron 
+	a. create a spherical soma and 100 um long dendrite
+	b. insert HHChannels in the soma, and pas in the dendrite
+	c. you may use the code you wrote previously, but make sure no HHChannels in the dendrite
+2. add synaptic connections to distal, middle and proximal dendrite
+	a. Use AlphaSynapse, so we don't need a pre-synaptic neuron, with reversal potential of 0 mV
+	b. create three different NetStim objects
+	c. Use stim.number=1
+3. Determine the minimum synaptic weight (gmax) to produce an AP when 
+	a. only the distal synapse is stimulated
+	b. only the middle synapse is stimulated
+	c. only the middle synapse is proximal
+4. Does weight change if you increase stim.number?  
+	a. make stim.number = 5, do you see 5 spikes using an interval of 10sm?
+	b. decrease interval from the default of 10, to 1 (ms), how many spikes do you see?  can you decrease gmax and still see a spike?
