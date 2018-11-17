@@ -1,4 +1,5 @@
 Homework 10 [NEURON]
+Model construction part of the assignment.
 1. Create a ball and stick neuron 
 	a. create a spherical soma and 100 um long dendrite
 	b. insert HHChannels in the soma, and pas in the dendrite
@@ -7,6 +8,8 @@ Homework 10 [NEURON]
 	a. Use AlphaSynapse, so we don't need a pre-synaptic neuron, with reversal potential of 0 mV
 	b. create three different NetStim objects
 	c. Use stim.number=1
+
+Experimentation part of the model.
 3. Determine the minimum synaptic weight (gmax) to produce an AP when 
 	a. only the distal synapse is stimulated
 	b. only the middle synapse is stimulated
