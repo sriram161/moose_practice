@@ -19,31 +19,33 @@ class BallAndStick(object):
         """Connect the sections of the cell to build a tree."""
         self.dend.connect(self.soma(1))
     #
-    def define_geometry(self):
+
+    def define_geometry(self, soma_diameter=12.6157, soma_length=12.6157, dend_diameter=1, dend_length=200, dend_seg=5):
         """Set the 3D geometry of the cell."""
-        self.soma.L = self.soma.diam = 12.6157 # microns
-        self.dend.L = 200                      # microns
-        self.dend.diam = 1                     # microns
-        self.dend.nseg = 5
+        self.soma.L = soma_length
+        self.soma.diam = soma_diameter         # microns
+        self.dend.L = dend_length              # microns
+        self.dend.diam = dend_diameter         # microns
+        self.dend.nseg = dend_seg
         h.define_shape() # Translate into 3D points.
-    #
-    def define_biophysics(self):
+
+    def define_biophysics(self, Ra=100, Cm=1, soma_hh_gnabar=0.12, soma_hh_gkbar=0.036, soma_hh_gl=0.0003, soma_hh_el=-54.3, dend_g=0.001, dend_e=-65):
         """Assign the membrane properties across the cell."""
         for sec in self.all: # 'all' defined in build_subsets
-            sec.Ra = 100    # Axial resistance in Ohm * cm
-            sec.cm = 1      # Membrane capacitance in micro Farads / cm^2
+            sec.Ra = Ra    # Axial resistance in Ohm * cm
+            sec.cm = Cm      # Membrane capacitance in micro Farads / cm^2
         # Insert active Hodgkin-Huxley current in the soma
         self.soma.insert('hh')
         for seg in self.soma:
-            seg.hh.gnabar = 0.12  # Sodium conductance in S/cm2
-            seg.hh.gkbar = 0.036  # Potassium conductance in S/cm2
-            seg.hh.gl = 0.0003    # Leak conductance in S/cm2
-            seg.hh.el = -54.3     # Reversal potential in mV
+            seg.hh.gnabar = soma_hh_gnabar  # Sodium conductance in S/cm2
+            seg.hh.gkbar = soma_hh_gkbar  # Potassium conductance in S/cm2
+            seg.hh.gl = soma_hh_gl    # Leak conductance in S/cm2
+            seg.hh.el = soma_hh_el     # Reversal potential in mV
         # Insert passive current in the dendrite
         self.dend.insert('pas')
         for seg in self.dend:
-            seg.pas.g = 0.001  # Passive conductance in S/cm2
-            seg.pas.e = -65    # Leak reversal potential mV
+            seg.pas.g = dend_g  # Passive conductance in S/cm2
+            seg.pas.e = dend_e    # Leak reversal potential mV
     #
     def build_subsets(self):
         """Build subset lists. For now we define 'all'."""
