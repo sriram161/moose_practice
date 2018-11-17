@@ -2,12 +2,16 @@ from neuron import h
 class BallAndStick(object):
     """Two-section cell: A soma with active channels and
     a dendrite with passive properties."""
-    def __init__(self):
+    def __init__(self, settings):
         self.create_sections()
         self.build_topology()
         self.build_subsets()
-        self.define_geometry()
-        self.define_biophysics()
+        geometry = settings.get('geomertry')
+        soma_diameter, soma_length, dend_diameter, dend_length, dend_seg = geometry
+        self.define_geometry(soma_diameter, soma_length, dend_diameter, dend_length, dend_seg)
+        biophysics = settings.get('biophysics')
+        Ra, Cm, soma_hh_gnabar, soma_hh_gkbar, soma_hh_gl, soma_hh_el, dend_g, dend_e = biophysics
+        self.define_biophysics(Ra, Cm, soma_hh_gnabar, soma_hh_gkbar, soma_hh_gl, soma_hh_el, dend_g, dend_e)
     #
     def create_sections(self):
         """Create the sections of the cell."""
@@ -19,7 +23,6 @@ class BallAndStick(object):
         """Connect the sections of the cell to build a tree."""
         self.dend.connect(self.soma(1))
     #
-
     def define_geometry(self, soma_diameter=12.6157, soma_length=12.6157, dend_diameter=1, dend_length=200, dend_seg=5):
         """Set the 3D geometry of the cell."""
         self.soma.L = soma_length
