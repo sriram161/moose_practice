@@ -6,7 +6,7 @@ class BallAndStick(object):
         self.create_sections()
         self.build_topology()
         self.build_subsets()
-        geometry = settings.get('geomertry')
+        geometry = settings.get('geometry')
         soma_diameter, soma_length, dend_diameter, dend_length, dend_seg = geometry
         self.define_geometry(soma_diameter, soma_length, dend_diameter, dend_length, dend_seg)
         biophysics = settings.get('biophysics')
@@ -54,3 +54,13 @@ class BallAndStick(object):
         """Build subset lists. For now we define 'all'."""
         self.all = h.SectionList()
         self.all.wholetree(sec=self.soma)
+
+    def create_syn_on_dend(self, position, e, gmax, onset, tau):
+        syn = h.AlphaSynapse(self.dend(position))
+        syn.e = e
+        syn.gmax = gmax
+        syn.onset = onset
+        syn.tau = tau
+        return syn
+
+    
