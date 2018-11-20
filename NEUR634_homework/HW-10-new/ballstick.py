@@ -60,5 +60,3 @@ class BallAndStick(object):
         syn.e = e
         syn.tau = tau
         return syn
-
-    

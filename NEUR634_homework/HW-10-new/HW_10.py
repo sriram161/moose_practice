@@ -11,24 +11,25 @@ def main(prox_flag, middle_flag, distal_flag, prox_w, middle_w, distal_w):
     settings = {'geometry': (12.6157, 12.6157, 1, 100, 101),
                 'biophysics': (100, 1, 0.12, 0.036, 0.0003, -54.3, 0.001, -65)}
     model_1 = BallAndStick(settings)
+    print(prox_flag, middle_flag, distal_flag, prox_w, middle_w, distal_w)
 
     # Create synapse on ball and stick model
-    prox_syn = model_1.create_syn_on_dend(0.1, 0, 1)
-    middle_syn = model_1.create_syn_on_dend(0.50,0, 1)
-    distal_syn = model_1.create_syn_on_dend(1.00,0, 1)
+    prox_syn = model_1.create_syn_on_dend(position=0.1, e=0, tau=1)
+    middle_syn = model_1.create_syn_on_dend(position=0.5, e=0, tau=1)
+    distal_syn = model_1.create_syn_on_dend(position=1.0, e=0, tau=1)
 
     # Create stimulators for synapses
-    stim_1 = create_stimulator(h, 1, 5, 10)
-    stim_2 = create_stimulator(h, 1, 5, 10)
-    stim_3 = create_stimulator(h, 1, 5, 10)
+    stim_1 = create_stimulator(h, number=1, start=5, interval=10)
+    stim_2 = create_stimulator(h, number=1, start=5, interval=10)
+    stim_3 = create_stimulator(h, number=1, start=5, interval=10)
 
     # Connect stimulators to synapses
     if int(prox_flag):
-        connect_stimulator_synapse(h, stim_1, prox_syn, delay=5, weight=np.float32(prox_w))
+        nc1 = connect_stimulator_synapse(h, stim_1, prox_syn, delay=1, weight=float(prox_w))
     if int(middle_flag):
-        connect_stimulator_synapse(h, stim_2, middle_syn, delay=5, weight=np.float32(middle_w))
+        nc2 = connect_stimulator_synapse(h, stim_2, middle_syn, delay=1, weight=float(middle_w))
     if int(distal_flag):
-        connect_stimulator_synapse(h, stim_3, distal_syn, delay=5, weight=np.float32(distal_w))
+        nc3 = connect_stimulator_synapse(h, stim_3, distal_syn, delay=1, weight=float(distal_w))
 
     # Create output tables
     t_vec = h.Vector()
@@ -43,7 +44,7 @@ def main(prox_flag, middle_flag, distal_flag, prox_w, middle_w, distal_w):
     distal_vec.record(model_1.dend(1.0)._ref_v)
 
     # Run simulation
-    h.tstop = 400
+    h.tstop = 50
     h.run()
 
     # plot results
@@ -61,5 +62,3 @@ if __name__ == '__main__':
 # python HW_10.py 1 0 0 0.04 0.04 0.04
 # python HW_10.py 1 1 0 0.04 0.04 0.04
 # python HW_10.py 1 1 1 0.04 0.04 0.04
-
-
