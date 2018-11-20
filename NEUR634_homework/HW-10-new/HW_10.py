@@ -6,7 +6,6 @@ from collections import namedtuple
 from neuron import gui, h
 import matplotlib.pyplot as plt
 
-
 def main(prox_flag, middle_flag, distal_flag, prox_w, middle_w, distal_w):
     settings = {'geometry': (12.6157, 12.6157, 1, 100, 101),
                 'biophysics': (100, 1, 0.12, 0.036, 0.0003, -54.3, 0.001, -65)}
