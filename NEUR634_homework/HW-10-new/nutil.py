@@ -1,14 +1,12 @@
-from neuron import h
 
-def create_stimulator(number, start, interval):
+def create_stimulator(h, number, start, interval):
     stim = h.NetStim()
     stim.number = number
     stim.start = start
     stim.interval = interval
     return stim
 
-def connect_stimulator_synapse(stim, syn, delay, weight):
-    import pdb; pdb.set_trace()
+def connect_stimulator_synapse(h, stim, syn, delay, weight):
     ncstim = h.NetCon(stim, syn)
     ncstim.delay = delay
     ncstim.weight[0] = weight

@@ -55,11 +55,9 @@ class BallAndStick(object):
         self.all = h.SectionList()
         self.all.wholetree(sec=self.soma)
 
-    def create_syn_on_dend(self, position, e, gmax, onset, tau):
-        syn = h.AlphaSynapse(self.dend(position))
+    def create_syn_on_dend(self, position, e, tau):
+        syn = h.ExpSyn(self.dend(position))
         syn.e = e
-        syn.gmax = gmax
-        syn.onset = onset
         syn.tau = tau
         return syn
 

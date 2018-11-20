@@ -5,7 +5,7 @@ Model construction part of the assignment.
 	b. insert HHChannels in the soma, and pas in the dendrite Done!!!
 	-c. you may use the code you wrote previously, but make sure no HHChannels in the dendrite
 2. add synaptic connections to distal, middle and proximal dendrite
-	a. Use AlphaSynapse, so we don't need a pre-synaptic neuron, with reversal potential of 0 mV Done!!!
+	a. Use ExpSyn, so we don't need a pre-synaptic neuron, with reversal potential of 0 mV Done!!!
 	b. create three different NetStim objects Done!!!
 	c. Use stim.number=1 Done!!!
 
