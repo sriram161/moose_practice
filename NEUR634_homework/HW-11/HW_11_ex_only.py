@@ -7,8 +7,11 @@ from neuron import gui, h
 import matplotlib.pyplot as plt
 celldim = namedtuple('celldim',"soma_d soma_l dend_d dend_l dend_seg")
 cellbiophy = namedtuple('cellbiophy', "Ra, Cm, soma_hh_gnabar, soma_hh_gkbar, soma_hh_gl, soma_hh_el, dend_g, dend_e")
+nc_w = 0.02
+nc_d = 5
 
 def main(var):
+    global nc_w, nc_d
     setting = {'geometry': celldim(soma_d=12.6157, soma_l=12.6157, dend_d=1, dend_l=100, dend_seg=101),
                 'biophysics': cellbiophy(Ra=100, Cm=1, soma_hh_gnabar=0.12, soma_hh_gkbar=0.036, soma_hh_gl=0.0003, soma_hh_el=-54.3, dend_g=0.001, dend_e=-65)}
     N=3
@@ -27,14 +30,15 @@ def main(var):
 
     nclist = []
     esyns = []
+    # Connect neuron in ring.
     for i in range(N):
         src = cells[i]
         tgt = cells[(i+1)%N]
         syn = h.ExpSyn(tgt.dend(0.5))
         esyns.append(syn)
         nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
-        nc.weight[0] = 0.02
-        nc.delay = 5
+        nc.weight[0] = nc_w
+        nc.delay = nc_d
         nclist.append(nc)
 
     # Create AlphaSynapse for init network
@@ -60,11 +64,20 @@ def main(var):
 
     # plot results
     plt.plot(t_vec, soma1_vec, t_vec, soma2_vec, t_vec, soma3_vec)
-    plt.legend(['soma1', 'soma2', 'soma3'])
-    plt.show()
 
 if __name__ == '__main__':
     import sys
+    global nc_w, nc_d
+    if len(sys.argv) == 4:
+        nc_w = float(sys.argv[3])
+    if len(sys.argv) == 5:
+        nc_d = float(sys.argv[4])
     main(sys.argv[1])
+    main(sys.argv[2])
 
-# python HW_11.py 0
+    plt.title("conductance variance1: {} variance2: {}".format(sys.argv[1], sys.argv[2]))
+    plt.legend(['no_var_soma1', 'no_var_soma2', 'no_var_soma3', 'var_soma1', 'var_soma2', 'var_soma3'])
+    plt.show()
+
+# python HW_11_ex_only.py 0
+

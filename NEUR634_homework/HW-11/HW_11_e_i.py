@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from ballstick import BallAndStick
 from nutil import create_stimulator
@@ -5,10 +6,15 @@ from nutil import connect_stimulator_synapse
 from collections import namedtuple
 from neuron import gui, h
 import matplotlib.pyplot as plt
+nc_w = 0.02
+nc_d = 5
+inc_w = 0.02
+inc_d = 5
 celldim = namedtuple('celldim',"soma_d soma_l dend_d dend_l dend_seg")
 cellbiophy = namedtuple('cellbiophy', "Ra, Cm, soma_hh_gnabar, soma_hh_gkbar, soma_hh_gl, soma_hh_el, dend_g, dend_e")
 
 def main(var):
+        global nc_w, nc_d
     setting = {'geometry': celldim(soma_d=12.6157, soma_l=12.6157, dend_d=1, dend_l=100, dend_seg=101),
                 'biophysics': cellbiophy(Ra=100, Cm=1, soma_hh_gnabar=0.12, soma_hh_gkbar=0.036, soma_hh_gl=0.0003, soma_hh_el=-54.3, dend_g=0.001, dend_e=-65)}
     N=3
@@ -35,16 +41,16 @@ def main(var):
         syn = h.ExpSyn(tgt.dend(0.5))
         esyns.append(syn)
         nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
-        nc.weight[0] = 0.02 # change exitatory to.
-        nc.delay = 5
+        nc.weight[0] = nc_w # change exitatory to.
+        nc.delay = nc_d
         nclist.append(nc)
 
         syn = h.ExpSyn(tgt.dend(0.5))
         syn.e = -80
         isyns.append(syn)
         nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
-        nc.weight[0] = 0.02 # change inhabiton to.
-        nc.delay = 5
+        nc.weight[0] = inc_w # change inhabiton to.
+        nc.delay = inc_d
         inclist.append(nc)
 
     # Create AlphaSynapse for init network
@@ -73,8 +79,22 @@ def main(var):
     plt.legend(['soma1', 'soma2', 'soma3'])
     plt.show()
 
-if __name__ == '__main__':
-    import sys
-    main(sys.argv[1])
 
-# python HW_11.py 0
+if __name__ == '__main__':
+   global nc_w, nc_d, inc_w, inc_d
+   if len(sys.argv) == 4:
+        nc_w = float(sys.argv[3])
+    if len(sys.argv) == 5:
+        nc_d = float(sys.argv[4])
+    if len(sys.argv) == 6:
+        inc_w = float(sys.argv[5])
+    if len(sys.argv) == 7:
+        inc_d = float(sys.argv[6])
+   main(sys.argv[1])
+   main(sys.argv[2])
+
+    plt.title("conductance variance1: {} variance2: {}".format(
+        sys.argv[1], sys.argv[2]))
+    plt.legend(['no_var_soma1', 'no_var_soma2', 'no_var_soma3',
+                'var_soma1', 'var_soma2', 'var_soma3'])
+    plt.show()
