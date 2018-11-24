@@ -19,5 +19,9 @@ Homework 11
        obs: significant difference is firing pattern like difference in peak height, raise and fall time of AP.
 	d. If you lower the weight of the netcon, do you see a bigger effect of variance?
         python C:\Users\ksrir\Development\moose_practice\NEUR634_homework\HW-11\HW_11_ex_only.py 0 0.2 0.01
-5. go back to small or zero variance (somewhat regular firing); add in a inhibitory synapse with delay = 5 ms
-	a. make the weight the same as excitatory synapses. Does the inhibitory synapse change the period of firing (delay AP generation?).  
+5. go back to small or zero variance (somewhat regular firing); 
+add in a inhibitory synapse with delay = 5 ms
+	a. make the weight the same as excitatory synapses. 
+    Does the inhibitory synapse change the period of firing (delay AP generation?).
+    python C:\Users\ksrir\Development\moose_practice\NEUR634_homework\HW-11\HW_11_e_i.py 0 0 0.02 5 0.02 5
+    obs: No it reduce the spiking activity.
