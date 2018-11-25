@@ -1,14 +1,18 @@
 ### Essentials
 
 1) Striatum LTS interneuron model *.p file.
+  Able to load model into moose using moose.loadModel( file, 'model')
+
 
 Channels:
  1) Calcium channel -> Ca_v1 -> Reduces the amplitude of membrane potential resonance.[Block]
  2) Calcium channel ->  Ca_v2 -> Reduces the frequency of membrance potential resonance.[Block]
- 3) Potassium channel ->  K 
+ 3) Potassium channel ->  K
  4) Chloride channel -> Ca_cc -> Abolishes the oscillations. [Block]
 
 Note:
 
 1) In depolarized state -> express 3-7Hz. [during resonance] [membrance potential]
-2) 
+2)
+
+# TODO use moose utility functions and set conductance based on geometry of compartments.
