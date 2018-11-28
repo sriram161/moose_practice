@@ -3,9 +3,6 @@ from templates import AlphaBetaparams
 from templates import channel_param_template
 from templates import capools
 from templates import CaDepparams
-from utilities import compute_comp_area
-
-EREST_ACT = -70e-3
 
 K_n_params = AlphaBetaparams(
               A_A=1, A_B=0.0, A_C=1.0, A_D=-20E-3, A_F=4e-3,
@@ -19,10 +16,10 @@ ca_v2_params = AlphaBetaparams(
               A_A=1, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=15e-3,
               B_A=1, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3) #plot in excel.
 
-ca_cc_params = CaDepparams(kd=0.75E-3, power=5.2, tau=4.9E-3)  # Check with dan?????
+ca_cc_params = CaDepparams(kd=1000E-6, power=2, tau=4.9E-3) # After discussion.
 #Where is Kd, power and tau??
-ca_params = capools(caBasal=1000E-6, caThick=1E-6, caTau=200E-3, bufCapacity=0.6, caName='CaPool')
-# Where is caThickness in the paper???? Ask Dan!!!
+ca_params = capools(caBasal=50E-6, caThick=1E-6, caTau=200E-3, bufCapacity=1/(0.6), caName='CaPool') # After discussion.
+# CaThick, cabasal and tau of ca_cc leave default.
 # Tp = 200 ms, ka = 1000 uM, buf=0.6
 
 k_chan = copy(channel_param_template)
@@ -53,7 +50,7 @@ ca_v2_chan['chan_type'] = 'ca_permeable'
 ca_cc_chan['chan_name'] = 'ca_cc'
 ca_cc_chan['z_params'] = ca_cc_params
 ca_cc_chan['z_pow'] = 1
-ca_cc_chan['g_max'] = 40E-3 # In paper that is a typo gL instead of gCl check with Dan.
+ca_cc_chan['g_max'] = 40E-3 # In paper that is a typo gL instead of gCl.
 ca_cc_chan['e_k'] = -70E-3
 ca_cc_chan['chan_type'] = 'ca_dependent'
 

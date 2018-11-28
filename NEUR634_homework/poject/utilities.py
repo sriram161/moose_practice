@@ -148,10 +148,10 @@ def create_ca_conc_pool(params):
     ca_pool.B = params.bufCapacity
     return ca_pool
 
-def set_channel_conductance(chan, gbar, E_nerst, length=None, diameter=None):
+def set_channel_conductance(chan, gbar, E_nerst, comp=None):
     chan.Ek = E_nerst
-    if length and diameter:
-        chan.Gbar = gbar * compute_comp_area(length, diameter)[0] *1E4
+    if comp is None:
+        chan.Gbar = gbar * compute_comp_area(comp.length, comp.diameter)[0] *1E4
     else:
         chan.Gbar = gbar
     return chan
@@ -173,7 +173,7 @@ def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
     for moose_path in moose_paths:
         _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
         comp = moose.element(moose_path)
-        _chan = set_channel_conductance(_chan, _chan.Gbar, _chan.Ek, comp.length, comp.diameter)
+        _chan = set_channel_conductance(_chan, _chan.Gbar, _chan.Ek, comp)
         moose.connect(_chan, 'channel', comp, 'channel', 'OneToOne')
 
 def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths):

@@ -14,9 +14,9 @@ from utilities import plot_vm_table
 from utilities import create_set_of_channels
 from utilities import copy_connect_channel_moose_paths
 from collections import namedtuple
-from channels_3 import channel_settings
+from channels import channel_settings
 
-EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
+EREST_ACT = -50e-3 #: Resting membrane potential ??? where in paper???
 VMIN = -30e-3 + EREST_ACT
 VMAX = 120e-3 + EREST_ACT
 VDIVS = 3000
@@ -31,18 +31,18 @@ def main():
     plotdt = 0.25e-3
 
     # Cell Compartment infromation
-    Em = EREST_ACT # what is resting membrane potential in 
+    Em = EREST_ACT # what is resting membrane potential in
     CM = 1e-6 * 1E-4
     RM = 20  # tau = 200ms
-    RA = 4
+    RA = 4 # Random number not given in paper. What value should I take???
 
     # Stimulus information
     inj_delay = 20E-3
     inj_amp = 1E-9
     inj_width = 40E-3
 
-    spn_model = create_swc_model(root_name='acc1', file_name='E19-cell_filling-caudal.CNG.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
-    soma = moose.element('/acc1[0]/soma')
+    spn_model = create_swc_model(root_name='lts', file_name='interneuron.swc', RM=RM, CM=CM, RA=RA, ELEAK=Em, initVM=Em)
+    soma = moose.element('/lts[0]/soma')
 
     # Create channels
     channels_set = create_set_of_channels(channel_settings, VDIVS,  VMIN, VMAX)
@@ -67,7 +67,7 @@ def main():
     # Connect output tables
     moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
     moose.connect(soma_i_table, 'requestOut', pulse_inject, 'getOutputValue')
-    moose.connect(chicken_dend_table, 'requestOut', moose.element('/acc1[0]/dend_e_158_1'), 'getVm')
+    moose.connect(chicken_dend_table, 'requestOut', moose.element('/lts[0]/dend_e_158_1'), 'getVm')
 
     # Set moose simulation clocks
     for lable in range(7):
