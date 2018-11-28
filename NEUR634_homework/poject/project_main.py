@@ -24,6 +24,9 @@ CAMIN = 0
 CAMAX = 1
 CADIVS = 10E3
 
+# TODO write a function to generate connected cell model.
+# TODO write a decorator to accept channel settings and return cell model with connected channels.
+
 def main():
     # Simulation information.
     simtime = 1
