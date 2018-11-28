@@ -1,53 +1,62 @@
 from copy import copy
 from templates import AlphaBetaparams
-from templates import SynapseChannel
 from templates import channel_param_template
 from templates import capools
-from templates import nmdamgblock
+from templates import CaDepparams
 from utilities import compute_comp_area
 
 EREST_ACT = -70e-3
 
-Na_m_params = AlphaBetaparams(
-              A_A=1e5 * (25e-3 + EREST_ACT), A_B=-1e5, A_C=-1.0, A_D=-25e-3 - EREST_ACT, A_F=-10e-3,
-              B_A=4e3, B_B=0.0, B_C=0.0, B_D=0.0 - EREST_ACT, B_F=18e-3)
-
-Na_h_params = AlphaBetaparams(
-              A_A=70.0, A_B=0.0, A_C=0.0, A_D=0.0 - EREST_ACT, A_F=0.02,
-              B_A=1000.0, B_B=0.0, B_C=1.0, B_D=-30E-3 - EREST_ACT, B_F=-0.01)
-
 K_n_params = AlphaBetaparams(
-              A_A=1e4 * (10e-3 + EREST_ACT), A_B=-1e4, A_C=-1.0, A_D=-10e-3 - EREST_ACT, A_F=-10e-3,
-              B_A=0.125e3, B_B=0.0, B_C=0.0, B_D=0.0 - EREST_ACT, B_F=80e-3)
+              A_A=1, A_B=0.0, A_C=1.0, A_D=-20E-3, A_F=4e-3,
+              B_A=1, B_B=0.0, B_C=1.0, B_D=-20E-3, B_F=4e-3) #plot in excel.
 
-ca_params = capools(caBasal=50E-6, caThick=1E-6, caTau=20E-3, bufCapacity=20, caName='CaPool')
+ca_v1_params = AlphaBetaparams(
+              A_A=1, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=15e-3,
+              B_A=1, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3) #plot in excel.
 
+ca_v2_params = AlphaBetaparams(
+              A_A=1, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=15e-3,
+              B_A=1, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3) #plot in excel.
 
-AMPA = SynapseChannel(syn_name='ampa', g_max=1E-8, tau1=1E-3, tau2=5E-3, ek=0, synapse_count=1, delay=1E-3, params=None) # Excitatory synapses
-GABA = SynapseChannel(syn_name='gaba', g_max=1E-8, tau1=0.5E-3, tau2=5.5E-3, ek=-80E-3, synapse_count=1, delay=1E-3, params=None) # Inhabitory sunapses
+ca_cc_params = CaDepparams(kd=0.75E-3, power=5.2, tau=4.9E-3)  # Check with dan?????
+#Where is Kd, power and tau??
+ca_params = capools(caBasal=1000E-6, caThick=1E-6, caTau=200E-3, bufCapacity=0.6, caName='CaPool')
+# Where is caThickness in the paper???? Ask Dan!!!
+# Tp = 200 ms, ka = 1000 uM, buf=0.6
 
-mgblockparams = nmdamgblock(A=(1/6.0) ,B=(1/80.0) ,conc=1.4 ,temperature=303 ,extca=2 ,condfraction=0.1)
-
-NMDA = SynapseChannel(syn_name='nmda', g_max=2E-9, tau1=1.1E-3, tau2=37.5E-3, ek=5E-3, synapse_count=1, delay=1E-3, params=mgblockparams)
-
-Na_chan = copy(channel_param_template)
 k_chan = copy(channel_param_template)
-
-Na_chan['chan_name'] = 'Na'
-Na_chan['x_params'] = Na_m_params
-Na_chan['y_params'] = Na_h_params
-Na_chan['x_pow'] = 3
-Na_chan['y_pow'] = 1
-Na_chan['g_max'] = 120E-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
-Na_chan['e_k'] = 115E-3 + EREST_ACT
+ca_v1_chan = copy(channel_param_template)
+ca_v2_chan = copy(channel_param_template)
+ca_cc_chan = copy(channel_param_template)
 
 k_chan['chan_name'] = 'K'
 k_chan['x_params'] = K_n_params
 k_chan['x_pow'] = 4
-k_chan['g_max'] = 36e-3 *compute_comp_area(30e-6, 50e-6)[0] *1E4
-k_chan['e_k'] = -12E-3 + EREST_ACT
+k_chan['g_max'] = 0.5e-3
+k_chan['e_k'] = -90E-3
 
-channel_settings = [Na_chan, k_chan]
-synapse_settings2 = [AMPA, GABA, NMDA]
+ca_v1_chan['chan_name'] = 'Ca_V1'
+ca_v1_chan['x_params'] = ca_v1_params
+ca_v1_chan['x_pow'] = 1
+ca_v1_chan['g_max'] = 0.18e-3
+ca_v1_chan['e_k'] = 100E-3
+ca_v1_chan['chan_type'] = 'ca_permeable'
+
+ca_v2_chan['chan_name'] = 'Ca_V2'
+ca_v2_chan['x_params'] = ca_v2_params
+ca_v2_chan['x_pow'] = 1
+ca_v2_chan['g_max'] = 0.4e-3
+ca_v2_chan['e_k'] = 100E-3
+ca_v2_chan['chan_type'] = 'ca_permeable'
+
+ca_cc_chan['chan_name'] = 'ca_cc'
+ca_cc_chan['z_params'] = ca_cc_params
+ca_cc_chan['z_pow'] = 1
+ca_cc_chan['g_max'] = 40E-3 # In paper that is a typo gL instead of gCl check with Dan.
+ca_cc_chan['e_k'] = -70E-3
+ca_cc_chan['chan_type'] = 'ca_dependent'
+
+channel_settings = [k_chan, ca_v1_chan, ca_v2_chan, ca_cc_chan]
 
 channel_settings = {chan.get('chan_name'): chan for chan in channel_settings}

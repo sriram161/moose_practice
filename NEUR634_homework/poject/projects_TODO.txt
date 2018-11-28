@@ -3,7 +3,6 @@
 1) Striatum LTS interneuron model *.p file.
   Able to load model into moose using moose.loadModel( file, 'model')
 
-
 Channels:
  1) Calcium channel -> Ca_v1 -> Reduces the amplitude of membrane potential resonance.[Block]
  2) Calcium channel ->  Ca_v2 -> Reduces the frequency of membrance potential resonance.[Block]
@@ -13,6 +12,24 @@ Channels:
 Note:
 
 1) In depolarized state -> express 3-7Hz. [during resonance] [membrance potential]
-2)
 
 # TODO use moose utility functions and set conductance based on geometry of compartments.
+
+##### Question I want to ask the paper?
+
+1) Can I reproduce the membrance oscillations that was explained in the paper?
+2) Can sodium channel impact membrane oscillation?
+3) How spiking activity is impacted in the presence of membrane oscillations?
+
+###### What question is the paper trying to address?
+
+###### What is the importance for that question?
+
+###### Channel parameters of the model:
+1) Potassium -> gmax = 0.5 mS/cm2, vhalf = -20 mV, v_slope = 4mV, Erev = -90mV Done!!!
+2) Leak -> gmax = 0.06 mS/cm2 C = 1uF
+3) Ca_l V1 -> gmax = 0.018 mS/cm2,vhalf= -10mV, v_slope = 15mV, Erev= 100mV Done!!!
+4) Ca_N V2 -> gmax = 0.4 mS/cm2,vhalf= 10mV, v_slope = 15mV, Erev= 100mV Done!!!
+
+5) Cl channel[Ca dependent] ->  buf = 0.6, time_constant= 200msec calcConc = 1000 uM
+Note cloride channel is simillar to calcium dependent potassium channel from lecture.

@@ -16,11 +16,13 @@ from utilities import copy_connect_channel_moose_paths
 from collections import namedtuple
 from channels_3 import channel_settings
 
-EREST_ACT = -70e-3 #: Resting membrane potential
+EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
 VMIN = -30e-3 + EREST_ACT
 VMAX = 120e-3 + EREST_ACT
 VDIVS = 3000
-
+CAMIN = 0
+CAMAX = 1
+CADIVS = 10E3
 
 def main():
     # Simulation information.
@@ -29,7 +31,7 @@ def main():
     plotdt = 0.25e-3
 
     # Cell Compartment infromation
-    Em = EREST_ACT
+    Em = EREST_ACT # what is resting membrane potential in 
     CM = 1e-6 * 1E-4
     RM = 20  # tau = 200ms
     RA = 4
