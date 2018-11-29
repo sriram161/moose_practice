@@ -54,47 +54,23 @@ def cell_prototype(model_name, file_name, comp_passive, channel_settings, capara
 
 def main(model_name, file_name, comp_passive, channel_settings):
     # Simulation information.
-    simtime = 11
+    simtime = 900
     simdt = 0.25e-5
     plotdt = 0.25e-3
 
-    # Stimulus information
-    inj_delay = 20E-3
-    inj_amp = 1E-9
-    inj_width = 40E-3
-
     # Model creation
-    # cell, cell_comp_paths = cell_prototype(model_name, file_name, comp_passive, channel_settings, ca_params)
-    # soma = moose.element(cell.path +'/soma')
-    from utilities import create_compartment
-    soma = create_compartment('soma', 1, 1, 1, 1, initVM=1, ELEAK=1)
+    cell, cell_comp_paths = cell_prototype(model_name, file_name, comp_passive, channel_settings, ca_params)
+    soma = moose.element(cell.path +'/soma')
 
-    # connect pulse gen
-    pulse_inject_n50pA = create_pulse_generator('pulse1', soma, 50E-3, -50E-12, delay=10E-3)
     pulse_inject_50pA = create_pulse_generator('pulse2', soma, 50E-3, 50E-12, delay=10E-3)
-    import moose
-    pulse3 = moose.PulseGen('pulse3')
-    pulse3.setCount(3)
-    pulse3.delay[0] = 10E-3
-    pulse3.level[0] = -20E-12
-    pulse3.width[0] =  2.5 # 50E-3
-    pulse3.delay[1] = pulse3.width[0]
-    pulse3.level[1] = -10E-12
-    pulse3.width[1] =  2.5 #50E-3  # from figure. 1 C
-    pulse3.delay[2] = 1E9
-
 
     # Output table
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
-    #soma_i_table1 = create_output_table(table_element='/output', table_name='somaIm1')
-    #soma_i_table2 = create_output_table(table_element='/output', table_name='somaIm2')
-    soma_i_table3 = create_output_table(table_element='/output', table_name='somaIm3')
+    soma_i_table = create_output_table(table_element='/output', table_name='somaIm3')
 
     # Connect output tables     #source message [data into the component]  desination message(out of the compartments)
-    #moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
-    #moose.connect(soma_i_table1, 'requestOut', pulse_inject_50pA, 'getOutputValue')
-    #moose.connect(soma_i_table2, 'requestOut', pulse_inject_n50pA, 'getOutputValue')
-    moose.connect(soma_i_table3, 'requestOut', pulse3, 'getOutputValue')
+    moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
+    moose.connect(soma_i_table, 'requestOut', pulse_inject_50pA, 'getOutputValue')
 
     # Set moose simulation clocks
     for lable in range(7):
@@ -106,11 +82,10 @@ def main(model_name, file_name, comp_passive, channel_settings):
     moose.start(simtime)
 
     # Plot output tables.
-    v_plot = plot_vm_table(simtime,soma_i_table3, title="soma")
+    v_plot = plot_vm_table(simtime,soma_v_table, soma_i_table, title="soma vs i")
     plt.grid(True)
-    # plt.legend()
+    plt.legend(['v', 'i'])
     plt.show()
-
 
 if __name__ == "__main__":
     model_name = 'lts'

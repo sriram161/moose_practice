@@ -23,10 +23,10 @@ def create_compartment(comp_name, comp_length, comp_diameter, RM, CM, RA=1.0, in
     return set_comp_values(comp, RM, CM, RA, initVM, ELEAK)
 # Test:  soma = create_compartment('soma', 50E-6, 25E-6, 0.03, 2.8E3, 4.0)
 
-def create_pulse_generator(comp_to_connect, duration, amplitude, delay=50E-3, delay_1=1E9):
+def create_pulse_generator(gen_name, comp_to_connect, duration, amplitude, delay=50E-3, delay_1=1E9):
     ''' Create a pulse generator and connect to a moose compartment.
     '''
-    pulse = moose.PulseGen('pulse')
+    pulse = moose.PulseGen(gen_name)
     pulse.delay[0] = delay  # First delay.
     pulse.width[0] = duration  # Pulse width.
     pulse.level[0] = amplitude  # Pulse amplitude.
@@ -91,25 +91,25 @@ def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
 def create_comp_model(container_name, file_name, comp_RM=None, comp_CM=None, comp_RA=None, comp_ELEAK=None, comp_initVm=None):
     'Create compartmental model from *.p file or a *.swc file.'
     if file_name.endswith('.p'):
-        root_comp = moose.loadModel(file_name, cell_container_p)
+        root_comp = moose.loadModel(file_name, container_name)
     elif file_name.endswith('swc'):
         assert comp_RM is not None, "comp_RM needs valid value."
         assert comp_CM is not None, "comp_CM needs valid value."
         assert comp_RA is not None, "comp_RA needs valid value."
         assert comp_ELEAK is not None, "comp_ELEAK needs valid value."
         assert comp_initVm is not None, "comp_initVm needs valid value."
-        root_comp = moose.loadModel(file_name, cell_container_p)
+        root_comp = moose.loadModel(file_name, container_name)
         for comp in moose.wildcardFind(root_comp.path+'/#[TYPE=Compartment]'):
             set_comp_values(comp, comp_RM, comp_CM, comp_RA, comp_initVm, comp_ELEAK)
     else:
         raise "Invalid cell model file type."
     return root_comp
 
-def create_channel(chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
+def create_channel(ntype, chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
                    x_params, xpow, tick=-1, y_params=None, ypow=0, zpow=0, z_params=None):
-    if not moose.exists('/library'):
-        moose.Neutral('/library')
-    chan_comp = moose.HHChannel('/library/' + chan_name)
+    lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
+    typelib = moose.Neutral(lib.path+'/'+ntype) if not moose.exists(lib.path+'/'+ntype) else moose.element(lib.path+'/'+ntype)
+    chan_comp = moose.HHChannel(typelib.path + '/' + chan_name)
     chan_comp.tick = tick
     if xpow: # GateX
         chan_comp.Xpower = xpow
@@ -137,9 +137,10 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     chan.useConcentration = True
     return chan
 
-def create_ca_conc_pool(params):
+def create_ca_conc_pool(ntype, params):
     lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
-    ca_pool = moose.CaConc(lib.path+'/'+params.caName)
+    typelib = moose.Neutral(lib.path+'/'+ntype) if not moose.exists(lib.path+'/'+ntype) else moose.element(lib.path+'/'+ntype)
+    ca_pool = moose.CaConc(typelib.path+'/'+params.caName)
     ca_pool.CaBasal = params.caBasal
     ca_pool.ceiling = 1
     ca_pool.floor = 0
@@ -151,15 +152,15 @@ def create_ca_conc_pool(params):
 def set_channel_conductance(chan, gbar, E_nerst, comp=None):
     chan.Ek = E_nerst
     if comp is None:
-        chan.Gbar = gbar * compute_comp_area(comp.length, comp.diameter)[0] *1E4
-    else:
         chan.Gbar = gbar
+    else:
+        chan.Gbar = gbar * compute_comp_area(comp.length, comp.diameter)[0] *1E4
     return chan
 
-def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, camax):
+def create_set_of_channels(ntype, channel_settings, vdivs, vmin, vmax, cadivs, camin, camax):
     chan_set = {}
     for settings in channel_settings.values():
-        chan = create_channel(chan_name=settings.get('chan_name'),
+        chan = create_channel(ntype, chan_name=settings.get('chan_name'),
                               vdivs=vdivs, vmin=vmin, vmax=vmax,
                               cadivs=cadivs, camin=camin, camax=camax,
                               x_params=settings.get('x_params'), xpow=settings.get('x_pow'),
@@ -171,7 +172,7 @@ def create_set_of_channels(channel_settings, vdivs, vmin, vmax, cadivs, camin, c
 
 def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
     for moose_path in moose_paths:
-        _chan = moose.copy(moose_chan, moose_path, chan_name, 1)
+        _chan = moose.copy(moose_chan, moose_path, chan_name, 1)[0]
         comp = moose.element(moose_path)
         _chan = set_channel_conductance(_chan, _chan.Gbar, _chan.Ek, comp)
         moose.connect(_chan, 'channel', comp, 'channel', 'OneToOne')
