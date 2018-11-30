@@ -45,22 +45,19 @@ def chirp(gen_name="chirp", amp=1, f0=1, f1=50, T=0.8, start=0.1, end=0.5, simdt
 
 def main(model_name, comp_passive, channel_settings, ca_params):
     # Simulation information.
-    simtime = 100E-3
+    simtime = 500E-3
     simdt = 0.25e-5
     plotdt = 0.25e-3
 
     diameter = 30e-6
     length = 50e-6
-    Em = EREST_ACT + 10.613e-3
-    CM = 1e-6 * 1e4
-    RM = 1 /(0.3E-3 * 1e4)
 
     inj_delay = 20E-3
     inj_amp = 1E-9
     inj_width = 40E-3
 
     # Model creation
-    soma = create_compartment('soma', length, diameter, RM, CM, initVM=EREST_ACT, ELEAK=Em)
+    soma = create_compartment('soma', length, diameter, comp_passive['RM'], comp_passive['CM'], initVM=comp_passive['EM'], ELEAK=comp_passive['EM'])
     moose_paths = [soma.path]
     channels_set = create_set_of_channels('soma', channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
     for channel_name, channel_obj in channels_set.items():
