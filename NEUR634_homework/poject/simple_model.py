@@ -18,6 +18,7 @@ from utilities import connect_ca_pool_to_chan
 from channels import channel_settings
 from channels import ca_params
 from utilities import create_compartment
+from utilities import compute_comp_area
 
 EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
 VMIN = -30e-3 + EREST_ACT
@@ -43,46 +44,82 @@ def chirp(gen_name="chirp", amp=1, f0=1, f1=50, T=0.8, start=0.1, end=0.5, simdt
     moose.useClock(0,'%s/##[TYPE=Func]' % (chirper.path), 'process')
     return func_1
 
+def simple_model(model_name, comp_passive, channel_settings, ca_params, length, diameter):
+        # Simulation information.
+        simtime = 500E-3
+        simdt = 0.25e-5
+        plotdt = 0.25e-3
+
+        diameter = diameter
+        length = length
+
+        inj_delay = 20E-3
+        inj_amp = 1E-9
+        inj_width = 40E-3
+
+        # Model creation
+        soma = create_compartment('soma', length, diameter, comp_passive['RM'], comp_passive['CM'], initVM=comp_passive['EM'], ELEAK=comp_passive['EM'])
+        moose_paths = [soma.path]
+        channels_set = create_set_of_channels('soma', channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
+        for channel_name, channel_obj in channels_set.items():
+            copy_connect_channel_moose_paths(channel_obj, channel_name, moose_paths)
+
+        if ca_params:
+            ca_pool = create_ca_conc_pool('soma', ca_params)
+            copy_ca_pools_moose_paths(ca_pool, 'CaPool', moose_paths, ca_params.bufCapacity)
+        for channel_name, channel_obj in channel_settings.items():
+            if channel_obj.get('chan_type'):
+               connect_ca_pool_to_chan(channel_name, channel_obj['chan_type'], 'CaPool', moose_paths)
+        return soma, moose_paths
+
+def plot_internal_currents(soma_i_table, soma_i_table1, soma_i_table2, soma_i_table3, soma_i_table4):
+    plt.figure("internal currents")
+    #plot_vm_table(simtime,soma_i_table, soma_i_table1, soma_i_table2, soma_i_table3, title="soma vs i")
+    plt.plot(soma_i_table.vector, label='Ca_v2')
+    plt.plot(soma_i_table1.vector ,label='Ca_V1')
+    plt.plot(soma_i_table2.vector ,label='K')
+    plt.plot(soma_i_table3.vector ,label='ca_cc')
+    plt.legend()
+
+    plt.figure("capool")
+    plt.plot(soma_i_table4.vector ,label='pool')
+    plt.legend()
+
+
+def creat_moose_tables():
+    soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
+    soma_i_table = create_output_table(table_element='/output', table_name='somIm')
+    soma_i_table1 = create_output_table(table_element='/output', table_name='somIm1')
+    soma_i_table2 = create_output_table(table_element='/output', table_name='somIm2')
+    soma_i_table3 = create_output_table(table_element='/output', table_name='somIm3')
+    soma_i_table4 = create_output_table(table_element='/output', table_name='somIm4')
+
+    moose.connect(soma_v_table, 'requestOut', moose.element('/soma'), 'getVm')
+    moose.connect(soma_i_table, 'requestOut', moose.element('/soma/Ca_V2'), 'getIk')
+    moose.connect(soma_i_table1, 'requestOut', moose.element('/soma/Ca_V1'), 'getIk')
+    moose.connect(soma_i_table2, 'requestOut', moose.element('/soma/K'), 'getIk')
+    moose.connect(soma_i_table3, 'requestOut', moose.element('/soma/ca_cc'), 'getIk')
+    moose.connect(soma_i_table4, 'requestOut', moose.element('/soma/CaPool'), 'getCa')
+    return {'vm': [soma_v_table], 'internal_currents': [soma_i_table, soma_i_table1, soma_i_table2, soma_i_table3, soma_i_table4]}
+
+
 def main(model_name, comp_passive, channel_settings, ca_params):
     # Simulation information.
-    simtime = 500E-3
+    simtime = 1
     simdt = 0.25e-5
     plotdt = 0.25e-3
 
-    diameter = 30e-6
-    length = 50e-6
+    diameter = 20e-6
+    length = 20e-6
 
-    inj_delay = 20E-3
-    inj_amp = 1E-9
-    inj_width = 40E-3
 
     # Model creation
-    soma = create_compartment('soma', length, diameter, comp_passive['RM'], comp_passive['CM'], initVM=comp_passive['EM'], ELEAK=comp_passive['EM'])
-    moose_paths = [soma.path]
-    channels_set = create_set_of_channels('soma', channel_settings, VDIVS,  VMIN, VMAX, CADIVS, CAMIN, CAMAX)
-    for channel_name, channel_obj in channels_set.items():
-        copy_connect_channel_moose_paths(channel_obj, channel_name, moose_paths)
-
-    if ca_params:
-        ca_pool = create_ca_conc_pool('soma', ca_params)
-        copy_ca_pools_moose_paths(ca_pool, 'CaPool', moose_paths)
-    for channel_name, channel_obj in channel_settings.items():
-        if channel_obj.get('chan_type'):
-           connect_ca_pool_to_chan(channel_name, channel_obj['chan_type'], 'CaPool', moose_paths)
+    soma, moose_paths = simple_model(model_name, comp_passive, channel_settings, ca_params, length, diameter)
     # chirp_test = chirp(gen_name="chirp",amp=1E-9, f0=0.1, f1=500, T=0.8, start=inj_delay, end=inj_width+inj_delay, simdt=simdt,amp_offset=5E-9)
-    moose.reinit()
+
     # moose.connect(chirp_test, 'valueOut', soma, 'injectMsg')
-
-    #pulse_inject = create_pulse_generator('pulse', soma, inj_width, inj_amp, delay=inj_delay)
-
     # Output table
-    soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
-    # soma_i_table = create_output_table(table_element='/output', table_name='somaIm3')
-
-    # moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
-    # moose.connect(soma_i_table, 'requestOut', pulse_inject, 'getOutputValue')
-    # Connect output tables     #source message [data into the component]  desination message(out of the compartments)
-    moose.connect(soma_v_table, 'requestOut', soma, 'getVm')
+    tabs = creat_moose_tables()
     # moose.connect(soma_i_table, 'requestOut', chirp_test, 'getValue')
 
     # Set moose simulation clocks
@@ -99,10 +136,27 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     #plt.grid(True)
     #plt.legend(['v', 'i'])
     #plt.show()
+    # set conductance for a list to Ca_v1, Ca_V2 and CC
+    caV1_cond_set = [0.2E-3]
+    caV2_cond_set = [0.4E-3]
+    cacc_cond_set = [0.4]
 
-    import matplotlib.pyplot as plt
-    plt.plot(soma_v_table.vector)
-    plt.show()
+    from itertools import product
+    for V1, V2, cc in product(caV1_cond_set, caV2_cond_set, cacc_cond_set):
+        moose.element('/soma/Ca_V1').Gbar = V1 * compute_comp_area(length, diameter)[0] *1E4
+        moose.element('/soma/Ca_V2').Gbar = V2 * compute_comp_area(length, diameter)[0] *1E4
+        moose.element('/soma/ca_cc').Gbar = cc * compute_comp_area(length, diameter)[0] *1E4
+        moose.reinit()
+        moose.start(simtime)
+        #plot_internal_currents(*tabs['internal_currents'])
+        plot_vm_table(simtime, tabs['vm'][0], title='V1: {0}, V2 :{1}, cc :{2}'.format(V1, V2, cc))
+        plt.show()
+
+    # from moose_nerp.graph import plot_channel
+    # for channel in channel_settings:
+    #     libchan=moose.element('/library/soma/'+channel)
+    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
+    # plt.show()
 
 if __name__ == "__main__":
     model_name = 'soma'
