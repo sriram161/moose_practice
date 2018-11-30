@@ -19,7 +19,9 @@ Note:
 
 1) Can I reproduce the membrance oscillations that was explained in the paper?
 2) Can sodium channel impact membrane oscillation?
+   Sodium channel blocked puts the cell in a depolarized state where the membrane is prone to oscillations.
 3) How spiking activity is impacted in the presence of membrane oscillations?
+
 
 ###### What question is the paper trying to address?
 
@@ -33,3 +35,42 @@ Note:
 
 5) Cl channel[Ca dependent] ->  buf = 0.6, time_constant= 200msec calcConc = 1000 uM
 Note cloride channel is simillar to calcium dependent potassium channel from lecture.
+
+chirp control => 0-40Hz for 20 seconds amp of 5mV  holding potential -30mV.
+
+short_pulse => 500ms
+long_pulse => 7 sec for -20pA and 7 sec for -10pA
+
+
+# Result projected in paper (1 membrane oscillations)  simtime=60Sec
+### for exp1 -50pa short pulse [trail1: simple 4 compartment model, train2: model from model DB]
+init: membrane potential should be depolarized to -30mV.
+expected : oscillation in membrane potential traces low frequency oscillations.
+### for exp2 50pa short pulse [trail1: simple 4 compartment model, train2: model from model DB]
+init: membrane potential should be depolarized to -30mV.
+expected : oscillation in membrane potential traces high frequency oscillations than -50pA input.
+### for exp3 -20pA and -10pA long complex pulse [trail1: simple 4 compartment model, train2: model from model DB]
+init: membrane potential should be depolarized to -30mV.
+expected : Autonomus firing after injection completion.
+
+# Treatement:
+  Block : Ca_V1 (gmax = 0) reduce in amplitude of membrane oscillations.
+  Block : Ca_V2 (gmax = 0) reduce in frequency of membrane oscillations.
+  Block : Ca_cc (gmax = 0) No oscillations.
+
+Verify 3-7Hz oscillation in depolarized state.
+
+# Result projected in paper (2 membrane resonance)
+### for chirp input[trail1: simple 4 compartment model, train2: model from model DB]
+init: membrane potential should be depolarized to -30mV.
+
+expected : In frequency domain different heights for all frequency.
+procedure :
+1) Get voltage trace for membrane potential.
+2) Discrete fourier transform to frequency domain.
+3) plot frequency domain graph.
+
+# Treatement:
+  Block : Ca_V1 (gmax = 0) reduce in amplitudes in frequency domain.
+  Block : Ca_V2 (gmax = 0) reduce in shift in high amplitudes to lower frequencies.
+  Block : Ca_cc (gmax = 0) No frequency spectrum.

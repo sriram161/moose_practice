@@ -54,7 +54,7 @@ def cell_prototype(model_name, file_name, comp_passive, channel_settings, capara
 
 def main(model_name, file_name, comp_passive, channel_settings):
     # Simulation information.
-    simtime = 900
+    simtime = 1
     simdt = 0.25e-5
     plotdt = 0.25e-3
 

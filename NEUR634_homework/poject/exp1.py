@@ -4,6 +4,7 @@
 #bash-4.2$ module add moose
 
 import moose
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from utilities import create_comp_model
@@ -18,27 +19,12 @@ from utilities import connect_ca_pool_to_chan
 from channels import channel_settings
 from channels import ca_params
 
-EREST_ACT = -50e-3 #: Resting membrane potential ??? where in paper???
-VMIN = -30e-3 + EREST_ACT
-VMAX = 120e-3 + EREST_ACT
+VMIN = -100e-3
+VMAX = 50E-3
 VDIVS = 3000
 CAMAX = 1
 CAMIN = 0
 CADIVS = 10E3
-
-def chirp(gen_name="chirp", f0=1, f1=50, T=0.8, start=0.1, end=0.5, simdt=10E-5):
-    func_1 = moose.Func("/"+gen_name)
-    func_1.mode = 3
-    func_1.expr = 'cos(2*pi*({f1}-{f0})/{T}*x^2 + 2*pi*{f1}*x)'.format(f0=f0, f1=f1, T=T)
-    input = moose.StimulusTable('/xtab')
-    xarr = np.arange(start, end, simdt)
-    input.vector = xarr
-    input.startTime = 0.0
-    input.stepPosition = xarr[0]
-    input.stopTime = xarr[-1] - xarr[0]
-    moose.connect(input, 'output', func_1, 'xIn')
-    return func_1
-
 
 def cell_prototype(model_name, file_name, comp_passive, channel_settings, caparams=None):
     model = create_comp_model(model_name, file_name, comp_RM=comp_passive['RM'],
@@ -67,21 +53,17 @@ def cell_prototype(model_name, file_name, comp_passive, channel_settings, capara
            connect_ca_pool_to_chan(channel_name, channel_obj['chan_type'], 'CaPool', moose_paths)
     return (model, moose_paths)
 
-def main(model_name, file_name, comp_passive, channel_settings):
+def main(model_name, file_name, comp_passive, channel_settings, simtime = 100E-3, simdt = 0.25e-5):
     # Simulation information.
-    simtime = 50E-3
-    simdt = 0.25e-5
+    simtime = simtime
+    simdt = simdt
     plotdt = 0.25e-3
 
     # Model creation
     cell, cell_comp_paths = cell_prototype(model_name, file_name, comp_passive, channel_settings, ca_params)
     soma = moose.element(cell.path +'/soma')
 
-    pulse_inject_50pA = create_pulse_generator('pulse2', soma, 50E-3, 50E-12, delay=10E-3)
-    chirp_test = chirp(gen_name="chirp", f0=1, f1=50, T=0.8, start=10E-3, end=20E-3, simdt=simdt)
-    tab = moose.Table('/check')
-    moose.connect(tab, 'requestOut', chirp_test, 'getValue')
-    moose.connect(chirp_test, 'valueOut', soma, 'injectMsg')
+    pulse_inject_50pA = create_pulse_generator('pulse2', soma, 50E-3, 0, delay=10E-3) #50E-12
 
     # Output table
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
@@ -99,16 +81,48 @@ def main(model_name, file_name, comp_passive, channel_settings):
     # Run simulation
     moose.reinit()
     moose.start(simtime)
+    return soma_v_table, soma_i_table
 
-    # Plot output tables.
-    v_plot = plot_vm_table(simtime,soma_v_table, soma_i_table, title="soma vs i")
-    plt.grid(True)
-    plt.legend(['v', 'i'])
-    plt.show()
 
 if __name__ == "__main__":
     model_name = 'lts'
-    file_name = 'interneuron.swc'
+    file_name = sys.argv[1]
+    ca_v1_flag = int(sys.argv[2])
+    ca_v2_flag = int(sys.argv[3])
+    ca_cc_flag = int(sys.argv[4])
+    simtime = 100E-3
+    simdt = 0.25e-5
+
     channel_settings = channel_settings
-    comp_passive = {'RM':20, 'CM': 1e-6 * 1E4,'RA':4, 'EM': -50e-3} # check with Dan????
-    main(model_name, file_name, comp_passive, channel_settings)
+    if ca_v1_flag:
+        channel_settings['Ca_V1']['g_max'] = 0
+    if ca_v2_flag:
+        channel_settings['Ca_V2']['g_max'] = 0
+    if ca_cc_flag:
+        channel_settings['ca_cc']['g_max'] = 0
+
+    comp_passive = {'RM':1/(0.06E-3 * 1E4), 'CM': 1e-6 * 1E4,'RA':4, 'EM': -30e-3} # check with Dan????
+    soma_v, soma_i = main(model_name, file_name, comp_passive, channel_settings, simtime)
+
+    # Plot output tables.
+    v_plot = plot_vm_table(simtime,soma_v, soma_i, title="soma time domain", xlab="Time (Seconds)", ylab= "Voltage (V)")
+    v_plot.legend(['v', 'i'])
+
+    plt.show()
+    # frequency domain plot.
+    fft = np.fft.fft(soma_v.vector)
+    freq = np.fft.fftfreq(len(fft), simdt)
+    plt.figure("soma frequency domain")
+    plt.plot(freq, np.abs(fft))
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel(" Abs(Amplitude) Volts")
+    #
+
+    #######
+    '''
+    fft = np.fft.fft(voltage_soma_membrane_array)
+    freq = np.fft.fftfreq(len(fft), simdt)
+    plt.plot(freq, np.abs(fft))
+    '''
+
+    # python3 exp1.py simpleinterneuron.swc 0 0 0
