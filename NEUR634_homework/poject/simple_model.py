@@ -107,5 +107,5 @@ def main(model_name, comp_passive, channel_settings, ca_params):
 if __name__ == "__main__":
     model_name = 'soma'
     channel_settings = channel_settings
-    comp_passive = {'RM':1/(0.06E-3 * 1E4), 'CM': 1E-6 * 1E4,'RA':4, 'EM': -50e-3} # check with Dan????
+    comp_passive = {'RM':1/(0.06E-3 * 1E4), 'CM': 1E-6 * 1E4,'RA':4, 'EM': -30e-3} # check with Dan????
     main(model_name, comp_passive, channel_settings, ca_params=ca_params)

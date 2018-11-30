@@ -9,12 +9,12 @@ K_n_params = AlphaBetaparams(
               B_A=1, B_B=0.0, B_C=1.0, B_D=-20E-3, B_F=4e-3) #plot in excel.
 
 ca_v1_params = AlphaBetaparams(
-              A_A=1, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
-              B_A=1, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3) #plot in excel.
+              A_A=1, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=15e-3,
+              B_A=1, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=-15e-3) #plot in excel.
 
 ca_v2_params = AlphaBetaparams(
-              A_A=1, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
-              B_A=1, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3) #plot in excel.
+              A_A=1, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=15e-3,
+              B_A=1, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=-15e-3) #plot in excel.
 
 ca_cc_params = CaDepparams(kd=1000E-6, power=2, tau=4.9E-3) # After discussion.
 #Where is Kd, power and tau??
