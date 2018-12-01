@@ -85,7 +85,6 @@ def plot_internal_currents(soma_i_table, soma_i_table1, soma_i_table2, soma_i_ta
     plt.plot(soma_i_table4.vector ,label='pool')
     plt.legend()
 
-
 def creat_moose_tables():
     soma_v_table = create_output_table(table_element='/output', table_name='somaVm')
     soma_i_table = create_output_table(table_element='/output', table_name='somIm')
@@ -101,7 +100,6 @@ def creat_moose_tables():
     moose.connect(soma_i_table3, 'requestOut', moose.element('/soma/ca_cc'), 'getIk')
     moose.connect(soma_i_table4, 'requestOut', moose.element('/soma/CaPool'), 'getCa')
     return {'vm': [soma_v_table], 'internal_currents': [soma_i_table, soma_i_table1, soma_i_table2, soma_i_table3, soma_i_table4]}
-
 
 def main(model_name, comp_passive, channel_settings, ca_params):
     # Simulation information.
@@ -137,9 +135,9 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     #plt.legend(['v', 'i'])
     #plt.show()
     # set conductance for a list to Ca_v1, Ca_V2 and CC
-    caV1_cond_set = [0.2E-3]
-    caV2_cond_set = [0.4E-3]
-    cacc_cond_set = [0.4]
+    caV1_cond_set = [0.2E-3] #[0.2E-3]
+    caV2_cond_set = [0.4E-3] #[0.4E-3]
+    cacc_cond_set = [0.4] #[0.4]
 
     from itertools import product
     for V1, V2, cc in product(caV1_cond_set, caV2_cond_set, cacc_cond_set):
@@ -152,11 +150,11 @@ def main(model_name, comp_passive, channel_settings, ca_params):
         plot_vm_table(simtime, tabs['vm'][0], title='V1: {0}, V2 :{1}, cc :{2}'.format(V1, V2, cc))
         plt.show()
 
-    # from moose_nerp.graph import plot_channel
-    # for channel in channel_settings:
-    #     libchan=moose.element('/library/soma/'+channel)
-    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
-    # plt.show()
+    from moose_nerp.graph import plot_channel
+    for channel in channel_settings:
+        libchan=moose.element('/library/soma/'+channel)
+        plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
+    plt.show()
 
 if __name__ == "__main__":
     model_name = 'soma'

@@ -129,7 +129,8 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     ca_conc_points = np.linspace(camin, camax, cadivs)
     caterm = (ca_conc_points/params.kd)
     caterm = caterm ** params.power
-    z_inf = caterm/(1+caterm)
+    z_inf = caterm/(1+caterm) #old z_inf term
+    # z_inf = caterm
     z_tau = params.tau*np.ones(len(ca_conc_points))
     zgate.tableA = z_inf / z_tau
     zgate.tableB = 1 / z_tau
@@ -144,7 +145,7 @@ def create_ca_conc_pool(ntype, params):
     ca_pool.ceiling = 1
     ca_pool.floor = 0
     ca_pool.thick = params.caThick
-    ca_pool.tau = params.caTau
+    ca_pool.tau = params.caTau  #in paper value Tp/buf
     #ca_pool.B = params.bufCapacity
     return ca_pool
 
@@ -176,7 +177,7 @@ def copy_connect_channel_moose_paths(moose_chan, chan_name, moose_paths):
         _chan = set_channel_conductance(_chan, _chan.Gbar, _chan.Ek, comp)
         moose.connect(_chan, 'channel', comp, 'channel', 'OneToOne')
 
-def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths, buf=20):
+def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths, buf=1/0.6): # 20
     global FARADAY_CONST
     for moose_path in moose_paths:
         comp = moose.element(moose_path)
@@ -184,8 +185,9 @@ def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths, buf=20):
         _pool.length = comp.length
         _pool.diameter = comp.diameter
         curved_sa = compute_comp_area(comp.diameter, comp.length)[0]
-        volume = curved_sa * _pool.thick
-        _pool.B = 1/(FARADAY_CONST * volume * 2) / buf
+        volume = curved_sa * _pool.thick #old value
+        # volume = 1
+        _pool.B = 1/(FARADAY_CONST * volume * 2) / buf # 1 is actually volume
     return moose_paths
 
 def connect_ca_pool_to_chan(chan_name, chan_type, calname, moose_paths):

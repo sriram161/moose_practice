@@ -9,16 +9,17 @@ K_n_params = AlphaBetaparams(
               B_A=100, B_B=0.0, B_C=1.0, B_D=-20E-3, B_F=4e-3) #plot in excel.
 
 ca_v1_params = AlphaBetaparams(
-              A_A=200, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
-              B_A=200, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3) #plot in excel.
+              A_A=1000, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
+              B_A=1000, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3) #plot in excel.
 
 ca_v2_params = AlphaBetaparams(
-              A_A=200, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
-              B_A=200, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3) #plot in excel.
+              A_A=1000, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
+              B_A=1000, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3) #plot in excel.
 
-ca_cc_params = CaDepparams(kd=1, power=2, tau=4.9E-3) # After discussion.
+ca_cc_params = CaDepparams(kd=1, power=2, tau=1E-3) # After discussion.
 #Where is Kd, power and tau??
 ca_params = capools(caBasal=50E-6, caThick=0.1E-6, caTau=90E-3, bufCapacity=11, caName='CaPool') # ca be 200ms 0.6  # 20ms 20 capacity
+#ca_params = capools(caBasal=0, caThick=0.1E-6, caTau=200E-3, bufCapacity=1/0.6, caName='CaPool') # prof changes.
 # CaThick, cabasal and tau of ca_cc leave default.
 # Tp = 200 ms, ka = 1000 uM, buf=0.6
 
