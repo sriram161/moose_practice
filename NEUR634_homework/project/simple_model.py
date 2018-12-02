@@ -135,26 +135,29 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     #plt.legend(['v', 'i'])
     #plt.show()
     # set conductance for a list to Ca_v1, Ca_V2 and CC
-    caV1_cond_set = [0.2E-3] #[0.2E-3]
-    caV2_cond_set = [0.4E-3] #[0.4E-3]
-    cacc_cond_set = [0.4] #[0.4]
+    k_cond_set = [0.5E-3]
+    caV1_cond_set = [0.18E-3, 0] # when G_k = 0 mS
+    caV2_cond_set = [0, 0.4E-3]
+    cacc_cond_set = [40E-3]
+
 
     from itertools import product
-    for V1, V2, cc in product(caV1_cond_set, caV2_cond_set, cacc_cond_set):
+    for K, V1, V2, cc in product(k_cond_set, caV1_cond_set, caV2_cond_set, cacc_cond_set):
+        moose.element('/soma/K').Gbar = K * compute_comp_area(length, diameter)[0] *1E4
         moose.element('/soma/Ca_V1').Gbar = V1 * compute_comp_area(length, diameter)[0] *1E4
         moose.element('/soma/Ca_V2').Gbar = V2 * compute_comp_area(length, diameter)[0] *1E4
         moose.element('/soma/ca_cc').Gbar = cc * compute_comp_area(length, diameter)[0] *1E4
         moose.reinit()
         moose.start(simtime)
         #plot_internal_currents(*tabs['internal_currents'])
-        plot_vm_table(simtime, tabs['vm'][0], title='V1: {0}, V2 :{1}, cc :{2}'.format(V1, V2, cc))
+        plot_vm_table(simtime, tabs['vm'][0], title='Conductances: ca_V1(L): {0}, Ca_V2 (N) :{1}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
         plt.show()
 
-    from moose_nerp.graph import plot_channel
-    for channel in channel_settings:
-        libchan=moose.element('/library/soma/'+channel)
-        plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
-    plt.show()
+    # from moose_nerp.graph import plot_channel
+    # for channel in channel_settings:
+    #     libchan=moose.element('/library/soma/'+channel)
+    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
+    # plt.show()
 
 if __name__ == "__main__":
     model_name = 'soma'
