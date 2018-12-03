@@ -12,11 +12,11 @@ from utilities import create_output_table
 from utilities import plot_vm_table
 from utilities import create_set_of_channels
 from utilities import copy_connect_channel_moose_paths
-from utilities import create_ca_conc_pool
-from utilities import copy_ca_pools_moose_paths
-from utilities import connect_ca_pool_to_chan
-from channels import channel_settings
-from channels import ca_params
+from utilities_p import create_ca_conc_pool
+from utilities_p import copy_ca_pools_moose_paths
+from utilities_p import connect_ca_pool_to_chan
+from channels_p import channel_settings
+from channels_p import ca_params
 from utilities import create_compartment
 from utilities import compute_comp_area
 
@@ -134,17 +134,18 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     #plt.grid(True)
     #plt.legend(['v', 'i'])
     #plt.show()
-    # set conductance for a list to Ca_v1, Ca_V2 and CC
     from collections import namedtuple
     cond = namedtuple('cond', 'k Ltype Ntype cl')
     test_conductances = [cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),  # control test
-                         cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
-                         cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
-                         cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
-                         cond(k=0, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
-                         ]
+                     cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
+                     cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
+                     cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
+                     cond(k=0, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
+                     ]
+
 
     for K, V1, V2, cc in test_conductances:
+
         moose.element('/soma/K').Gbar = K * compute_comp_area(length, diameter)[0] *1E4
         moose.element('/soma/Ca_V1').Gbar = V1 * compute_comp_area(length, diameter)[0] *1E4
         moose.element('/soma/Ca_V2').Gbar = V2 * compute_comp_area(length, diameter)[0] *1E4
@@ -155,11 +156,11 @@ def main(model_name, comp_passive, channel_settings, ca_params):
         plot_vm_table(simtime, tabs['vm'][0], title='Conductances: ca_V1(L): {0}, Ca_V2 (N) :{1}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
         plt.show()
 
-    # from moose_nerp.graph import plot_channel
-    # for channel in channel_settings:
-    #     libchan=moose.element('/library/soma/'+channel)
-    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
-    # plt.show()
+    from moose_nerp.graph import plot_channel
+    for channel in channel_settings:
+        libchan=moose.element('/library/soma/'+channel)
+        plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
+    plt.show()
 
 if __name__ == "__main__":
     model_name = 'soma'
