@@ -4,21 +4,39 @@ from templates import channel_param_template
 from templates import capools
 from templates import CaDepparams
 
+# Old parameters used to setup alpha and beta parameters.
 K_n_params = AlphaBetaparams(
-              A_A=1000, A_B=0.0, A_C=1.0, A_D=-20E-3, A_F=-4e-3,
-              B_A=1000, B_B=0.0, B_C=1.0, B_D=-20E-3, B_F=4e-3)
+              A_A=700, A_B=0.0, A_C=1.0, A_D=20E-3, A_F=-4e-3,
+              B_A=700, B_B=0.0, B_C=1.0, B_D=20E-3, B_F=4e-3)
 
 ca_v1_params = AlphaBetaparams(
-              A_A=1000, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
-              B_A=1000, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3)
+              A_A=700, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
+              B_A=700, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3)
 
 ca_v2_params = AlphaBetaparams(
-              A_A=1000, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
-              B_A=1000, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3)
+              A_A=700, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
+              B_A=700, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3)
 
-ca_cc_params = CaDepparams(kd=1E-9, power=2, tau=1E-3) # After discussion.
+# K_n_params = AlphaBetaparams(
+#               A_A=1, A_B=0.0, A_C=1.0, A_D=-20E-3, A_F= 4e-3,
+#               B_A=1, B_B=0.0, B_C=1.0, B_D=-20E-3, B_F= 4e-3)
+#
+# ca_v1_params = AlphaBetaparams(
+#               A_A=1, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F= 15e-3,
+#               B_A=1, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F= 15e-3)
+#
+# # ca_v1_params = AlphaBetaparams(
+# #               A_A=1, A_B=0.0, A_C=1.0, A_D=-10E-3*-1E10, A_F= -15e-3,
+# #               B_A=1, B_B=0.0, B_C=1.0, B_D=-10E-3*-1E10, B_F= 15e-3)
+#
+# ca_v2_params = AlphaBetaparams(
+#               A_A=1, A_B=0.0, A_C=1.0, A_D=10E-3, A_F= 15e-3,
+#               B_A=1, B_B=0.0, B_C=1.0, B_D=10E-3, B_F= 15e-3)
+
+ca_cc_params = CaDepparams(kd=1E-3, power=2, tau=0.68E-2) # After discussion.
 #Where is Kd, power and tau??
-ca_params = capools(caBasal=0, caThick=0.1E-6, caTau=200E-3, bufCapacity=0.6, caName='CaPool')
+ca_params = capools(caBasal=0, caThick=0.1E-6, caTau=20E-3, bufCapacity=10E4, caName='CaPool') #0.99E12
+### ca_params = capools(caBasal=0, caThick=0.1E-6, caTau=20E-3, bufCapacity=10E4, caName='CaPool') #0.99E12 oscillation
 # CaThick, cabasal and tau of ca_cc leave default.
 # Tp = 200 ms, ka = 1000 uM, buf=0.6
 

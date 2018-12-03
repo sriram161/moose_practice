@@ -20,9 +20,8 @@ from channels_p import ca_params
 from utilities import create_compartment
 from utilities import compute_comp_area
 
-EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
-VMIN = -30e-3 + EREST_ACT
-VMAX = 120e-3 + EREST_ACT
+VMIN = -90e-3
+VMAX = 120e-3
 VDIVS = 3000
 CAMAX = 1
 CAMIN = 0
@@ -105,6 +104,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     # Simulation information.
     simtime = 1
     simdt = 0.25e-5
+    #simdt = 0.1e-6
     plotdt = 0.25e-3
 
     diameter = 20e-6
@@ -136,34 +136,68 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     #plt.show()
     from collections import namedtuple
     cond = namedtuple('cond', 'k Ltype Ntype cl')
-    test_conductances = [cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),  # control test
-                     cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
-                     cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
-                     cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
-                     cond(k=0, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
+    # Final execution test
+    # test_conductances = [cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),  # control test
+    #                  cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
+    #                  cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
+    #                  cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
+    #                  cond(k=0, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
+    #                  ]
+    # Set to -15mv when cl current is blocked.
+    # test_conductances = [
+    #                  cond(k=0.5E-3*1E15, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
+    #                  ]
+    # Set to -15mv when cl current is blocked.
+    test_conductances = [
+                #     cond(k=0.5E-3 * 0.5, Ltype=0.18E-6 * 10, Ntype=0.4E-5 * 11, cl=0),   # cl-type Current abolish test
+                     #cond(k=0.5E-3 , Ltype=0, Ntype=0.4E-5, cl=100E-3),   # cl-type Current abolish test
+                     # cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),   # cl-type Current abolish test
+                     # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
+                    # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=0),   # cl-type Current abolish test
+                     cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
                      ]
+    # max_min = [10, 0.1]
+    # maxs_1 = [0.5E-3]
+    # maxs_2 = [0.18E-3]
+    # maxs_3 = [0.4E-3]
+    # maxs_4 = [40E-3]
+    # from itertools import product
+    # for m, _1, _2, _3, _4 in product(max_min, maxs_1, maxs_2, maxs_3, maxs_4):
+    #     print( m*_1, m*_2, m*_3, m*_4)
+    #
+    # from itertools import permutations
+    # max_min = [10, 0.1]
+    # maxs_s = [0.5E-3, 0.18E-3, 0.4E-3, 40E-3]
+    # combs = [zip(m, max_min) for m in permutations(maxs_s, len(max_min))]
+    # scaled_vals = []
+    # for item in combs:
+    #     l = []
+    #     for x,y in item:
+    #         print(x, y)
+    #     #scaled_vals.append(l)
+    #print(scaled_vals)
+
 
 
     for K, V1, V2, cc in test_conductances:
-
-        moose.element('/soma/K').Gbar = K * compute_comp_area(length, diameter)[0] *1E4
-        moose.element('/soma/Ca_V1').Gbar = V1 * compute_comp_area(length, diameter)[0] *1E4
-        moose.element('/soma/Ca_V2').Gbar = V2 * compute_comp_area(length, diameter)[0] *1E4
-        moose.element('/soma/ca_cc').Gbar = cc * compute_comp_area(length, diameter)[0] *1E4
+        moose.element('/soma/K').Gbar = K #* compute_comp_area(length, diameter)[0] * 1E4
+        moose.element('/soma/Ca_V1').Gbar = V1 #* compute_comp_area(length, diameter)[0] * 1E4
+        moose.element('/soma/Ca_V2').Gbar = V2 #* compute_comp_area(length, diameter)[0] * 1E4
+        moose.element('/soma/ca_cc').Gbar = cc #* compute_comp_area(length, diameter)[0] * 1E4
         moose.reinit()
         moose.start(simtime)
-        #plot_internal_currents(*tabs['internal_currents'])
+        plot_internal_currents(*tabs['internal_currents'])
         plot_vm_table(simtime, tabs['vm'][0], title='Conductances: ca_V1(L): {0}, Ca_V2 (N) :{1}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
         plt.show()
 
-    from moose_nerp.graph import plot_channel
-    for channel in channel_settings:
-        libchan=moose.element('/library/soma/'+channel)
-        plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
-    plt.show()
+    # from moose_nerp.graph import plot_channel
+    # for channel in channel_settings:
+    #     libchan=moose.element('/library/soma/'+channel)
+    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
+    # plt.show()
 
 if __name__ == "__main__":
     model_name = 'soma'
     channel_settings = channel_settings
-    comp_passive = {'RM':1/(0.06E-3 * 1E4), 'CM': 1E-6 * 1E4,'RA':4, 'EM': -30e-3} # check with Dan????
+    comp_passive = {'RM':1/(0.06), 'CM': 1,'RA':4, 'EM': -50e-3} # check with Dan????
     main(model_name, comp_passive, channel_settings, ca_params=ca_params)

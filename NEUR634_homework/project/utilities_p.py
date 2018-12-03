@@ -80,9 +80,9 @@ def compute_comp_area(comp_diameter, comp_length):
 
 def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     curved_sa, x_area = compute_comp_area(comp.diameter, comp.length)
-    comp.Rm = RM / curved_sa
-    comp.Cm = CM * curved_sa
-    comp.Ra = RA * comp.length / x_area
+    comp.Rm = RM #/ curved_sa
+    comp.Cm = CM #* curved_sa
+    comp.Ra = RA #* comp.length / x_area
     comp.initVm = initVM
     comp.Em = ELEAK
     return comp
@@ -123,6 +123,25 @@ def create_channel(ntype, chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
         create_conc_dependent_z_gate(chan_comp, z_params, cadivs, camin, camax)
     return chan_comp
 
+def create_channel2(ntype, chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
+                   x_params, xpow, tick=-1, y_params=None, ypow=0, zpow=0, z_params=None):
+    lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
+    typelib = moose.Neutral(lib.path+'/'+ntype) if not moose.exists(lib.path+'/'+ntype) else moose.element(lib.path+'/'+ntype)
+    chan_comp = moose.HHChannel(typelib.path + '/' + chan_name)
+    chan_comp.tick = tick
+    if xpow: # GateX
+        chan_comp.Xpower = xpow
+        params = x_params + (vdivs, vmin, vmax)
+        moose.element(chan_comp.path + '/gateX').setupTau(list(params))
+    if ypow: # GateY
+        chan_comp.Ypower = ypow
+        params = y_params + (vdivs, vmin, vmax)
+        moose.element(chan_comp.path + '/gateY').setupTau(list(params))
+    if zpow: # GateZ
+        chan_comp.Zpower = zpow
+        create_conc_dependent_z_gate(chan_comp, z_params, cadivs, camin, camax)
+    return chan_comp
+
 def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     zgate = moose.HHGate(chan.path + '/gateZ')
     zgate.min, zgate.max = camin, camax
@@ -142,7 +161,7 @@ def create_ca_conc_pool(ntype, params):
     ca_pool.ceiling = 1
     ca_pool.floor = 0
     ca_pool.thick = params.caThick
-    ca_pool.tau = params.caTau/params.bufCapacity  # As per paper Tp/buf
+    ca_pool.tau = params.caTau*0.6  # As per paper Tp/buf
     return ca_pool
 
 def set_channel_conductance(chan, gbar, E_nerst, comp=None):
@@ -156,7 +175,7 @@ def set_channel_conductance(chan, gbar, E_nerst, comp=None):
 def create_set_of_channels(ntype, channel_settings, vdivs, vmin, vmax, cadivs, camin, camax):
     chan_set = {}
     for settings in channel_settings.values():
-        chan = create_channel(ntype, chan_name=settings.get('chan_name'),
+        chan = create_channel(ntype, chan_name=settings.get('chan_name'), # used to be just create_channel
                               vdivs=vdivs, vmin=vmin, vmax=vmax,
                               cadivs=cadivs, camin=camin, camax=camax,
                               x_params=settings.get('x_params'), xpow=settings.get('x_pow'),
@@ -180,8 +199,7 @@ def copy_ca_pools_moose_paths(ca_pool, pool_name, moose_paths, buf=0.6): # 20
         _pool = moose.copy(ca_pool, comp, pool_name, 1)
         _pool.length = comp.length
         _pool.diameter = comp.diameter
-        curved_sa = compute_comp_area(comp.diameter, comp.length)[0]
-        _pool.B = 1/(FARADAY_CONST * 1 * 2) / buf # Equation modified as pre paper.
+        _pool.B = (1/(FARADAY_CONST * 1 * 2)) * buf # Equation modified as pre paper.
     return moose_paths
 
 def connect_ca_pool_to_chan(chan_name, chan_type, calname, moose_paths):
