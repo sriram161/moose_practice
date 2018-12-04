@@ -154,7 +154,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
                      # cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),   # cl-type Current abolish test
                      # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
                     # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=0),   # cl-type Current abolish test
-                     cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
+                     cond(k=0.3775621, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
                      ]
     # max_min = [10, 0.1]
     # maxs_1 = [0.5E-3]
@@ -186,7 +186,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
         moose.element('/soma/ca_cc').Gbar = cc #* compute_comp_area(length, diameter)[0] * 1E4
         moose.reinit()
         moose.start(simtime)
-        plot_internal_currents(*tabs['internal_currents'])
+        #plot_internal_currents(*tabs['internal_currents'])
         plot_vm_table(simtime, tabs['vm'][0], title='Conductances: ca_V1(L): {0}, Ca_V2 (N) :{1}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
         plt.show()
 

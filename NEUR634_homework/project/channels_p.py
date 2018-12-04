@@ -6,16 +6,16 @@ from templates import CaDepparams
 
 # Old parameters used to setup alpha and beta parameters.
 K_n_params = AlphaBetaparams(
-              A_A=700, A_B=0.0, A_C=1.0, A_D=20E-3, A_F=-4e-3,
-              B_A=700, B_B=0.0, B_C=1.0, B_D=20E-3, B_F=4e-3)
+              A_A=1000, A_B=0.0, A_C=1.0, A_D=20E-3, A_F=-4e-3,
+              B_A=1000, B_B=0.0, B_C=1.0, B_D=20E-3, B_F=4e-3)
 
 ca_v1_params = AlphaBetaparams(
-              A_A=700, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
-              B_A=700, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3)
+              A_A=1000, A_B=0.0, A_C=1.0, A_D=10E-3, A_F=-15e-3,
+              B_A=1000, B_B=0.0, B_C=1.0, B_D=10E-3, B_F=15e-3)
 
 ca_v2_params = AlphaBetaparams(
-              A_A=700, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
-              B_A=700, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3)
+              A_A=1000, A_B=0.0, A_C=1.0, A_D=-10E-3, A_F=-15e-3,
+              B_A=1000, B_B=0.0, B_C=1.0, B_D=-10E-3, B_F=15e-3)
 
 # K_n_params = AlphaBetaparams(
 #               A_A=1, A_B=0.0, A_C=1.0, A_D=-20E-3, A_F= 4e-3,
