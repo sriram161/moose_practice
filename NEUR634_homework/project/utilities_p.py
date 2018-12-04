@@ -146,7 +146,8 @@ def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
     zgate = moose.HHGate(chan.path + '/gateZ')
     zgate.min, zgate.max = camin, camax
     ca_conc_points = np.linspace(camin, camax, cadivs)
-    z_inf = 1/(ca_conc_points**2 + params.kd**2)     # As per paper.
+    # z_inf = 1/(ca_conc_points**2 + params.kd**2)     # As per paper.
+    z_inf = ca_conc_points**2/(ca_conc_points**2 + params.kd**2)     # correction after dan email.
     z_tau = params.tau*np.ones(len(ca_conc_points))
     zgate.tableA = z_inf / z_tau
     zgate.tableB = 1 / z_tau

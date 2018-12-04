@@ -54,7 +54,7 @@ def simple_model(model_name, comp_passive, channel_settings, ca_params, length, 
 
         inj_delay = 20E-3
         inj_amp = 1E-9
-        inj_width = 40E-3
+        inj_width = 100E-3
 
         # Model creation
         soma = create_compartment('soma', length, diameter, comp_passive['RM'], comp_passive['CM'], initVM=comp_passive['EM'], ELEAK=comp_passive['EM'])
@@ -156,27 +156,6 @@ def main(model_name, comp_passive, channel_settings, ca_params):
                     # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=0),   # cl-type Current abolish test
                      cond(k=0.3775621, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
                      ]
-    # max_min = [10, 0.1]
-    # maxs_1 = [0.5E-3]
-    # maxs_2 = [0.18E-3]
-    # maxs_3 = [0.4E-3]
-    # maxs_4 = [40E-3]
-    # from itertools import product
-    # for m, _1, _2, _3, _4 in product(max_min, maxs_1, maxs_2, maxs_3, maxs_4):
-    #     print( m*_1, m*_2, m*_3, m*_4)
-    #
-    # from itertools import permutations
-    # max_min = [10, 0.1]
-    # maxs_s = [0.5E-3, 0.18E-3, 0.4E-3, 40E-3]
-    # combs = [zip(m, max_min) for m in permutations(maxs_s, len(max_min))]
-    # scaled_vals = []
-    # for item in combs:
-    #     l = []
-    #     for x,y in item:
-    #         print(x, y)
-    #     #scaled_vals.append(l)
-    #print(scaled_vals)
-
 
 
     for K, V1, V2, cc in test_conductances:

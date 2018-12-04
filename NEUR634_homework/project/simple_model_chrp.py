@@ -11,14 +11,14 @@ from utilities import create_pulse_generator
 from utilities import create_output_table
 from utilities import plot_vm_table
 from utilities import create_set_of_channels
-from utilities import copy_connect_channel_moose_paths
-from utilities import create_ca_conc_pool
-from utilities import copy_ca_pools_moose_paths
-from utilities import connect_ca_pool_to_chan
-from channels import channel_settings
-from channels import ca_params
+from channels_p_2 import channel_settings
+from channels_p_2 import ca_params
 from utilities import create_compartment
 from utilities import compute_comp_area
+from utilities_p import create_ca_conc_pool
+from utilities_p import copy_ca_pools_moose_paths
+from utilities_p import connect_ca_pool_to_chan
+from utilities import copy_connect_channel_moose_paths
 
 EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
 VMIN = -30e-3 + EREST_ACT
@@ -54,7 +54,7 @@ def simple_model(model_name, comp_passive, channel_settings, ca_params, length, 
         length = length
 
         inj_delay = 20E-3
-        inj_amp = 1E-9
+        inj_amp = 10E-9
         inj_width = 40E-3
 
         # Model creation
@@ -111,7 +111,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     length = 20e-6
 
     inj_delay = 20E-3
-    inj_amp = 1E-9 #0
+    inj_amp = 5E-3 #0
     inj_width = 500E-3
 
 
@@ -152,12 +152,44 @@ def main(model_name, comp_passive, channel_settings, ca_params):
         moose.reinit()
         moose.start(simtime)
         #plot_internal_currents(*tabs['internal_currents'])
-        plot_vm_table(simtime, tabs['vm'][0], soma_c_table, title='Conductances: ca_V1(L): {1}, Ca_V2 (N) :{0}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
+        plot_vm_table(simtime, tabs['vm'][0], title='Conductances: ca_V1(L): {1}, Ca_V2 (N) :{0}, ca_cc :{2} K : {3}'.format(V1, V2, cc, K), xlab="Time in Seconds", ylab="Volage (V)")
         plt.show()
 
     # plot chirp signal
-    #plt.plot(soma_c_table.vector)
-    #plt.show()
+    plt.plot(soma_c_table.vector)
+    plt.show()
+
+    current_time_domain = soma_c_table.vector
+    voltage_time_domain = tabs['vm'][0].vector
+    import scipy.fftpack as fftpack
+    current_fft = fftpack.fft(current_time_domain)
+    voltage_fft = fftpack.fft(voltage_time_domain)
+    current_magnitude = np.abs(current_fft)
+    voltage_magnitude = np.abs(voltage_fft)
+    current_phase = np.angle(current_fft)
+    voltage_phase = np.angle(voltage_fft)
+    freq_current = np.fft.fftfreq(len(current_fft), simdt)
+    freq_voltage = np.fft.fftfreq(len(voltage_fft), simdt)
+    plt.figure("chirp")
+    plt.subplot(211)
+    plt.plot(freq_current, current_magnitude)
+    plt.xlabel('Frequecy (Hz)')
+    plt.ylabel('Magnitude (mA)')
+    plt.subplot(212)
+    plt.plot(freq_voltage, voltage_magnitude)
+    plt.xlabel('Frequecy (Hz)')
+    plt.ylabel('Volts (V)')
+    plt.figure("membrane impedence")
+    plt.subplot(211)
+    plt.plot(freq_voltage, voltage_magnitude/current_magnitude)
+    plt.xlabel('Frequecy (Hz)')
+    plt.ylabel('ohms ($\Omega$)')
+    plt.title('membrance impedance')
+    plt.subplot(212)
+    plt.plot(freq_voltage, voltage_phase - current_phase)
+    plt.xlabel('Frequecy (Hz)')
+    plt.ylabel('phase ($\Theta$)')
+    plt.show()
 
     # from moose_nerp.graph import plot_channel
     # for channel in channel_settings:
