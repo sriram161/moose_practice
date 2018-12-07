@@ -80,9 +80,9 @@ def compute_comp_area(comp_diameter, comp_length):
 
 def set_comp_values(comp, RM, CM, RA, initVM, ELEAK):
     curved_sa, x_area = compute_comp_area(comp.diameter, comp.length)
-    comp.Rm = RM #/ curved_sa
-    comp.Cm = CM #* curved_sa
-    comp.Ra = RA #* comp.length / x_area
+    comp.Rm = RM / curved_sa
+    comp.Cm = CM * curved_sa
+    comp.Ra = RA * comp.length / x_area
     comp.initVm = initVM
     comp.Em = ELEAK
     return comp
@@ -121,25 +121,7 @@ def create_channel(ntype, chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
     if zpow: # GateZ
         chan_comp.Zpower = zpow
         create_conc_dependent_z_gate(chan_comp, z_params, cadivs, camin, camax)
-    return chan_comp
-
-def create_channel2(ntype, chan_name, vdivs, vmin, vmax, cadivs, camin, camax,
-                   x_params, xpow, tick=-1, y_params=None, ypow=0, zpow=0, z_params=None):
-    lib =  moose.Neutral('/library') if not moose.exists('/library') else moose.element('/library')
-    typelib = moose.Neutral(lib.path+'/'+ntype) if not moose.exists(lib.path+'/'+ntype) else moose.element(lib.path+'/'+ntype)
-    chan_comp = moose.HHChannel(typelib.path + '/' + chan_name)
-    chan_comp.tick = tick
-    if xpow: # GateX
-        chan_comp.Xpower = xpow
-        params = x_params + (vdivs, vmin, vmax)
-        moose.element(chan_comp.path + '/gateX').setupTau(list(params))
-    if ypow: # GateY
-        chan_comp.Ypower = ypow
-        params = y_params + (vdivs, vmin, vmax)
-        moose.element(chan_comp.path + '/gateY').setupTau(list(params))
-    if zpow: # GateZ
-        chan_comp.Zpower = zpow
-        create_conc_dependent_z_gate(chan_comp, z_params, cadivs, camin, camax)
+    #chan_comp.instant=1
     return chan_comp
 
 def create_conc_dependent_z_gate(chan, params, cadivs, camin, camax):
@@ -170,7 +152,7 @@ def set_channel_conductance(chan, gbar, E_nerst, comp=None):
     if comp is None:
         chan.Gbar = gbar
     else:
-        chan.Gbar = gbar * compute_comp_area(comp.length, comp.diameter)[0] *1E4
+        chan.Gbar = gbar #* compute_comp_area(comp.length, comp.diameter)[0] * 1E4
     return chan
 
 def create_set_of_channels(ntype, channel_settings, vdivs, vmin, vmax, cadivs, camin, camax):

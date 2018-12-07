@@ -6,19 +6,20 @@
 import moose
 import numpy as np
 import matplotlib.pyplot as plt
-from utilities import create_comp_model
-from utilities import create_pulse_generator
-from utilities import create_output_table
-from utilities import plot_vm_table
-from utilities import create_set_of_channels
-from utilities import copy_connect_channel_moose_paths
+
+from utilities_p import create_output_table
+from utilities_p import plot_vm_table
+from utilities_p import create_set_of_channels
+from utilities_p import copy_connect_channel_moose_paths
 from utilities_p import create_ca_conc_pool
 from utilities_p import copy_ca_pools_moose_paths
 from utilities_p import connect_ca_pool_to_chan
 from channels_p import channel_settings
 from channels_p import ca_params
-from utilities import create_compartment
-from utilities import compute_comp_area
+from utilities_p import create_compartment
+from utilities_p import compute_comp_area
+
+
 
 VMIN = -90e-3
 VMAX = 120e-3
@@ -26,22 +27,6 @@ VDIVS = 3000
 CAMAX = 1
 CAMIN = 0
 CADIVS = 10E3
-
-def chirp(gen_name="chirp", amp=1, f0=1, f1=50, T=0.8, start=0.1, end=0.5, simdt=10E-5, phase=0, amp_offset=0):
-    chirper = moose.element('/chirpgen') if moose.exists('/chirpgen') else moose.Neutral('/chirpgen')
-    func_1 = moose.Func(chirper.path+'/'+gen_name)
-    func_1.mode = 3
-    func_1.expr = '{A}*cos(2*pi*({f1}-{f0})/{T}*x^2 + 2*pi*{f1}*x + {p})+{o}'.format(f0=f0, f1=f1, T=T, A=amp, p=phase, o=amp_offset)
-    input = moose.StimulusTable(chirper.path+'/xtab')
-    xarr = np.arange(start, end, simdt)
-    input.vector = xarr
-    input.startTime = 0.0
-    input.stepPosition = xarr[0]
-    input.stopTime = xarr[-1] - xarr[0]
-    moose.connect(input, 'output', func_1, 'xIn')
-    moose.useClock(0, '%s/##[TYPE=StimulusTable]' % (chirper.path), 'process')
-    moose.useClock(0,'%s/##[TYPE=Func]' % (chirper.path), 'process')
-    return func_1
 
 def simple_model(model_name, comp_passive, channel_settings, ca_params, length, diameter):
         # Simulation information.
@@ -104,7 +89,6 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     # Simulation information.
     simtime = 1
     simdt = 0.25e-5
-    #simdt = 0.1e-6
     plotdt = 0.25e-3
 
     diameter = 20e-6
@@ -113,12 +97,9 @@ def main(model_name, comp_passive, channel_settings, ca_params):
 
     # Model creation
     soma, moose_paths = simple_model(model_name, comp_passive, channel_settings, ca_params, length, diameter)
-    # chirp_test = chirp(gen_name="chirp",amp=1E-9, f0=0.1, f1=500, T=0.8, start=inj_delay, end=inj_width+inj_delay, simdt=simdt,amp_offset=5E-9)
 
-    # moose.connect(chirp_test, 'valueOut', soma, 'injectMsg')
     # Output table
     tabs = creat_moose_tables()
-    # moose.connect(soma_i_table, 'requestOut', chirp_test, 'getValue')
 
     # Set moose simulation clocks
     for lable in range(7):
@@ -129,32 +110,11 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     moose.reinit()
     moose.start(simtime)
 
-    # Plot output tables.
-    #v_plot = plot_vm_table(simtime,soma_v_table, soma_i_table, title="soma vs i")
-    #plt.grid(True)
-    #plt.legend(['v', 'i'])
-    #plt.show()
     from collections import namedtuple
     cond = namedtuple('cond', 'k Ltype Ntype cl')
     # Final execution test
-    # test_conductances = [cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),  # control test
-    #                  cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
-    #                  cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
-    #                  cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
-    #                  cond(k=0, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
-    #                  ]
-    # Set to -15mv when cl current is blocked.
-    # test_conductances = [
-    #                  cond(k=0.5E-3*1E15, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
-    #                  ]
-    # Set to -15mv when cl current is blocked.
     test_conductances = [
-                #     cond(k=0.5E-3 * 0.5, Ltype=0.18E-6 * 10, Ntype=0.4E-5 * 11, cl=0),   # cl-type Current abolish test
-                     #cond(k=0.5E-3 , Ltype=0, Ntype=0.4E-5, cl=100E-3),   # cl-type Current abolish test
-                     # cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3),   # cl-type Current abolish test
-                     # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
-                    # cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=0),   # cl-type Current abolish test
-                     cond(k=0.3775621, Ltype=0.18, Ntype=0.4, cl=40),   # cl-type Current abolish test
+                     cond(k=0.3775621, Ltype=0.18, Ntype=0.4, cl=40),
                      ]
 
 
@@ -178,5 +138,5 @@ def main(model_name, comp_passive, channel_settings, ca_params):
 if __name__ == "__main__":
     model_name = 'soma'
     channel_settings = channel_settings
-    comp_passive = {'RM':1/(0.06), 'CM': 1,'RA':4, 'EM': -50e-3} # check with Dan????
+    comp_passive = {'RM':1/(0.06), 'CM': 1,'RA':4, 'EM': -50e-3}
     main(model_name, comp_passive, channel_settings, ca_params=ca_params)

@@ -6,19 +6,19 @@
 import moose
 import numpy as np
 import matplotlib.pyplot as plt
-from utilities import create_comp_model
-from utilities import create_pulse_generator
-from utilities import create_output_table
-from utilities import plot_vm_table
-from utilities import create_set_of_channels
+from utilities_p import create_comp_model
+from utilities_p import create_pulse_generator
+from utilities_p import create_output_table
+from utilities_p import plot_vm_table
+from utilities_p import create_set_of_channels
 from channels_p_2 import channel_settings
 from channels_p_2 import ca_params
-from utilities import create_compartment
-from utilities import compute_comp_area
+from utilities_p import create_compartment
+from utilities_p import compute_comp_area
 from utilities_p import create_ca_conc_pool
 from utilities_p import copy_ca_pools_moose_paths
 from utilities_p import connect_ca_pool_to_chan
-from utilities import copy_connect_channel_moose_paths
+from utilities_p import copy_connect_channel_moose_paths
 
 EREST_ACT = -70e-3 #: Resting membrane potential ??? where in paper???
 VMIN = -30e-3 + EREST_ACT
@@ -111,14 +111,12 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     length = 20e-6
 
     inj_delay = 20E-3
-    inj_amp = 5E-3 #0
-    inj_width = 500E-3
-
-
+    inj_amp = 0 # Pleace chirp amplitudes 2.5E-3 and 15E-3
+    inj_width = 1
 
     # Model creation
     soma, moose_paths = simple_model(model_name, comp_passive, channel_settings, ca_params, length, diameter)
-    chirp_test = chirp(gen_name="chirp",amp=inj_amp, f0=0.1, f1=20, T=0.1, start=inj_delay, end=inj_width+inj_delay, simdt=simdt,amp_offset=0)
+    chirp_test = chirp(gen_name="chirp",amp=inj_amp, f0=0.1, f1=40, T=1, start=inj_delay, end=inj_width+inj_delay, simdt=simdt,amp_offset=0)
     moose.connect(chirp_test, 'valueOut', soma, 'injectMsg')
     # Output table
     tabs = creat_moose_tables()
@@ -137,12 +135,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     # set conductance for a list to Ca_v1, Ca_V2 and CC
     from collections import namedtuple
     cond = namedtuple('cond', 'k Ltype Ntype cl')
-    test_conductances = [cond(k=0.5, Ltype=0.18, Ntype=0.4, cl=40)]  # control test
-                         # cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0, cl=40E-3),  # L-type frequecy reduce test
-                         # cond(k=0.5E-3, Ltype=0, Ntype=0.4E-3, cl=40E-3),  # N-type amplitude reduce test
-                         # cond(k=0.5E-3, Ltype=0.18E-3, Ntype=0.4E-3, cl=0),   # cl-type Current abolish test
-                         # cond(k=0.5E-3 * 0.2, Ltype=0.18E-3, Ntype=0.4E-3, cl=40E-3)    # K AHP reduce test
-                         # ]
+    test_conductances = [cond(k=0.3775621, Ltype=0.18, Ntype=0.4, cl=40),]
 
     for K, V1, V2, cc in test_conductances:
         moose.element('/soma/K').Gbar = K #* compute_comp_area(length, diameter)[0] *1E4
@@ -156,7 +149,10 @@ def main(model_name, comp_passive, channel_settings, ca_params):
         plt.show()
 
     # plot chirp signal
-    plt.plot(soma_c_table.vector)
+    t = np.arange(0, simtime, 1/len(soma_c_table.vector))
+    plt.plot(t, soma_c_table.vector)
+    plt.xlabel("time in seconds")
+    plt.ylabel("voltage (V)")
     plt.show()
 
     current_time_domain = soma_c_table.vector
@@ -168,37 +164,35 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     voltage_magnitude = np.abs(voltage_fft)
     current_phase = np.angle(current_fft)
     voltage_phase = np.angle(voltage_fft)
-    freq_current = np.fft.fftfreq(len(current_fft), simdt)
-    freq_voltage = np.fft.fftfreq(len(voltage_fft), simdt)
-    plt.figure("chirp")
-    plt.subplot(211)
+    freq_current = np.fft.fftfreq(len(current_fft), 1/len(soma_c_table.vector))
+    freq_voltage = np.fft.fftfreq(len(voltage_fft), 1/len(soma_c_table.vector))
+    N = len(current_fft)
+    plt.figure("soma_current")
     plt.plot(freq_current, current_magnitude)
     plt.xlabel('Frequecy (Hz)')
     plt.ylabel('Magnitude (mA)')
-    plt.subplot(212)
+    plt.show()
+
+    plt.figure("membrane voltage")
     plt.plot(freq_voltage, voltage_magnitude)
     plt.xlabel('Frequecy (Hz)')
     plt.ylabel('Volts (V)')
-    plt.figure("membrane impedence")
-    plt.subplot(211)
+    plt.show()
+
+    plt.figure("membrane voltage")
     plt.plot(freq_voltage, voltage_magnitude/current_magnitude)
     plt.xlabel('Frequecy (Hz)')
     plt.ylabel('ohms ($\Omega$)')
+    plt.show()
+
     plt.title('membrance impedance')
-    plt.subplot(212)
     plt.plot(freq_voltage, voltage_phase - current_phase)
     plt.xlabel('Frequecy (Hz)')
     plt.ylabel('phase ($\Theta$)')
     plt.show()
 
-    # from moose_nerp.graph import plot_channel
-    # for channel in channel_settings:
-    #     libchan=moose.element('/library/soma/'+channel)
-    #     plot_channel.plot_gate_params(libchan,1,VMIN, VMAX, CAMIN, CAMAX)
-    # plt.show()
-
 if __name__ == "__main__":
     model_name = 'soma'
     channel_settings = channel_settings
-    comp_passive = {'RM':1/(0.06), 'CM': 1,'RA':4, 'EM': -50e-3} # check with Dan????
+    comp_passive = {'RM':1/(0.06), 'CM': 1,'RA':4, 'EM': -50e-3}
     main(model_name, comp_passive, channel_settings, ca_params=ca_params)
