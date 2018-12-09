@@ -111,7 +111,7 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     length = 20e-6
 
     inj_delay = 20E-3
-    inj_amp = 0 # Pleace chirp amplitudes 2.5E-3 and 15E-3
+    inj_amp = 2E-3 # Pleace chirp amplitudes 2.5E-3 and 15E-3
     inj_width = 1
 
     # Model creation
