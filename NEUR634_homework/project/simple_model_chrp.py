@@ -151,8 +151,8 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     # plot chirp signal
     t = np.arange(0, simtime, 1/len(soma_c_table.vector))
     plt.plot(t, soma_c_table.vector)
-    plt.xlabel("time in seconds")
-    plt.ylabel("voltage (V)")
+    plt.xlabel("time in seconds", fontsize = 15)
+    plt.ylabel("voltage (V)", fontsize = 15)
     plt.show()
 
     current_time_domain = soma_c_table.vector
@@ -169,26 +169,26 @@ def main(model_name, comp_passive, channel_settings, ca_params):
     N = len(current_fft)
     plt.figure("soma_current")
     plt.plot(freq_current, current_magnitude)
-    plt.xlabel('Frequecy (Hz)')
-    plt.ylabel('Magnitude (mA)')
+    plt.xlabel('Frequecy (Hz)', fontsize = 15)
+    plt.ylabel('Magnitude (mA)', fontsize = 15)
     plt.show()
 
     plt.figure("membrane voltage")
     plt.plot(freq_voltage, voltage_magnitude)
-    plt.xlabel('Frequecy (Hz)')
-    plt.ylabel('Volts (V)')
+    plt.xlabel('Frequecy (Hz)', fontsize = 15)
+    plt.ylabel('Volts (V)', fontsize = 15)
     plt.show()
 
     plt.figure("membrane voltage")
     plt.plot(freq_voltage, voltage_magnitude/current_magnitude)
-    plt.xlabel('Frequecy (Hz)')
-    plt.ylabel('ohms ($\Omega$)')
+    plt.xlabel('Frequecy (Hz)', fontsize = 15)
+    plt.ylabel('ohms ($\Omega$)', fontsize = 15)
     plt.show()
 
     plt.title('membrance impedance')
     plt.plot(freq_voltage, voltage_phase - current_phase)
-    plt.xlabel('Frequecy (Hz)')
-    plt.ylabel('phase ($\Theta$)')
+    plt.xlabel('Frequecy (Hz)', fontsize = 15)
+    plt.ylabel('phase ($\Theta$)', fontsize = 15)
     plt.show()
 
 if __name__ == "__main__":
