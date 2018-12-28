@@ -1,0 +1,16 @@
+#### Notes
+
+Potassium is always high on inside.
+In few papers negative current is inward  current into soma.
+
+Na -> m(activation gate) and h(inactivataion gate) gates.
+K -> n(activation gate)
+
+absoute refactory period = Time
+
+relative refactory period = Time
+
+In moose.HHChannel
+X -> activation gate
+Y -> Inactivation gate
+Z  -> Secondary inactiation gates (used with calcium).
